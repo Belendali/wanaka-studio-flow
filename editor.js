@@ -388,12 +388,21 @@ window.__approve = async () => { window.__closePanel(); await wait(420); build()
 
 // ── 3 · the build, front and centre ───────────────────────────────
 const STEPS = [
-  ['developer', 'Making it playable', 'Movement, a start, a way to fail, a way to retry.', 'floor'],
-  ['artist', 'Building the toy house', 'Four rooms, the girl, and the way between them.', 'rooms'],
-  ['developer', 'Laying out the rules', 'Where pieces sit, what happens when she reaches one.', 'picks'],
-  ['artist', 'Lighting it', 'One warm desk lamp, and the bounce it throws on the floor.', 'light'],
-  ['tester', 'Playing it through', 'Six checks, start to finish, on web and on a phone.', 'done'],
+  ['developer', 'Making it playable',
+   'Movement, a start, a way to fail, a way to retry.',
+   [['floor', 'Movement, start, fail, retry']]],
+  ['artist', 'Building the toy house',
+   'Four rooms, the girl, and the pieces she is after.',
+   [['rooms', 'Four rooms and the girl'],
+    ['picks', 'Where the puzzle pieces sit']]],
+  ['artist', 'Lighting it',
+   'One warm desk lamp, and the bounce it throws on the floor.',
+   [['light', 'One warm desk lamp, and its bounce']]],
+  ['tester', 'Playing it through',
+   'Six checks, start to finish, on web and on a phone.',
+   [['done', 'Ran it end to end — it holds up']]],
 ];
+const CARD_MS = 6000;
 let live = 0;      // the step the crew is actually on
 let shown = 0;     // the card the user is looking at
 
@@ -407,7 +416,7 @@ function paintStep(i) {
   $('bx-card').classList.remove('is-in');
   void $('bx-card').offsetWidth;
   $('bx-card').classList.add('is-in');
-  $('bx-fill').style.transitionDuration = `${8 / FAST}s`;
+  $('bx-fill').style.transitionDuration = `${CARD_MS / 1000 / FAST}s`;
   $('bx-fill').style.width = `${((live + 1) / STEPS.length) * 100}%`;
   $('bx-dots').innerHTML = STEPS.map((_, n) =>
     `<i class="${n === shown ? 'is-on' : ''}${n <= live ? ' is-done' : ''}"></i>`).join('');
@@ -431,9 +440,13 @@ async function build() {
   for (let i = 0; i < STEPS.length; i++) {
     live = i;
     paintStep(i);                       // a card flips to whoever just started
-    scene.classList.add('is-' + STEPS[i][3]);
-    await wait(8000);                   // eight seconds each, as asked
-    crewTick(STEPS[i][1]);
+    const parts = STEPS[i][3];
+    const slice = CARD_MS / parts.length;
+    for (const [part, note] of parts) {
+      scene.classList.add('is-' + part);
+      await wait(slice);
+      crewTick(note);
+    }
   }
 
   $('bx-card').hidden = true;
