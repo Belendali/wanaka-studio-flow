@@ -1,8 +1,8 @@
 /* ──────────────────────────────────────────────────────────────────
    Wanaka · Studio — the whole first run, on the new editor.
 
-   Plan is ON by default for a new project. You type your own brief and
-   press send; the Plan crew drafts without stopping to interview you,
+   Plan is ON by default for a new project. The demo types the brief and
+   sends it on its own (add ?manual to type your own); the Plan crew drafts without stopping to interview you,
    the plan opens in Plan Studio, you approve, and the build takes over
    the viewport — one Wana at a time, six seconds a card, while the
    scene assembles behind. When Version 1.0 lands the crew hands you
@@ -309,9 +309,24 @@ function cardBusy(who) {
     c.classList.toggle('is-on', c.dataset.k === who));
 }
 
-// ── 1 · the user's own brief ──────────────────────────────────────
-/* Nothing happens until they type it themselves and press send. */
+// ── 1 · the brief ─────────────────────────────────────────────────
+/* By default the demo types it out and sends it, so a link plays itself.
+   Add ?manual to the URL to type your own and press send. */
+const MANUAL = /(\?|&)manual\b/.test(location.search);
 let started = false;
+
+async function typeIn(text) {
+  const box = $('input');
+  box.focus();
+  if (FAST > 1) { box.value = text; await wait(400); return; }
+  for (let i = 0; i <= text.length; i++) {
+    box.value = text.slice(0, i);
+    await wait(18 + Math.random() * 26);
+    if (i % 6 === 0) $('send').classList.toggle('is-live', i > 0);
+  }
+  await wait(500);
+}
+
 function armComposer() {
   const box = $('input');
   const send = $('send');
@@ -332,6 +347,7 @@ function armComposer() {
   };
   send.onclick = fire;
   box.focus();
+  if (!MANUAL) typeIn(BRIEF).then(fire);
 }
 
 // ── 2 · brief → plan ──────────────────────────────────────────────
