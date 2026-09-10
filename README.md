@@ -36,3 +36,22 @@ painful:
 Candidates are drawn inline (`house`/`chair`/`kid`/`piece` in `panel.js`)
 so four entries in a slot look like four different models. Swap in real
 library renders when there are some.
+
+## Four ways to show a plan
+
+`plans.html` — four static comps of the same plan, to argue about before
+building any of it.
+
+- **A · One-pager** — an editorial spread. Prose, not fields; the settings
+  demoted to a spec strip like a film's technical credits.
+- **B · Crew wall** — what the five Wanas each pinned up, in their own
+  voice, signed. Uses the one thing nobody else's AI has.
+- **C · Game box** — the plan as packaging for a game that does not exist
+  yet. Approve = "Make it real".
+- **D · Blueprint** — the toy house drawn as a technical sheet, specs in a
+  title block.
+
+Every screen takes its palette from the cover **at runtime** (`readPalette`
+in `plans.js` quantises the image on a canvas and sorts the result into
+roles). Switch the cover in the top right: warm toy house, cold horror,
+green phosphor — same layout, three different products.
