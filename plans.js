@@ -405,8 +405,82 @@ function compE(p) {
   </div>`;
 }
 
+// ── F · the foldable ──────────────────────────────────────────────
+/* One continuous screen with a crease down it. The cover becomes the
+   wallpaper, so the whole surface is already the right colour, and the
+   plan is laid out as widgets rather than as a form — a tile can be a
+   different size from its neighbour, which is most of what stops a
+   screen reading as generated. */
+function compF(p) {
+  const tile = (k, label, value, cls = '') => `
+    <button class="w ${cls}">
+      <span class="w__top">${ICON[k]}<em>${label}</em></span>
+      <b>${value}</b>
+    </button>`;
+  return `
+  <div class="fold">
+    <div class="fold__dev">
+      <div class="fold__glass">
+        <img class="fold__wall" src="${p.cover}" alt="">
+        <span class="fold__scrim"></span>
+
+        <div class="fold__pages">
+          <!-- left · the game -->
+          <section class="fold__page">
+            <span class="fold__status fold__status--l">${p.genre}</span>
+            <figure class="hero">
+              <img src="${p.cover}" alt="">
+              <figcaption>
+                <em>Your game, unbuilt</em>
+                <b>${p.title}</b>
+                <span>${p.sub}</span>
+              </figcaption>
+              <button class="hero__play">▶</button>
+            </figure>
+          </section>
+
+          <!-- right · the plan, as widgets -->
+          <section class="fold__page fold__page--r">
+            <span class="fold__status">9:41 · ${p.credits} cr</span>
+            <div class="grid">
+              <div class="w w--wide w--title">
+                <em>${p.genre}</em>
+                <b>${p.title}</b>
+                <span>${p.sub}</span>
+              </div>
+              <div class="w w--wide w--idea">
+                <span class="w__top">${ICON.genre}<em>The idea</em></span>
+                <p>${p.pitch}</p>
+              </div>
+              ${tile('look', 'Look', p.style)}
+              ${tile('scope', 'Scope', p.rooms)}
+              ${tile('plat', 'Plays on', p.platform)}
+              ${tile('run', 'A run', p.length)}
+              <div class="w w--wide w--crew">
+                <span class="w__top">${ICON.crew}<em>On it</em></span>
+                <span class="w__faces">${CREW.map(([k]) =>
+                  `<img src="assets/crew-${k}.webp" alt="">`).join('')}</span>
+              </div>
+              <button class="w w--wide w--go">Approve the plan</button>
+            </div>
+            <nav class="dock">
+              <button class="dock__b is-on" title="Plan">${ICON.genre}</button>
+              <button class="dock__b" title="Assets">${ICON.scope}</button>
+              <button class="dock__b" title="Look">${ICON.look}</button>
+              <button class="dock__b" title="Crew">${ICON.crew}</button>
+            </nav>
+          </section>
+        </div>
+
+        <span class="fold__crease"></span>
+      </div>
+    </div>
+    <span class="fold__cast"></span>
+  </div>`;
+}
+
 // ── Wiring ────────────────────────────────────────────────────────
-const COMPS = { a: compA, b: compB, c: compC, d: compD, e: compE };
+const COMPS = { a: compA, b: compB, c: compC, d: compD, e: compE, f: compF };
 let which = 'a', plan = 'toy';
 
 function paint() {

@@ -63,6 +63,13 @@ green phosphor — same layout, three different products.
   neutral so the only colour in the room comes off the screens**, which is
   what keeps it from looking like a toy.
 
+- **F · Foldable** — one continuous screen with a crease down it, in a thin
+  light frame on a light desk. The cover becomes the wallpaper, so the whole
+  surface is already the right colour, and the plan is laid out as **widgets
+  rather than fields** — a tile can be a different size from its neighbour,
+  which is most of what stops a screen reading as generated. Glass tiles,
+  a dock down the outer edge, no controls at all.
+
 ### If you are drawing the shell
 
 You may not need to. E is CSS the whole way down: no image, no 3D file, it

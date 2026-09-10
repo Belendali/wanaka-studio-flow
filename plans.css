@@ -292,7 +292,8 @@ body{
     radial-gradient(900px 500px at 50% 120%,rgba(0,0,0,.5),transparent),
     var(--bg);
 }
-.dev{position:relative;width:min(1420px,100%);perspective:2600px}
+.dev{position:relative;perspective:2600px;
+  width:min(1420px,100%,calc((100vh - 190px) * 2.06))}
 .dev__body{
   position:relative;display:grid;grid-template-columns:1fr 30px 1fr;
   aspect-ratio:2.06/1;
@@ -468,3 +469,148 @@ body{
   transition:filter .16s;
 }
 .ds__go:hover{filter:brightness(1.07)}
+
+/* ═══ F · The foldable ═══════════════════════════════════════════
+   One screen with a crease down it. The cover is the wallpaper, so the
+   surface is already the right colour and the widgets only have to be
+   glass. Nothing here is a form field. */
+.stage--f{
+  display:grid;place-items:center;padding:26px 26px 70px;
+  background:radial-gradient(1100px 700px at 50% 0%,#F7F7F8,#E4E4E7 62%,#D2D2D6);
+}
+.fold{position:relative;perspective:2600px;
+  width:min(1320px,100%,calc((100vh - 168px) * 1.52))}
+.fold__dev{
+  position:relative;padding:9px;border-radius:26px;
+  aspect-ratio:1.52/1;
+  background:linear-gradient(158deg,#FBFBFA,#B9B7B2 38%,#EEEDEA 62%,#A9A7A2);
+  transform:rotateX(4deg);transform-origin:50% 88%;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.10),
+    inset 0 1px 0 rgba(255,255,255,.9),
+    0 30px 50px rgba(0,0,0,.20), 0 70px 90px rgba(0,0,0,.16);
+}
+.fold__cast{
+  position:absolute;left:10%;right:10%;bottom:-46px;height:70px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(0,0,0,.30),transparent);filter:blur(24px);
+}
+.fold__glass{
+  position:relative;height:100%;border-radius:19px;overflow:hidden;background:#111;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.5);
+}
+.fold__wall{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  filter:blur(26px) saturate(1.25);transform:scale(1.12);
+}
+.fold__scrim{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,rgba(0,0,0,.30),rgba(0,0,0,.55));
+}
+/* the fold itself: a shallow valley, and one bright line at the bottom of it */
+.fold__crease{
+  position:absolute;left:50%;top:0;bottom:0;width:62px;transform:translateX(-50%);
+  pointer-events:none;z-index:6;
+  background:linear-gradient(90deg,
+    rgba(255,255,255,.05) 0%, rgba(0,0,0,.16) 30%,
+    rgba(0,0,0,.24) 50%, rgba(0,0,0,.16) 70%, rgba(255,255,255,.05) 100%);
+}
+.fold__crease::after{
+  content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;
+  background:rgba(255,255,255,.13);
+}
+
+.fold__pages{position:absolute;inset:0;z-index:2;display:grid;
+  grid-template-columns:1fr 1fr;grid-template-rows:minmax(0,1fr)}
+.fold__page{position:relative;min-width:0;min-height:0;overflow:hidden;
+  padding:30px 26px 26px}
+.fold__page--r{padding-right:88px}
+.fold__status{
+  position:absolute;right:30px;top:14px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:rgba(255,255,255,.7);
+}
+.fold__status--l{right:auto;left:30px;text-transform:uppercase;letter-spacing:.2em}
+
+/* the big media card, the way a photo widget sits on a home screen */
+.hero{
+  position:relative;height:100%;margin:0;border-radius:26px;overflow:hidden;
+  box-shadow:0 20px 40px rgba(0,0,0,.4),inset 0 0 0 1px rgba(255,255,255,.14);
+}
+.hero img{width:100%;height:100%;object-fit:cover;display:block}
+.hero figcaption{
+  position:absolute;left:0;right:0;bottom:0;padding:44px 24px 22px;
+  background:linear-gradient(transparent,rgba(0,0,0,.8));
+}
+.hero em{
+  font-style:normal;display:block;margin-bottom:8px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.62);
+}
+.hero b{display:block;font-size:29px;font-weight:600;letter-spacing:-.02em;line-height:1.05}
+.hero figcaption span{display:block;margin-top:5px;font-size:13px;color:rgba(255,255,255,.66)}
+.hero__play{
+  position:absolute;right:18px;bottom:20px;width:36px;height:36px;border:0;border-radius:50%;
+  cursor:pointer;background:rgba(255,255,255,.2);backdrop-filter:blur(14px);
+  color:#fff;font-size:12px;
+}
+
+/* the widgets */
+.grid{
+  height:100%;display:grid;grid-template-columns:repeat(4,1fr);
+  grid-template-rows:.95fr 1.35fr .95fr .95fr .8fr .78fr;gap:9px;overflow:hidden;
+}
+.w{
+  display:flex;flex-direction:column;gap:5px;justify-content:space-between;
+  min-height:0;overflow:hidden;
+  padding:11px 13px;border-radius:18px;text-align:left;cursor:pointer;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.22);
+  backdrop-filter:blur(26px) saturate(1.5);
+  color:#fff;font-family:var(--sans);
+  box-shadow:0 8px 22px rgba(0,0,0,.20);
+  transition:background .18s,transform .18s;
+  grid-column:span 2;
+}
+.w:hover{background:rgba(255,255,255,.19);transform:translateY(-2px)}
+.w--wide{grid-column:span 4}
+.w__top{display:flex;align-items:center;gap:7px;color:rgba(255,255,255,.72)}
+.w__top em{
+  font-style:normal;font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;
+  text-transform:uppercase;
+}
+.w>b{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.w--title{gap:3px;justify-content:center;background:rgba(255,255,255,.17)}
+.w--title em{
+  font-style:normal;font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--accent);
+}
+.w--title b{font-size:25px;font-weight:600;letter-spacing:-.02em;line-height:1.05}
+.w--title span{font-size:12px;color:rgba(255,255,255,.62)}
+.w--idea{justify-content:flex-start}
+.w--idea p{margin:0;font-size:12px;line-height:1.5;overflow:hidden;color:rgba(255,255,255,.86)}
+.w--crew{flex-direction:row;align-items:center;justify-content:space-between}
+.w__faces{display:flex}
+.w__faces img{
+  width:28px;height:28px;border-radius:50%;object-fit:cover;
+  margin-left:-8px;border:2px solid rgba(255,255,255,.3);background:#2A2530;
+}
+.w--go{
+  align-items:center;justify-content:center;
+  background:var(--accent);border-color:transparent;color:#12100E;
+  font-size:14px;font-weight:600;
+}
+.w--go:hover{background:var(--accent);filter:brightness(1.07)}
+
+/* the dock down the outer edge */
+.dock{
+  position:absolute;right:24px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:8px;padding:10px 8px;border-radius:26px;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.22);
+  backdrop-filter:blur(26px) saturate(1.5);box-shadow:0 10px 26px rgba(0,0,0,.24);
+}
+.dock__b{
+  width:38px;height:38px;border:0;border-radius:50%;cursor:pointer;
+  display:grid;place-items:center;background:rgba(255,255,255,.1);
+  color:rgba(255,255,255,.72);transition:background .16s,color .16s;
+}
+.dock__b:hover{background:rgba(255,255,255,.2);color:#fff}
+.dock__b.is-on{background:var(--accent);color:#12100E}
