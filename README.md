@@ -21,3 +21,18 @@ always runs. Add `?fast` to the URL for a 6× re-watch.
   (12 controls, 7 more behind Advanced), mounted over the editor.
 
 Run locally: `python3 serve.py` → http://localhost:8459
+
+## Plan B
+
+There is a switch in the plan's top bar. Off — the shipped decision — the
+plan never asks for assets. On, the plan becomes two steps, `Overview` and
+`Game assets`, and fixes the two things that make the live asset step
+painful:
+
+- **A slot takes more than one model.** The checkboxes are real checkboxes.
+- **A slot can take none.** Every slot starts on *Generate later*, and
+  picking nothing is a finished answer, not a blocked one.
+
+Candidates are drawn inline (`house`/`chair`/`kid`/`piece` in `panel.js`)
+so four entries in a slot look like four different models. Swap in real
+library renders when there are some.

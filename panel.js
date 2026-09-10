@@ -157,13 +157,82 @@ const CREW_NAME = { planner: 'Planner', artist: 'Artist', developer: 'Developer'
 
 let step = 0;
 
+/* Plan B — for when picking assets has to live inside the plan.
+   Two things the shipped version gets wrong and this one does not:
+   a slot can take more than one model, and a slot can take none.
+
+   The candidates are drawn rather than photographed, so four entries in
+   a slot actually look like four different models. */
+const art = (inner) => `<svg viewBox="-46 -38 92 76">${inner}</svg>`;
+
+const house = (wall, roof, door) => art(`
+  <path d="M-26 30 L-26 -4 L26 -4 L26 30 Z" fill="${wall}"/>
+  <path d="M-32 -2 L0 -30 L32 -2 Z" fill="${roof}"/>
+  <rect x="-7" y="10" width="14" height="20" rx="2" fill="${door}"/>
+  <rect x="-20" y="4" width="10" height="10" rx="2" fill="${door}" opacity=".7"/>
+  <rect x="10" y="4" width="10" height="10" rx="2" fill="${door}" opacity=".7"/>`);
+
+const chair = (frame, seat) => art(`
+  <rect x="-16" y="-26" width="32" height="28" rx="5" fill="${seat}"/>
+  <rect x="-20" y="0" width="40" height="9" rx="4" fill="${frame}"/>
+  <rect x="-16" y="9" width="6" height="20" rx="3" fill="${frame}"/>
+  <rect x="10" y="9" width="6" height="20" rx="3" fill="${frame}"/>`);
+
+const kid = (head, body, legs) => art(`
+  <circle cx="0" cy="-16" r="11" fill="${head}"/>
+  <rect x="-10" y="-5" width="20" height="30" rx="9" fill="${body}"/>
+  <rect x="-7" y="23" width="6" height="12" rx="3" fill="${legs}"/>
+  <rect x="1" y="23" width="6" height="12" rx="3" fill="${legs}"/>`);
+
+const PIECE = {
+  star: 'M0 -26 l7 17 l18 1 l-14 12 l5 18 l-16 -10 l-16 10 l5 -18 l-14 -12 l18 -1 Z',
+  key: 'M-5 -24 a11 11 0 1 1 0 22 l0 24 l9 0 l-9 9 Z',
+  spool: 'M-16 -22 l32 0 l-9 10 l0 24 l9 10 l-32 0 l9 -10 l0 -24 Z',
+  marble: 'M0 -21 a21 21 0 1 1 -.1 0 Z',
+};
+const piece = (c, k) => art(`
+  <circle cx="0" cy="2" r="30" fill="${c}" opacity=".14"/>
+  <g transform="translate(0 2)"><path d="${PIECE[k]}" fill="${c}"/></g>`);
+
+const SLOTS = [
+  ['house', 'The toy house', 'Walls, roof, and how the rooms connect', [
+    ['Dollhouse shell', 'Fits this slot', house('#C79A62', '#A8563F', '#6B4327'), true],
+    ['Cardboard fort', '', house('#BC9268', '#8E6A47', '#6A4C31')],
+    ['Wooden cabin', '', house('#9A7248', '#5E4226', '#3E2C1A')],
+    ['Paper house', '', house('#E4DCC8', '#C4B79A', '#8E846E')],
+  ]],
+  ['furniture', 'Room furniture', 'Beds, chairs, shelves — six pieces', [
+    ['Nursery set', 'Fits this slot', chair('#8A6238', '#D8A05E')],
+    ['Attic clutter', '', chair('#6E5A3C', '#9A8358')],
+    ['Workshop bench', '', chair('#5A626B', '#8B949C')],
+    ['Doll parlour', '', chair('#7C4A66', '#C98BA6')],
+  ]],
+  ['pieces', 'Puzzle pieces', 'The thing she is collecting', [
+    ['Wooden stars', 'Fits this slot', piece('#F4D35E', 'star')],
+    ['Brass keys', '', piece('#E0B457', 'key')],
+    ['Ribbon spools', '', piece('#E88FA8', 'spool')],
+    ['Glass marbles', '', piece('#7FD4E8', 'marble')],
+  ]],
+  ['girl', 'The girl', 'The character you play', [
+    ['Tin Explorer', 'Fits this slot', kid('#D8DEE6', '#8FA6C4', '#3E4658')],
+    ['Paper Scout', '', kid('#F0E4CE', '#D9B26A', '#8A6A44')],
+    ['Wind-up Kid', '', kid('#E8D7B4', '#B98A3C', '#6B4E22')],
+    ['Button Doll', '', kid('#F4DCD6', '#A85C86', '#5A3350')],
+  ]],
+];
+
 // ── Shell ─────────────────────────────────────────────────────────
 function mount() {
   const w = pEl('div', 'ws');
   w.innerHTML = `
     <header class="ws__top">
       <span class="ws__brand"><img src="assets/crew-planner.webp" alt=""><b>Plan Studio</b></span>
+      <span class="ws__steps" id="steps">
+        <button class="st is-on" data-s="0"><i></i><span>Overview</span></button>
+        <button class="st" data-s="1"><i></i><span>Game assets</span></button>
+      </span>
       <span class="ws__doc"></span>
+      <button class="abtog" id="abtog"><i></i>Plan B · assets in the plan</button>
       <span class="ws__faces">${CREW.map((k) =>
         `<img src="assets/crew-${k}.webp" alt="${CREW_NAME[k]}" title="${CREW_NAME[k]} Wana">`).join('')}</span>
     </header>
@@ -172,15 +241,21 @@ function mount() {
       <span class="ws__sum" id="sum"></span>
       <span class="ws__acts">
         <button class="b b--sec">Close</button>
-        <button class="b b--go">Approve plan &amp; start build<i>↗</i></button>
+        <button class="b b--go" id="go">Approve plan &amp; start build<i>↗</i></button>
       </span>
     </footer>`;
   (document.getElementById('panel-host') || document.getElementById('stage')).appendChild(w);
-  document.getElementById('main').innerHTML = stOverview();
+  document.getElementById('main').innerHTML =
+    `<div class="page is-on" data-s="0">${stOverview()}</div>
+     <div class="page" data-s="1">${stAssets()}</div>`;
   paintSum();
   wire();
-  const go = document.querySelector('.b--go');
-  if (go) go.onclick = () => window.__approve && window.__approve();
+  const go = document.getElementById('go');
+  // in Plan B the same button walks to the assets step first
+  if (go) go.onclick = () => {
+    if (document.querySelector('.ws.is-planb') && step === 0) return goStep(1);
+    window.__approve && window.__approve();
+  };
   const close = document.querySelector('.b--sec');
   if (close) close.onclick = () => window.__closePanel && window.__closePanel();
 }
@@ -189,8 +264,64 @@ function mount() {
 function paintSum() {
   const sc = P.scopes.find((x) => x[5]) || P.scopes[1];
   const el2 = document.getElementById('sum');
-  if (el2) el2.innerHTML =
-    `<b>${sc[3]}</b> · 5 Wanas on it · <b>${sc[4].split(' · ')[0]}</b> · playable in ${sc[4].split(' · ')[1]}`;
+  if (!el2) return;
+  // on the assets step the footer counts what the library is covering
+  let assets = '';
+  if (document.querySelector('.ws.is-planb') && step === 1) {
+    const slots = [...document.querySelectorAll('.slot')];
+    const n = document.querySelectorAll('.ass:not(.ass--later).is-on').length;
+    const later = slots.length
+      - slots.filter((x) => x.querySelector('.ass:not(.ass--later).is-on')).length;
+    assets = ` · <b>${n} from the library</b>${later ? `, ${later} the Artist makes` : ''}`;
+  }
+  el2.innerHTML =
+    `<b>${sc[3]}</b> · 5 Wanas on it${assets} · <b>${sc[4].split(' · ')[0]}</b>`
+    + ` · playable in ${sc[4].split(' · ')[1]}`;
+}
+
+// Which page of the plan you are on. Plan A has one; Plan B has two.
+function goStep(n) {
+  step = n;
+  document.querySelectorAll('.page').forEach((p) =>
+    p.classList.toggle('is-on', +p.dataset.s === n));
+  document.querySelectorAll('.st').forEach((b) =>
+    b.classList.toggle('is-on', +b.dataset.s === n));
+  const go = document.getElementById('go');
+  const planb = !!document.querySelector('.ws.is-planb');
+  go.innerHTML = (planb && n === 0)
+    ? 'Next · game assets<i>→</i>' : 'Approve plan &amp; start build<i>↗</i>';
+  document.querySelector('.ws__main').scrollTop = 0;
+  paintSum();
+}
+
+// Every slot may take several models, or none at all — skipping one is a
+// real answer, not a thing the plan refuses to move past.
+function stAssets() {
+  return `<div class="wide2">
+    <header class="wide2__h">
+      <b>Game assets</b>
+      <p>Optional. Pick as many as you like for each part — anything you leave
+        alone, the Artist makes during the build.</p>
+    </header>
+      ${SLOTS.map(([k, name, note, opts]) => `
+        <div class="slot" data-k="${k}">
+          <header class="slot__h">
+            <span><b>${name}</b><em>${note}</em></span>
+            <i class="slot__state">The Artist will make it</i>
+          </header>
+          <div class="slot__grid">
+            ${opts.map(([n, tag, svg, on], i) => `
+              <button class="ass${on ? ' is-on' : ''}" data-n="${n}" data-i="${i}">
+                <span class="ass__art">${svg}<i class="ass__box"></i></span>
+                <b>${n}</b>${tag ? `<em>${tag}</em>` : ''}
+              </button>`).join('')}
+            <button class="ass ass--later">
+              <span class="ass__art ass__art--later">✦</span>
+              <b>Generate later</b><em>The Artist makes it</em>
+            </button>
+          </div>
+        </div>`).join('')}
+  </div>`;
 }
 
 // ── 01 · Overview ─────────────────────────────────────────────────
@@ -354,6 +485,35 @@ function card(title, inner) {
   </section>`;
 }
 function wire() {
+  const ab = document.getElementById('abtog');
+  if (ab) ab.onclick = () => {
+    const on = document.querySelector('.ws').classList.toggle('is-planb');
+    ab.classList.toggle('is-on', on);
+    goStep(0);                       // turning it off must not strand you on step 2
+  };
+  document.querySelectorAll('.st').forEach((b) =>
+    b.onclick = () => goStep(+b.dataset.s));
+  document.querySelectorAll('.slot').forEach((slot) => {
+    const state = slot.querySelector('.slot__state');
+    const later = slot.querySelector('.ass--later');
+    const paint = () => {
+      const n = slot.querySelectorAll('.ass:not(.ass--later).is-on').length;
+      later.classList.toggle('is-on', n === 0);
+      state.textContent = n === 0 ? 'The Artist will make it'
+        : n === 1 ? '1 model from the library'
+        : `${n} models from the library`;
+      paintSum();
+    };
+    slot.querySelectorAll('.ass:not(.ass--later)').forEach((b) => {
+      b.onclick = () => { b.classList.toggle('is-on'); paint(); };
+    });
+    // choosing "later" is the same as clearing the slot — never a dead end
+    later.onclick = () => {
+      slot.querySelectorAll('.ass.is-on').forEach((o) => o.classList.remove('is-on'));
+      paint();
+    };
+    paint();
+  });
   document.querySelectorAll('.pickcard').forEach((b) => {
     b.onclick = () => {
       const grp = b.parentElement;

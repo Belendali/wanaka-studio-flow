@@ -385,13 +385,8 @@ function openPanel() {
   const host = $('panel-host');
   if (host.dataset.built !== '1') { window.mountPlanPanel(); host.dataset.built = '1'; }
   host.hidden = false;
-  setTimeout(() => host.classList.add('is-on'), 20);
 }
-window.__closePanel = () => {
-  const host = $('panel-host');
-  host.classList.remove('is-on');
-  setTimeout(() => { host.hidden = true; }, 260);
-};
+window.__closePanel = () => { $('panel-host').hidden = true; };
 window.__approve = async () => { window.__closePanel(); await wait(420); build(); };
 
 // ── 4 · the build, front and centre ───────────────────────────────

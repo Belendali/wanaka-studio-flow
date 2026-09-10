@@ -247,11 +247,7 @@ body{
 .send.is-live{background:var(--lime);color:#12180A}
 
 /* ── The plan panel, over everything ──────────────────────────── */
-.panelwrap{
-  position:fixed;inset:0;z-index:50;background:var(--page);
-  opacity:0;transition:opacity .26s ease;
-}
-.panelwrap.is-on{opacity:1}
+.panelwrap{position:fixed;inset:0;z-index:50;background:var(--page)}
 
 /* ── Building: the card that owns the middle of the viewport ────── */
 .bx{
