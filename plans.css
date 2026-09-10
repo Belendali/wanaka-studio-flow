@@ -282,114 +282,189 @@ body{
 }
 
 /* ═══ E · The handheld ═══════════════════════════════════════════
-   A clamshell on its side. Left panel is the game, right panel is the
-   plan as a touch menu, buttons down the far edge. The shell is drawn
-   in code for now — placeholder for real art once the layout holds. */
-.stage--e{display:grid;place-items:center;padding:22px;
-  background:radial-gradient(1000px 700px at 50% 10%,var(--accentSoft),var(--bg))}
-.dev{
-  position:relative;width:min(1500px,100%);aspect-ratio:2/1;
-  filter:drop-shadow(0 40px 70px rgba(0,0,0,.55));
+   A clamshell laid back on a desk. No outline, no wobble — the form is
+   carried by extrusion and light. The shell stays close to neutral so
+   the only colour in the room comes off the screens. */
+.stage--e{
+  display:grid;place-items:center;padding:44px 26px 108px;
+  background:
+    radial-gradient(1300px 760px at 50% -12%,var(--accentSoft),transparent),
+    radial-gradient(900px 500px at 50% 120%,rgba(0,0,0,.5),transparent),
+    var(--bg);
 }
-.dev__shell{position:absolute;inset:0;width:100%;height:100%;display:block}
-.dev__k{font-family:var(--fat);font-size:23px;fill:var(--shellHi);text-anchor:middle}
-.dev__s{font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:.14em;
-  fill:var(--shellHi);text-anchor:middle}
-.dev__led{filter:drop-shadow(0 0 7px #8BF08B);animation:led 3.4s ease-in-out infinite}
-@keyframes led{0%,100%{opacity:.75}50%{opacity:1}}
-.dev__glass{pointer-events:none}
+.dev{position:relative;width:min(1420px,100%);perspective:2600px}
+.dev__body{
+  position:relative;display:grid;grid-template-columns:1fr 30px 1fr;
+  aspect-ratio:2.06/1;
+  transform:rotateX(12deg);transform-origin:50% 88%;transform-style:preserve-3d;
+}
+/* the shadow it throws on the desk */
+.dev__cast{
+  position:absolute;left:7%;right:7%;bottom:-52px;height:86px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(0,0,0,.62),transparent);
+  filter:blur(26px);
+}
 
-.dev__screen{position:absolute;overflow:hidden;border-radius:14px}
-/* rects come straight off the SVG viewBox: 44,52,796,796 and 952,52,628,796 */
-.dev__screen--game{left:2.889%;top:6.667%;width:43.778%;height:86.667%}
-.dev__screen--menu{left:53.444%;top:6.667%;width:32.444%;height:86.667%;
-  background:var(--screenOff)}
-.dev__screen--game img{width:100%;height:100%;object-fit:cover;display:block}
-.dev__scan{
-  position:absolute;inset:0;pointer-events:none;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,.20) 0 1px,transparent 1px 3px);
-  mix-blend-mode:multiply;
+.dev__half{
+  position:relative;display:grid;padding:20px;border-radius:26px;
+  transform-style:preserve-3d;
+  background:linear-gradient(158deg,var(--shellHi),var(--shell) 44%,var(--shellLo));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.16),
+    inset 0 0 0 1px rgba(255,255,255,.05),
+    0 40px 60px rgba(0,0,0,.5);
 }
+/* a real front face, hinged down off the bottom edge, rather than a stack
+   of flat shadows pretending to be thickness */
+.dev__half::after{
+  content:'';position:absolute;left:14px;right:14px;top:100%;height:26px;
+  transform-origin:top;transform:rotateX(-90deg);
+  border-radius:0 0 8px 8px;
+  background:linear-gradient(180deg,var(--shellLo),var(--shellEdge));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07);
+}
+.dev__half--r{display:grid;grid-template-columns:1fr 116px;gap:14px}
+.dev__mark{
+  position:absolute;left:50%;bottom:6px;transform:translateX(-50%);
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.42em;
+  color:rgba(255,255,255,.20);
+}
+
+.dev__hinge{
+  align-self:center;height:74%;border-radius:16px;
+  background:linear-gradient(90deg,var(--shellEdge),var(--shellHi) 42%,var(--shellLo));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.16);
+}
+
+/* glass */
+.dev__glass{
+  position:relative;min-width:0;min-height:0;border-radius:13px;overflow:hidden;
+  background:var(--screenOff);
+  box-shadow:
+    0 0 0 7px #0A0B0D, 0 0 0 8px rgba(255,255,255,.05),
+    inset 0 0 44px rgba(0,0,0,.75);
+}
+.dev__glass::after{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:linear-gradient(116deg,
+    rgba(255,255,255,.11) 0%,rgba(255,255,255,.035) 15%,transparent 27%);
+}
+.dev__screen{position:absolute;inset:0;overflow:hidden}
+.dev__screen--game img{width:100%;height:100%;object-fit:cover;display:block}
 .dev__title{
-  position:absolute;left:0;right:0;bottom:0;padding:26px 22px 20px;
-  background:linear-gradient(transparent,rgba(0,0,0,.82));
+  position:absolute;left:0;right:0;bottom:0;padding:34px 26px 22px;
+  background:linear-gradient(transparent,rgba(0,0,0,.86));
 }
 .dev__title em{
-  font-style:normal;display:inline-block;margin-bottom:7px;padding:3px 9px;border-radius:3px;
-  background:var(--accent);color:#12100E;
-  font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;
+  font-style:normal;display:block;margin-bottom:9px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.26em;
+  text-transform:uppercase;color:var(--accent);
 }
-.dev__title b{display:block;font-family:var(--fat);font-size:34px;line-height:1;letter-spacing:-.01em}
-.dev__title span{display:block;margin-top:6px;font-size:12.5px;color:rgba(255,255,255,.72)}
+.dev__title b{
+  display:block;font-family:var(--serif);font-size:38px;font-weight:700;
+  line-height:1;letter-spacing:-.015em;
+}
+.dev__title span{display:block;margin-top:8px;font-size:13px;color:rgba(255,255,255,.6)}
 
-/* the touch menu */
-.ds{height:100%;display:flex;flex-direction:column;
-  background:linear-gradient(var(--bg2),var(--bg));color:var(--ink)}
+/* the control edge — five parts, nothing else */
+.dev__ctrl{position:relative;display:flex;flex-direction:column;align-items:center;
+  padding:14px 0;gap:0}
+.dev__dpad{
+  position:relative;width:78px;height:78px;flex:none;margin-top:6px;
+  background:
+    linear-gradient(180deg,var(--shellHi),var(--shellLo)) content-box,
+    linear-gradient(180deg,var(--shellHi),var(--shellLo)) content-box;
+  clip-path:polygon(34% 0,66% 0,66% 34%,100% 34%,100% 66%,66% 66%,66% 100%,34% 100%,34% 66%,0 66%,0 34%,34% 34%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.55));
+}
+.dev__dpad::after{
+  content:'';position:absolute;left:50%;top:50%;width:16px;height:16px;
+  transform:translate(-50%,-50%);border-radius:50%;background:rgba(0,0,0,.36);
+}
+.dev__abxy{
+  position:relative;width:96px;height:96px;flex:none;margin-top:30px;
+}
+.dev__abxy i{
+  position:absolute;width:34px;height:34px;border-radius:50%;
+  display:grid;place-items:center;font-style:normal;
+  font-family:var(--sans);font-size:12px;font-weight:600;color:rgba(255,255,255,.45);
+  background:linear-gradient(180deg,var(--shellHi),var(--shellLo));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 2px 4px rgba(0,0,0,.55);
+}
+.dev__abxy i:nth-child(1){left:31px;top:0}
+.dev__abxy i:nth-child(2){left:0;top:31px}
+.dev__abxy i:nth-child(3){right:0;top:31px}
+.dev__abxy i:nth-child(4){left:31px;bottom:0}
+.dev__sys{display:flex;flex-direction:column;gap:9px;margin-top:32px}
+.dev__sys i{
+  display:block;width:44px;height:7px;border-radius:4px;
+  background:var(--shellLo);box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+}
+.dev__led{
+  width:7px;height:7px;border-radius:50%;margin-top:auto;
+  background:var(--accent);box-shadow:0 0 9px var(--accent);
+  animation:led 3.6s ease-in-out infinite;
+}
+@keyframes led{0%,100%{opacity:.55}50%{opacity:1}}
+
+/* ── The plan, on the touch panel ──────────────────────────────── */
+.ds{height:100%;display:flex;flex-direction:column;background:var(--screenOff);color:var(--ink)}
 .ds__tabs{
-  flex:none;display:flex;align-items:center;gap:5px;padding:9px 10px;
-  background:var(--shellLo);
+  flex:none;display:flex;align-items:center;gap:20px;padding:14px 16px 0;
 }
 .ds__tab{
-  height:26px;padding:0 13px;border:0;border-radius:13px 13px 4px 4px;cursor:pointer;
-  background:rgba(0,0,0,.24);color:rgba(255,255,255,.6);
-  font-family:var(--sans);font-size:11.5px;font-weight:600;
+  padding:0 0 10px;border:0;border-bottom:2px solid transparent;cursor:pointer;
+  background:none;color:var(--ink2);font-family:var(--sans);font-size:12.5px;
 }
-.ds__tab.is-on{background:var(--bg2);color:var(--ink)}
+.ds__tab.is-on{color:var(--ink);border-bottom-color:var(--accent)}
 .ds__cart{
-  margin-left:auto;width:34px;height:34px;border-radius:5px;overflow:hidden;flex:none;
-  border:2px solid rgba(255,255,255,.35);box-shadow:0 2px 0 rgba(0,0,0,.3);
-  transform:rotate(3deg);
+  margin-left:auto;width:30px;height:30px;border-radius:4px;overflow:hidden;flex:none;
+  box-shadow:0 0 0 1px rgba(255,255,255,.14),0 3px 8px rgba(0,0,0,.5);
 }
 .ds__cart img{width:100%;height:100%;object-fit:cover;display:block}
 
-.ds__body{flex:1;min-height:0;overflow-y:auto;padding:11px;display:flex;flex-direction:column;gap:6px;
-  scrollbar-width:none}
+.ds__body{
+  flex:1;min-height:0;overflow-y:auto;padding:14px 16px;
+  display:flex;flex-direction:column;gap:14px;scrollbar-width:none;
+}
 .ds__body::-webkit-scrollbar{display:none}
-.ds__field{display:flex;flex-direction:column;gap:4px}
+.ds__field{display:flex;flex-direction:column;gap:5px}
 .ds__field em{
-  font-style:normal;font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--ink2);padding-left:2px;
+  font-style:normal;font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink2);
 }
 .ds__field input,.ds__field textarea{
-  width:100%;padding:9px 12px;border-radius:14px;resize:none;
-  border:2px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);
-  font-family:var(--sans);font-size:13px;line-height:1.5;
+  width:100%;padding:0;border:0;background:none;resize:none;color:var(--ink);
+  font-family:var(--sans);font-size:13px;line-height:1.6;
 }
-.ds__field input{font-weight:600;font-size:15px}
-.ds__field input:focus,.ds__field textarea:focus{outline:none;border-color:var(--accent)}
-.ds__row{
-  display:flex;align-items:center;gap:9px;padding:6px 12px 6px 6px;border-radius:16px;cursor:pointer;
-  border:2px solid var(--line);background:rgba(255,255,255,.05);color:var(--ink);
-  font-family:var(--sans);text-align:left;transition:border-color .15s,background .15s;
-}
-.ds__row:hover{border-color:var(--accent);background:rgba(255,255,255,.09)}
-.ds__ico{
-  width:26px;height:26px;flex:none;border-radius:50%;display:grid;place-items:center;
-  background:var(--accent);color:#12100E;
-}
-.ti{width:16px;height:16px}
-.ds__lab{flex:none;font-size:12px;color:var(--ink2)}
-.ds__val{flex:1;text-align:right;font-size:12.5px;font-weight:600;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ds__crew{
-  display:flex;align-items:center;gap:9px;padding:6px 12px 6px 6px;border-radius:16px;
-  border:2px dashed var(--line);
-}
-.ds__faces{display:flex;flex:1}
-.ds__faces img{width:26px;height:26px;border-radius:50%;object-fit:cover;
-  margin-left:-7px;border:2px solid var(--bg);background:var(--bg2)}
-.ds__cost{font-family:var(--mono);font-size:11.5px;color:var(--ink2)}
+.ds__field input{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:-.01em}
+.ds__field input:focus,.ds__field textarea:focus{outline:none}
+.ds__field textarea{color:var(--ink2)}
 
-.ds__foot{flex:none;position:relative;padding:11px 12px 12px;background:var(--bg)}
-.ds__wave{
-  display:block;height:8px;margin:0 -12px 10px;
-  background:repeating-linear-gradient(135deg,var(--accent) 0 2px,transparent 2px 9px);
-  opacity:.45;
+.ds__rows{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.ds__row{
+  display:flex;align-items:center;gap:11px;padding:11px 2px;cursor:pointer;
+  border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);
+  font-family:var(--sans);text-align:left;transition:padding-left .18s;
 }
+.ds__row:hover{padding-left:6px}
+.ds__ico{width:17px;height:17px;flex:none;color:var(--accent);display:grid;place-items:center}
+.ti{width:17px;height:17px}
+.ds__lab{flex:none;font-size:12.5px;color:var(--ink2)}
+.ds__val{flex:1;text-align:right;font-size:12.5px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ds__crew{display:flex;align-items:center;gap:12px}
+.ds__faces{display:flex;flex:1}
+.ds__faces img{width:24px;height:24px;border-radius:50%;object-fit:cover;
+  margin-left:-7px;border:2px solid var(--screenOff);background:var(--bg2)}
+.ds__cost{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink2)}
+
+.ds__foot{flex:none;padding:0 16px 16px}
 .ds__go{
-  width:100%;height:42px;border:0;border-radius:21px;cursor:pointer;
+  width:100%;height:42px;border:0;border-radius:10px;cursor:pointer;
   background:var(--accent);color:#12100E;
-  font-family:var(--sans);font-size:13.5px;font-weight:700;
-  box-shadow:0 4px 0 var(--shellLo);
+  font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.01em;
+  transition:filter .16s;
 }
-.ds__go:active{transform:translateY(3px);box-shadow:0 1px 0 var(--shellLo)}
+.ds__go:hover{filter:brightness(1.07)}

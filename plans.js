@@ -136,11 +136,12 @@ function readPalette(img) {
     paper: css(accent.h, .26, .93),
     paperInk: css(accent.h, .55, .13),
     paperLine: css(accent.h, .22, .74),
-    shell: css(accent.h, Math.min(.62, accent.s * .8 + .1), .46),
-    shellHi: css(accent.h, Math.min(.55, accent.s * .7 + .1), .60),
-    shellLo: css(accent.h, Math.min(.7, accent.s * .9 + .1), .29),
-    shellInk: css(accent.h, .6, .07),
-    screenOff: css(accent.h, .18, .09),
+    shell: css(accent.h, .08, .245),
+    shellHi: css(accent.h, .07, .345),
+    shellLo: css(accent.h, .11, .145),
+    shellEdge: css(accent.h, .14, .075),
+    shellInk: css(accent.h, .2, .05),
+    screenOff: css(accent.h, .12, .055),
   };
 }
 
@@ -332,131 +333,75 @@ function compE(p) {
     </button>`;
   return `
   <div class="dev">
-    <svg class="dev__shell" viewBox="0 0 1800 900" aria-hidden="true">
-      <defs>
-        <filter id="wob" x="-3%" y="-3%" width="106%" height="106%">
-          <feTurbulence type="fractalNoise" baseFrequency=".021" numOctaves="2" seed="9" result="n"/>
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="3.4"
-            xChannelSelector="R" yChannelSelector="G"/>
-        </filter>
-        <linearGradient id="glare" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#fff" stop-opacity=".15"/>
-          <stop offset=".40" stop-color="#fff" stop-opacity=".03"/>
-          <stop offset=".41" stop-color="#fff" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-
-      <g filter="url(#wob)" stroke="var(--shellInk)" stroke-linejoin="round">
-        <!-- the two halves, hinged down the middle -->
-        <rect x="20" y="24" width="852" height="852" rx="44"
-              fill="var(--shell)" stroke-width="6"/>
-        <rect x="928" y="24" width="852" height="852" rx="44"
-              fill="var(--shell)" stroke-width="6"/>
-        <!-- a lit top edge and a shaded lower body, so it reads as plastic -->
-        <path d="M20 660 v172 q0 44 44 44 h764 q44 0 44 -44 v-172 z"
-              fill="var(--shellLo)" opacity=".28" stroke="none"/>
-        <path d="M928 660 v172 q0 44 44 44 h764 q44 0 44 -44 v-172 z"
-              fill="var(--shellLo)" opacity=".28" stroke="none"/>
-
-        <!-- hinge -->
-        <rect x="862" y="150" width="76" height="600" rx="38"
-              fill="var(--shellLo)" stroke-width="6"/>
-        <rect x="880" y="188" width="40" height="524" rx="20"
-              fill="var(--shellHi)" opacity=".4" stroke="none"/>
-
-        <!-- screen wells -->
-        <rect x="52" y="60" width="788" height="780" rx="24"
-              fill="#15161A" stroke-width="6"/>
-        <rect x="962" y="60" width="584" height="780" rx="20"
-              fill="#15161A" stroke-width="6"/>
-
-        <!-- the control edge -->
-        <g stroke-width="4.5">
-          <path d="M1631 158 h68 v52 h52 v68 h-52 v52 h-68 v-52 h-52 v-68 h52 z"
-                fill="var(--shellLo)"/>
-          <circle cx="1665" cy="244" r="9" fill="var(--shellInk)" stroke="none" opacity=".5"/>
-          <circle cx="1615" cy="410" r="28" fill="var(--shellLo)"/>
-          <circle cx="1715" cy="410" r="28" fill="var(--shellLo)"/>
-          <circle cx="1665" cy="358" r="28" fill="var(--shellLo)"/>
-          <circle cx="1665" cy="462" r="28" fill="var(--shellLo)"/>
-          <rect x="1598" y="540" width="134" height="30" rx="15" fill="var(--shellLo)"/>
-          <rect x="1598" y="586" width="134" height="30" rx="15" fill="var(--shellLo)"/>
-        </g>
-        <g stroke="none">
-          <text x="1615" y="418" class="dev__k">Y</text>
-          <text x="1715" y="418" class="dev__k">A</text>
-          <text x="1665" y="366" class="dev__k">X</text>
-          <text x="1665" y="470" class="dev__k">B</text>
-          <text x="1665" y="560" class="dev__s">SELECT</text>
-          <text x="1665" y="606" class="dev__s">START</text>
-          <g fill="var(--shellLo)" opacity=".9">${GRILLE(1625, 664)}</g>
-          <text x="1665" y="806" class="dev__s">POWER</text>
-        </g>
-        <circle cx="1665" cy="772" r="9" fill="#8BF08B" class="dev__led" stroke="none"/>
-
-        <!-- screws -->
-        <g fill="var(--shellLo)" stroke="var(--shellInk)" stroke-width="3" opacity=".9">
-          <circle cx="58" cy="62" r="12"/><circle cx="834" cy="62" r="12"/>
-          <circle cx="58" cy="838" r="12"/><circle cx="834" cy="838" r="12"/>
-        </g>
-      </g>
-
-      <!-- glass -->
-      <rect x="52" y="60" width="788" height="780" rx="24" fill="url(#glare)" class="dev__glass"/>
-      <rect x="962" y="60" width="584" height="780" rx="20" fill="url(#glare)" class="dev__glass"/>
-    </svg>
-
-    <!-- LEFT · the game -->
-    <div class="dev__screen dev__screen--game">
-      <img src="${p.cover}" alt="">
-      <div class="dev__scan"></div>
-      <div class="dev__title">
-        <em>${p.genre}</em>
-        <b>${p.title}</b>
-        <span>${p.sub}</span>
-      </div>
-    </div>
-
-    <!-- RIGHT · the plan, as the touch menu -->
-    <div class="dev__screen dev__screen--menu">
-      <div class="ds">
-        <header class="ds__tabs">
-          <button class="ds__tab is-on">Plan</button>
-          <button class="ds__tab">Assets</button>
-          <button class="ds__tab">Crew</button>
-          <span class="ds__cart" title="the cartridge is your cover">
+    <div class="dev__body">
+      <!-- LEFT · the game -->
+      <section class="dev__half dev__half--l">
+        <div class="dev__glass">
+          <div class="dev__screen dev__screen--game">
             <img src="${p.cover}" alt="">
-          </span>
-        </header>
+            <div class="dev__title">
+              <em>${p.genre}</em>
+              <b>${p.title}</b>
+              <span>${p.sub}</span>
+            </div>
+          </div>
+        </div>
+        <span class="dev__mark">WANAKA</span>
+      </section>
 
-        <div class="ds__body">
-          <label class="ds__field">
-            <em>Name</em>
-            <input value="${p.title}">
-          </label>
-          <label class="ds__field">
-            <em>The idea</em>
-            <textarea rows="3">${p.pitch}</textarea>
-          </label>
-          ${row('genre', 'Genre', p.genre)}
-          ${row('look', 'Look', p.style)}
-          ${row('scope', 'Scope', p.rooms + ' · ' + p.assets)}
-          ${row('plat', 'Plays on', p.platform)}
-          ${row('run', 'A run', p.length)}
-          <div class="ds__crew">
-            <span class="ds__ico">${ICON.crew}</span>
-            <span class="ds__faces">${CREW.map(([k]) =>
-              `<img src="assets/crew-${k}.webp" alt="">`).join('')}</span>
-            <span class="ds__cost">${p.credits} cr</span>
+      <span class="dev__hinge" aria-hidden="true"></span>
+
+      <!-- RIGHT · the plan, on the touch panel -->
+      <section class="dev__half dev__half--r">
+        <div class="dev__glass">
+          <div class="dev__screen dev__screen--menu">
+            <div class="ds">
+              <header class="ds__tabs">
+                <button class="ds__tab is-on">Plan</button>
+                <button class="ds__tab">Assets</button>
+                <button class="ds__tab">Crew</button>
+                <span class="ds__cart"><img src="${p.cover}" alt=""></span>
+              </header>
+              <div class="ds__body">
+                <label class="ds__field">
+                  <em>Name</em>
+                  <input value="${p.title}">
+                </label>
+                <label class="ds__field">
+                  <em>The idea</em>
+                  <textarea rows="3">${p.pitch}</textarea>
+                </label>
+                <div class="ds__rows">
+                  ${row('genre', 'Genre', p.genre)}
+                  ${row('look', 'Look', p.style)}
+                  ${row('scope', 'Scope', p.rooms + ' · ' + p.assets)}
+                  ${row('plat', 'Plays on', p.platform)}
+                  ${row('run', 'A run', p.length)}
+                </div>
+                <div class="ds__crew">
+                  <span class="ds__faces">${CREW.map(([k]) =>
+                    `<img src="assets/crew-${k}.webp" alt="">`).join('')}</span>
+                  <span class="ds__cost">${p.credits} credits</span>
+                </div>
+              </div>
+              <footer class="ds__foot">
+                <button class="ds__go">Put the cartridge in</button>
+              </footer>
+            </div>
           </div>
         </div>
 
-        <footer class="ds__foot">
-          <span class="ds__wave"></span>
-          <button class="ds__go">▶ Put the cartridge in</button>
-        </footer>
-      </div>
+        <div class="dev__ctrl" aria-hidden="true">
+          <span class="dev__dpad"></span>
+          <span class="dev__abxy">
+            <i>X</i><i>Y</i><i>A</i><i>B</i>
+          </span>
+          <span class="dev__sys"><i></i><i></i></span>
+          <span class="dev__led"></span>
+        </div>
+      </section>
     </div>
+    <span class="dev__cast" aria-hidden="true"></span>
   </div>`;
 }
 

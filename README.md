@@ -56,15 +56,20 @@ in `plans.js` quantises the image on a canvas and sorts the result into
 roles). Switch the cover in the top right: warm toy house, cold horror,
 green phosphor — same layout, three different products.
 
-- **E · Handheld** — a clamshell on its side: the game on the left panel,
-  the plan on the right one as a touch menu, buttons down the far edge.
-  The shell is drawn in code (a turbulence filter does the wobble) as a
-  stand-in, so the layout can be settled before anyone draws it.
+- **E · Handheld** — a clamshell laid back on a desk: the game on the left
+  panel, the plan on the right one, five controls down the far edge. Built
+  entirely in CSS — a real front face hinged off the bottom edge gives the
+  thickness, one specular streak does the glass. **The shell stays near
+  neutral so the only colour in the room comes off the screens**, which is
+  what keeps it from looking like a toy.
 
 ### If you are drawing the shell
 
-Work to a **1800 × 900** canvas (2:1) and keep these cut-outs clear —
-`plans.css` positions live HTML into them by percentage:
+You may not need to. E is CSS the whole way down: no image, no 3D file, it
+re-themes with the cover and scales to any width. If it should be a real
+product render instead, work to **1800 × 900** and keep the cut-outs clear —
+`plans.css` places live HTML into them, so live text still has to sit on
+top of whatever is rendered:
 
 | Part | x | y | w | h | radius |
 |---|---|---|---|---|---|
@@ -73,6 +78,6 @@ Work to a **1800 × 900** canvas (2:1) and keep these cut-outs clear —
 | Hinge | 862 | 150 | 76 | 600 | 38 |
 | Control edge | 1560 | — | 220 | — | — |
 
-Deliver **two layers**: flat colour (tintable, one hue) and ink + shading
-(transparent, sits on top). The flat layer takes `--shell` from the cover,
-so the console changes colour with the game.
+Deliver it as **two layers** either way: flat colour (tintable, one hue) and
+shading (transparent, on top), so the body can still take `--shell` from the
+cover.
