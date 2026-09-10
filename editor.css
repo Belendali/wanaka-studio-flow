@@ -266,16 +266,31 @@ body{
   background:rgba(28,28,35,.95);border:1px solid rgba(255,255,255,.12);
   box-shadow:0 30px 90px rgba(0,0,0,.6);
 }
-.bx__art{position:relative;height:212px;background:#221D2B}
-.bx__art img{width:100%;height:100%;object-fit:cover;display:block}
-.bx__card.is-in .bx__art img{animation:kenburns 9s ease-out}
-@keyframes kenburns{from{transform:scale(1.1)}to{transform:scale(1)}}
-.bx__badge{
-  position:absolute;left:12px;bottom:12px;padding:5px 11px;border-radius:20px;
-  background:rgba(12,12,16,.72);backdrop-filter:blur(8px);
-  font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--lime);
+.bx__art{
+  position:relative;height:172px;display:grid;place-items:end center;padding:14px 0 18px;
 }
-.bx__body{padding:15px 17px 4px}
+/* a pool of warm light for the Wana to stand in, instead of a cropped plate */
+.bx__art::before{
+  content:'';position:absolute;left:50%;top:22px;transform:translateX(-50%);
+  width:228px;height:146px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(196,235,0,.13),transparent);
+}
+.bx__art::after{
+  content:'';position:absolute;left:50%;bottom:11px;transform:translateX(-50%);
+  width:128px;height:17px;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(0,0,0,.5),transparent);
+}
+.bx__art img{
+  position:relative;z-index:1;height:140px;width:auto;object-fit:contain;
+}
+.bx__card.is-in .bx__art img{animation:land .7s cubic-bezier(.2,.9,.3,1)}
+@keyframes land{from{transform:translateY(-10px) scale(.96)}to{transform:none}}
+.bx__badge{
+  display:block;margin-bottom:5px;font-style:normal;
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--lime);
+}
+.bx__body{padding:6px 17px 4px}
 .bx__body b{display:block;font-size:16px;font-weight:600;letter-spacing:-.3px}
 .bx__body p{margin:6px 0 0;font-size:12.5px;line-height:1.55;color:var(--ink-3)}
 .bx__bar{height:3px;margin:15px 17px 0;border-radius:2px;background:rgba(255,255,255,.10)}

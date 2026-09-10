@@ -165,9 +165,9 @@ function shell() {
           <div class="bx__card" id="bx-card">
             <div class="bx__art">
               <img src="assets/crew-developer.webp" alt="" id="bx-face">
-              <span class="bx__badge" id="bx-role">Developer Wana</span>
             </div>
             <div class="bx__body">
+              <em class="bx__badge" id="bx-role">Developer Wana</em>
               <b id="bx-line">Making it playable</b>
               <p id="bx-note">Movement, a start, a way to fail, a way to retry.</p>
             </div>
