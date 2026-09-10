@@ -614,3 +614,139 @@ body{
 }
 .dock__b:hover{background:rgba(255,255,255,.2);color:#fff}
 .dock__b.is-on{background:var(--accent);color:#12100E}
+
+/* ═══ G · The desk ═══════════════════════════════════════════════
+   Not a screen. A photograph held by a paperclip, a page torn out of
+   something and written on, both lying on a desk under a lamp. The paper
+   and the ink take the cover's hue, so a horror plan is a cold case file
+   and a toy-house plan is a warm scrapbook. */
+.stage--g{display:grid;place-items:center;padding:0;overflow:hidden}
+.desk{
+  position:relative;width:100%;height:100%;min-height:560px;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);
+  align-items:center;gap:3%;padding:4% 6% 4% 7%;
+  background:
+    repeating-linear-gradient(92deg,
+      rgba(0,0,0,.10) 0 2px, transparent 2px 9px,
+      rgba(255,255,255,.025) 9px 11px, transparent 11px 23px,
+      rgba(0,0,0,.07) 23px 24px, transparent 24px 41px),
+    linear-gradient(180deg,var(--shellLo),var(--shellEdge));
+  overflow:hidden;
+}
+/* warm lamp light pooled on the desk, strongest over the page */
+.desk__lamp{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(900px 620px at 58% 40%,
+    color-mix(in srgb,var(--accent) 34%,transparent),transparent 70%);
+  mix-blend-mode:screen;
+}
+.desk__vig{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 55% 45%,transparent 45%,rgba(0,0,0,.62));
+}
+
+/* ── the photograph ── */
+.desk__l{position:relative;height:78%;display:grid;place-items:center}
+.paper{position:absolute;border-radius:3px;background:var(--paper);
+  box-shadow:0 10px 26px rgba(0,0,0,.45)}
+.paper--b1{width:72%;height:84%;transform:rotate(-7deg) translate(-6%,2%);opacity:.9}
+.paper--b2{width:70%;height:80%;transform:rotate(5deg) translate(8%,-3%);
+  background:color-mix(in srgb,var(--paper) 86%,#000)}
+.photo{
+  position:relative;z-index:2;margin:0;width:80%;aspect-ratio:4/5;
+  padding:4% 4% 15%;background:#F4F1EA;border-radius:2px;
+  transform:rotate(-2.4deg);
+  box-shadow:0 2px 0 rgba(0,0,0,.08),0 22px 44px rgba(0,0,0,.55);
+}
+.photo img{width:100%;height:100%;object-fit:cover;display:block;
+  filter:sepia(.18) saturate(1.08) contrast(1.04)}
+.photo figcaption{
+  position:absolute;left:5%;right:5%;bottom:3%;
+  display:flex;flex-direction:column;gap:1px;color:#2A2118;
+}
+.photo figcaption b{font-family:var(--hand);font-size:26px;font-weight:600;line-height:1}
+.photo figcaption em{font-style:normal;font-family:var(--hand);font-size:17px;opacity:.7}
+.photo__gloss{
+  position:absolute;inset:4% 4% 15%;pointer-events:none;
+  background:linear-gradient(125deg,rgba(255,255,255,.22),transparent 38%);
+}
+.clip{position:absolute;z-index:3;top:4%;left:58%;width:34px;transform:rotate(8deg);
+  filter:drop-shadow(0 3px 3px rgba(0,0,0,.45))}
+.pencil{
+  position:absolute;z-index:1;left:-10%;top:10%;width:14px;height:78%;border-radius:3px;
+  background:linear-gradient(90deg,#8E2A22,#C0463A 45%,#8E2A22);
+  transform:rotate(4deg);box-shadow:4px 6px 10px rgba(0,0,0,.5);
+}
+.pencil::before{
+  content:'';position:absolute;left:0;right:0;bottom:-26px;height:26px;
+  background:linear-gradient(180deg,#E2C49A 0 70%,#3A302A 70%);
+  clip-path:polygon(0 0,100% 0,50% 100%);
+}
+
+/* ── the page ── */
+.desk__r{position:relative;height:86%;display:grid;align-items:center}
+.page{
+  position:relative;z-index:2;height:100%;padding:34px 38px 26px 46px;
+  display:flex;flex-direction:column;gap:14px;color:var(--paperInk);
+  background:
+    radial-gradient(260px 200px at 86% 12%,rgba(120,80,30,.14),transparent),
+    radial-gradient(220px 180px at 12% 90%,rgba(120,80,30,.12),transparent),
+    repeating-linear-gradient(0deg,rgba(0,0,0,.022) 0 1px,transparent 1px 4px),
+    var(--paper);
+  transform:rotate(1.1deg);
+  filter:drop-shadow(0 24px 30px rgba(0,0,0,.5));
+}
+.page__rule{position:absolute;left:34px;top:0;bottom:0;width:1px;
+  background:color-mix(in srgb,var(--accent) 45%,transparent)}
+.page__h{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.banner{
+  padding:6px 16px;background:var(--paperInk);color:var(--paper);
+  font-family:var(--mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+  clip-path:polygon(0 0,100% 0,96% 50%,100% 100%,0 100%,3% 50%);
+}
+.page__h h1{margin:4px 0 0;font-family:var(--serif);font-size:46px;font-weight:800;
+  line-height:.96;letter-spacing:-.02em}
+.ribbon{
+  position:relative;display:flex;align-items:center;gap:14px;
+  padding:7px 22px 7px 16px;background:var(--accent);color:#1A120B;
+  font-family:var(--hand);font-size:21px;font-weight:600;line-height:1;
+  transform:rotate(-1.4deg);box-shadow:0 4px 10px rgba(0,0,0,.25);
+  clip-path:polygon(0 0,100% 0,97% 50%,100% 100%,0 100%);
+}
+.ribbon i{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.12em;opacity:.7}
+.page__lede{margin:0;font-family:var(--serif);font-style:italic;font-size:17px;line-height:1.5;
+  max-width:44ch}
+.slots{display:flex;gap:12px}
+.slot{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px;
+  border:1.5px dashed color-mix(in srgb,var(--paperInk) 40%,transparent);border-radius:10px;
+}
+.slot b{font-family:var(--serif);font-size:28px;font-weight:700;line-height:1}
+.slot em{font-style:normal;font-family:var(--hand);font-size:17px;opacity:.7}
+.page__spec{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 22px}
+.page__spec div{display:flex;justify-content:space-between;gap:10px;padding:5px 0;
+  border-bottom:1px solid color-mix(in srgb,var(--paperInk) 18%,transparent)}
+.page__spec dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;opacity:.6;align-self:center}
+.page__spec dd{margin:0;font-size:13px;font-weight:600;text-align:right}
+.page__f{margin-top:auto;display:flex;align-items:center;gap:12px}
+.page__faces{display:flex}
+.page__faces img{width:30px;height:30px;border-radius:50%;object-fit:cover;
+  margin-left:-8px;border:2px solid var(--paper);background:var(--paperLine)}
+.page__f em{font-style:normal;font-family:var(--hand);font-size:19px;opacity:.72}
+
+/* the stamp you press to approve, and the loupe resting on the page */
+.stamp{
+  position:absolute;z-index:4;right:20%;bottom:-8%;
+  width:106px;height:106px;border-radius:50%;cursor:pointer;
+  border:4px double #9B2B22;background:rgba(155,43,34,.08);color:#9B2B22;
+  font-family:var(--fat);font-size:17px;letter-spacing:.08em;text-transform:uppercase;
+  transform:rotate(-12deg);transition:transform .15s,background .15s;
+}
+.stamp:hover{transform:rotate(-12deg) scale(1.05);background:rgba(155,43,34,.16)}
+.stamp:active{transform:rotate(-12deg) scale(.96)}
+.loupe{position:absolute;z-index:3;right:-3%;bottom:-12%;width:104px;
+  transform:rotate(-18deg);filter:drop-shadow(6px 10px 10px rgba(0,0,0,.5))}
+.tape{position:absolute;z-index:3;width:96px;height:26px;
+  background:rgba(255,248,225,.42);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.tape--tr{right:6%;top:4%;transform:rotate(38deg)}

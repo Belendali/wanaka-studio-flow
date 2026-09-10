@@ -479,8 +479,96 @@ function compF(p) {
   </div>`;
 }
 
+// ── G · the desk ──────────────────────────────────────────────────
+/* Not a screen at all. The cover is a photograph held down by a paperclip,
+   the plan is a page torn out of something and written on, and both are
+   lying on a desk under a lamp. Everything is paper, ink and light. */
+
+// a ragged edge, so the page looks torn rather than cut
+function tornEdge(seed) {
+  let r = seed;
+  const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
+  const pts = ['100% 0'];
+  pts.push('100% 100%');
+  for (let y = 100; y >= 0; y -= 4) pts.push(`${(rnd() * 2.4).toFixed(2)}% ${y}%`);
+  return `polygon(${pts.join(',')})`;
+}
+
+function compG(p) {
+  const slot = (n, label) => `
+    <span class="slot"><b>${n}</b><em>${label}</em></span>`;
+  return `
+  <div class="desk">
+    <span class="desk__lamp"></span>
+
+    <!-- left · the photograph -->
+    <div class="desk__l">
+      <span class="paper paper--back paper--b1"></span>
+      <span class="paper paper--back paper--b2"></span>
+      <figure class="photo">
+        <img src="${p.cover}" alt="">
+        <figcaption>
+          <b>${p.title}</b>
+          <em>${p.sub}</em>
+        </figcaption>
+        <span class="photo__gloss"></span>
+      </figure>
+      <svg class="clip" viewBox="0 0 60 130" aria-hidden="true">
+        <path d="M30 122 V26 a14 14 0 0 1 28 0 V104 a22 22 0 0 1 -44 0 V22 a20 20 0 0 1 40 0 V112"
+              fill="none" stroke="#B9BCC2" stroke-width="7" stroke-linecap="round"/>
+        <path d="M30 122 V26 a14 14 0 0 1 28 0 V104 a22 22 0 0 1 -44 0 V22 a20 20 0 0 1 40 0 V112"
+              fill="none" stroke="#EDEFF2" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <span class="pencil"></span>
+    </div>
+
+    <!-- right · the page -->
+    <div class="desk__r">
+      <article class="page" style="clip-path:${tornEdge(7)}">
+        <span class="page__rule"></span>
+        <header class="page__h">
+          <span class="banner">${p.genre}</span>
+          <h1>${p.title}</h1>
+          <span class="ribbon">${p.sub} <i>Lv 1</i></span>
+        </header>
+
+        <p class="page__lede">${p.pitch}</p>
+
+        <div class="slots">
+          ${slot(p.rooms.split(' ')[0], 'rooms')}
+          ${slot(p.assets.split(' ')[0], 'assets')}
+          ${slot(p.mins.replace('~', ''), 'to play')}
+        </div>
+
+        <dl class="page__spec">
+          ${[['Look', p.style], ['Plays on', p.platform],
+             ['A run', p.length], ['Cost', p.credits + ' credits']]
+            .map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}
+        </dl>
+
+        <footer class="page__f">
+          <span class="page__faces">${CREW.map(([k]) =>
+            `<img src="assets/crew-${k}.webp" alt="">`).join('')}</span>
+          <em>drawn up by the crew</em>
+        </footer>
+      </article>
+
+      <button class="stamp">Approve</button>
+      <svg class="loupe" viewBox="0 0 120 140" aria-hidden="true">
+        <circle cx="60" cy="52" r="42" fill="rgba(255,255,255,.10)"
+                stroke="#C9A24A" stroke-width="7"/>
+        <circle cx="60" cy="52" r="34" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
+        <path d="M34 84 L14 128" stroke="#8A5A2A" stroke-width="13" stroke-linecap="round"/>
+      </svg>
+      <span class="tape tape--tr"></span>
+    </div>
+
+    <span class="desk__vig"></span>
+  </div>`;
+}
+
 // ── Wiring ────────────────────────────────────────────────────────
-const COMPS = { a: compA, b: compB, c: compC, d: compD, e: compE, f: compF };
+const COMPS = { a: compA, b: compB, c: compC, d: compD, e: compE, f: compF, g: compG };
 let which = 'a', plan = 'toy';
 
 function paint() {

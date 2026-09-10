@@ -70,6 +70,11 @@ green phosphor — same layout, three different products.
   which is most of what stops a screen reading as generated. Glass tiles,
   a dock down the outer edge, no controls at all.
 
+- **G · Desk** — not a screen at all. The cover is a photograph held by a
+  paperclip, the plan is a page torn out of something and written on, both
+  lying on a wooden desk under a lamp; Approve is a rubber stamp. Paper and
+  ink take the cover's hue, so horror becomes a cold case file.
+
 ### If you are drawing the shell
 
 You may not need to. E is CSS the whole way down: no image, no 3D file, it
