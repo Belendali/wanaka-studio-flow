@@ -136,6 +136,11 @@ function readPalette(img) {
     paper: css(accent.h, .26, .93),
     paperInk: css(accent.h, .55, .13),
     paperLine: css(accent.h, .22, .74),
+    shell: css(accent.h, Math.min(.62, accent.s * .8 + .1), .46),
+    shellHi: css(accent.h, Math.min(.55, accent.s * .7 + .1), .60),
+    shellLo: css(accent.h, Math.min(.7, accent.s * .9 + .1), .29),
+    shellInk: css(accent.h, .6, .07),
+    screenOff: css(accent.h, .18, .09),
   };
 }
 
@@ -296,8 +301,167 @@ function compD(p) {
   </article>`;
 }
 
+// ── E · the handheld ──────────────────────────────────────────────
+/* A clamshell turned on its side: the game on the left panel, the plan
+   on the right one as a touch menu, physical buttons down the far edge.
+
+   Everything here is drawn in code so we can move it around cheaply —
+   the wobble in the linework is a turbulence filter, not a steady hand.
+   Once the layout is settled this shell gets replaced by real art. */
+
+const ic = (d, extra = '') => `<svg class="ti" viewBox="0 0 24 24" fill="none"
+  stroke="currentColor" stroke-width="1.9" stroke-linecap="round"
+  stroke-linejoin="round">${d}${extra}</svg>`;
+const GRILLE = (x, y) => [0, 1, 2].map((r) => [0, 1, 2].map((c) =>
+  `<circle cx="${x + c * 22}" cy="${y + r * 22}" r="6"/>`).join('')).join('');
+const ICON = {
+  genre: ic('<path d="M3 18l5-11 5 8 3-5 5 8z"/>'),
+  look: ic('<path d="M12 3a9 9 0 100 18c1 0 1.6-.7 1.6-1.5 0-1.4-1.3-1.6-1.3-2.7 0-.8.7-1.4 1.6-1.4H16a5 5 0 005-5c0-4-4-7.4-9-7.4z"/><circle cx="7.5" cy="11" r="1.1" fill="currentColor"/><circle cx="11" cy="7.5" r="1.1" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.1" fill="currentColor"/>'),
+  scope: ic('<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/>'),
+  plat: ic('<rect x="2" y="4" width="13" height="10" rx="1.5"/><rect x="16" y="9" width="6" height="11" rx="1.5"/><path d="M6 18h5"/>'),
+  run: ic('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>'),
+  crew: ic('<circle cx="12" cy="15" r="4"/><circle cx="6" cy="8" r="2.2"/><circle cx="18" cy="8" r="2.2"/><circle cx="9.5" cy="5" r="2"/><circle cx="14.5" cy="5" r="2"/>'),
+};
+
+function compE(p) {
+  const row = (k, label, value) => `
+    <button class="ds__row">
+      <span class="ds__ico">${ICON[k]}</span>
+      <span class="ds__lab">${label}</span>
+      <span class="ds__val">${value}</span>
+    </button>`;
+  return `
+  <div class="dev">
+    <svg class="dev__shell" viewBox="0 0 1800 900" aria-hidden="true">
+      <defs>
+        <filter id="wob" x="-3%" y="-3%" width="106%" height="106%">
+          <feTurbulence type="fractalNoise" baseFrequency=".021" numOctaves="2" seed="9" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="3.4"
+            xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+        <linearGradient id="glare" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#fff" stop-opacity=".15"/>
+          <stop offset=".40" stop-color="#fff" stop-opacity=".03"/>
+          <stop offset=".41" stop-color="#fff" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+
+      <g filter="url(#wob)" stroke="var(--shellInk)" stroke-linejoin="round">
+        <!-- the two halves, hinged down the middle -->
+        <rect x="20" y="24" width="852" height="852" rx="44"
+              fill="var(--shell)" stroke-width="6"/>
+        <rect x="928" y="24" width="852" height="852" rx="44"
+              fill="var(--shell)" stroke-width="6"/>
+        <!-- a lit top edge and a shaded lower body, so it reads as plastic -->
+        <path d="M20 660 v172 q0 44 44 44 h764 q44 0 44 -44 v-172 z"
+              fill="var(--shellLo)" opacity=".28" stroke="none"/>
+        <path d="M928 660 v172 q0 44 44 44 h764 q44 0 44 -44 v-172 z"
+              fill="var(--shellLo)" opacity=".28" stroke="none"/>
+
+        <!-- hinge -->
+        <rect x="862" y="150" width="76" height="600" rx="38"
+              fill="var(--shellLo)" stroke-width="6"/>
+        <rect x="880" y="188" width="40" height="524" rx="20"
+              fill="var(--shellHi)" opacity=".4" stroke="none"/>
+
+        <!-- screen wells -->
+        <rect x="52" y="60" width="788" height="780" rx="24"
+              fill="#15161A" stroke-width="6"/>
+        <rect x="962" y="60" width="584" height="780" rx="20"
+              fill="#15161A" stroke-width="6"/>
+
+        <!-- the control edge -->
+        <g stroke-width="4.5">
+          <path d="M1631 158 h68 v52 h52 v68 h-52 v52 h-68 v-52 h-52 v-68 h52 z"
+                fill="var(--shellLo)"/>
+          <circle cx="1665" cy="244" r="9" fill="var(--shellInk)" stroke="none" opacity=".5"/>
+          <circle cx="1615" cy="410" r="28" fill="var(--shellLo)"/>
+          <circle cx="1715" cy="410" r="28" fill="var(--shellLo)"/>
+          <circle cx="1665" cy="358" r="28" fill="var(--shellLo)"/>
+          <circle cx="1665" cy="462" r="28" fill="var(--shellLo)"/>
+          <rect x="1598" y="540" width="134" height="30" rx="15" fill="var(--shellLo)"/>
+          <rect x="1598" y="586" width="134" height="30" rx="15" fill="var(--shellLo)"/>
+        </g>
+        <g stroke="none">
+          <text x="1615" y="418" class="dev__k">Y</text>
+          <text x="1715" y="418" class="dev__k">A</text>
+          <text x="1665" y="366" class="dev__k">X</text>
+          <text x="1665" y="470" class="dev__k">B</text>
+          <text x="1665" y="560" class="dev__s">SELECT</text>
+          <text x="1665" y="606" class="dev__s">START</text>
+          <g fill="var(--shellLo)" opacity=".9">${GRILLE(1625, 664)}</g>
+          <text x="1665" y="806" class="dev__s">POWER</text>
+        </g>
+        <circle cx="1665" cy="772" r="9" fill="#8BF08B" class="dev__led" stroke="none"/>
+
+        <!-- screws -->
+        <g fill="var(--shellLo)" stroke="var(--shellInk)" stroke-width="3" opacity=".9">
+          <circle cx="58" cy="62" r="12"/><circle cx="834" cy="62" r="12"/>
+          <circle cx="58" cy="838" r="12"/><circle cx="834" cy="838" r="12"/>
+        </g>
+      </g>
+
+      <!-- glass -->
+      <rect x="52" y="60" width="788" height="780" rx="24" fill="url(#glare)" class="dev__glass"/>
+      <rect x="962" y="60" width="584" height="780" rx="20" fill="url(#glare)" class="dev__glass"/>
+    </svg>
+
+    <!-- LEFT · the game -->
+    <div class="dev__screen dev__screen--game">
+      <img src="${p.cover}" alt="">
+      <div class="dev__scan"></div>
+      <div class="dev__title">
+        <em>${p.genre}</em>
+        <b>${p.title}</b>
+        <span>${p.sub}</span>
+      </div>
+    </div>
+
+    <!-- RIGHT · the plan, as the touch menu -->
+    <div class="dev__screen dev__screen--menu">
+      <div class="ds">
+        <header class="ds__tabs">
+          <button class="ds__tab is-on">Plan</button>
+          <button class="ds__tab">Assets</button>
+          <button class="ds__tab">Crew</button>
+          <span class="ds__cart" title="the cartridge is your cover">
+            <img src="${p.cover}" alt="">
+          </span>
+        </header>
+
+        <div class="ds__body">
+          <label class="ds__field">
+            <em>Name</em>
+            <input value="${p.title}">
+          </label>
+          <label class="ds__field">
+            <em>The idea</em>
+            <textarea rows="3">${p.pitch}</textarea>
+          </label>
+          ${row('genre', 'Genre', p.genre)}
+          ${row('look', 'Look', p.style)}
+          ${row('scope', 'Scope', p.rooms + ' · ' + p.assets)}
+          ${row('plat', 'Plays on', p.platform)}
+          ${row('run', 'A run', p.length)}
+          <div class="ds__crew">
+            <span class="ds__ico">${ICON.crew}</span>
+            <span class="ds__faces">${CREW.map(([k]) =>
+              `<img src="assets/crew-${k}.webp" alt="">`).join('')}</span>
+            <span class="ds__cost">${p.credits} cr</span>
+          </div>
+        </div>
+
+        <footer class="ds__foot">
+          <span class="ds__wave"></span>
+          <button class="ds__go">▶ Put the cartridge in</button>
+        </footer>
+      </div>
+    </div>
+  </div>`;
+}
+
 // ── Wiring ────────────────────────────────────────────────────────
-const COMPS = { a: compA, b: compB, c: compC, d: compD };
+const COMPS = { a: compA, b: compB, c: compC, d: compD, e: compE };
 let which = 'a', plan = 'toy';
 
 function paint() {

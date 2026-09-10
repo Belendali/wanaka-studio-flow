@@ -55,3 +55,24 @@ Every screen takes its palette from the cover **at runtime** (`readPalette`
 in `plans.js` quantises the image on a canvas and sorts the result into
 roles). Switch the cover in the top right: warm toy house, cold horror,
 green phosphor — same layout, three different products.
+
+- **E · Handheld** — a clamshell on its side: the game on the left panel,
+  the plan on the right one as a touch menu, buttons down the far edge.
+  The shell is drawn in code (a turbulence filter does the wobble) as a
+  stand-in, so the layout can be settled before anyone draws it.
+
+### If you are drawing the shell
+
+Work to a **1800 × 900** canvas (2:1) and keep these cut-outs clear —
+`plans.css` positions live HTML into them by percentage:
+
+| Part | x | y | w | h | radius |
+|---|---|---|---|---|---|
+| Left screen (the game) | 52 | 60 | 788 | 780 | 24 |
+| Right screen (the plan) | 962 | 60 | 584 | 780 | 20 |
+| Hinge | 862 | 150 | 76 | 600 | 38 |
+| Control edge | 1560 | — | 220 | — | — |
+
+Deliver **two layers**: flat colour (tintable, one hue) and ink + shading
+(transparent, sits on top). The flat layer takes `--shell` from the cover,
+so the console changes colour with the game.
