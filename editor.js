@@ -1,14 +1,15 @@
 /* ──────────────────────────────────────────────────────────────────
    Wanaka · Studio — the whole first run, on the new editor.
 
-   Plan is ON by default for a new project. The user says what they
-   want, the Plan crew drafts without stopping to interview them, the
-   plan opens in Plan Studio, they approve, and the build takes over
-   the viewport — one Wana at a time, eight seconds a card, while the
-   scene assembles behind. When Version 1.0 lands the crew hands the
-   user two ways forward: say what to change, or swap a model.
+   Plan is ON by default for a new project. You type your own brief and
+   press send; the Plan crew drafts without stopping to interview you,
+   the plan opens in Plan Studio, you approve, and the build takes over
+   the viewport — one Wana at a time, six seconds a card, while the
+   scene assembles behind. When Version 1.0 lands the crew hands you
+   two ways forward: say what to change, or swap a model.
 
-   The whole script is RUN() → build() → handover(). One beat a line.
+   Send an empty box and it falls back to BRIEF, so the demo always runs.
+   The script is RUN() → build() → handover(). One beat a line.
    Add ?fast to the URL to run it at 6× for a quick re-watch.
    ────────────────────────────────────────────────────────────────── */
 
@@ -308,34 +309,41 @@ function cardBusy(who) {
     c.classList.toggle('is-on', c.dataset.k === who));
 }
 
-// ── Typing into the composer, like a person would ─────────────────
-async function typeIn(text) {
+// ── 1 · the user's own brief ──────────────────────────────────────
+/* Nothing happens until they type it themselves and press send. */
+let started = false;
+function armComposer() {
   const box = $('input');
+  const send = $('send');
+  const ready = () => box.value.trim().length > 0;
+  const paint = () => send.classList.toggle('is-live', ready());
+  const fire = () => {
+    if (started) return;
+    const brief = box.value.trim() || BRIEF;
+    started = true;
+    box.value = '';
+    box.blur();
+    send.classList.remove('is-live');
+    RUN(brief);
+  };
+  box.oninput = paint;
+  box.onkeydown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); fire(); }
+  };
+  send.onclick = fire;
   box.focus();
-  if (FAST > 1) { box.value = text; await wait(400); return; }
-  for (let i = 0; i <= text.length; i++) {
-    box.value = text.slice(0, i);
-    await wait(18 + Math.random() * 26);
-  }
-  await wait(420);
 }
 
-// ── 1 · brief → plan ──────────────────────────────────────────────
-async function RUN() {
-  await wait(700);
-
-  await typeIn(BRIEF);
-  $('send').classList.add('is-live');
-  await wait(280);
-  $('input').value = '';
-  userSay(BRIEF);
+// ── 2 · brief → plan ──────────────────────────────────────────────
+async function RUN(brief) {
+  userSay(brief);
   $('chat-name').innerHTML = 'Tiny Explorer<i class="cv"></i>';
 
   // Plan was already on, so the brief goes straight to the crew.
   await wait(500);
   cardShow('Plan crew · thinking', 'Reading your brief', 'planner');
   cardBusy('planner');
-  crewSay('planner', 'A toy house is a good shape for this — small player, big world. '
+  crewSay('planner', 'Good — I can see the shape of this. '
     + 'Give me a moment and I will lay out the whole build.');
 
   // They draft it themselves. Anything they got wrong, the plan is editable.
@@ -372,7 +380,7 @@ async function RUN() {
   $('cc-open').onclick = openPanel;
 }
 
-// ── 2 · the plan panel ────────────────────────────────────────────
+// ── 3 · the plan panel ────────────────────────────────────────────
 function openPanel() {
   const host = $('panel-host');
   if (host.dataset.built !== '1') { window.mountPlanPanel(); host.dataset.built = '1'; }
@@ -386,7 +394,7 @@ window.__closePanel = () => {
 };
 window.__approve = async () => { window.__closePanel(); await wait(420); build(); };
 
-// ── 3 · the build, front and centre ───────────────────────────────
+// ── 4 · the build, front and centre ───────────────────────────────
 const STEPS = [
   ['developer', 'Making it playable',
    'Movement, a start, a way to fail, a way to retry.',
@@ -462,7 +470,7 @@ function play() {
   $('playbtn').onclick = play;
 }
 
-// ── 4 · what to do with a game that exists ────────────────────────
+// ── 5 · what to do with a game that exists ────────────────────────
 function handover() {
   crewSay('tester', 'Version 1.0 is up and it holds together. Two things you can do from here.');
   const box = push(E('div', 'next', `
@@ -584,5 +592,5 @@ function closeSheet() {
 }
 
 shell();
-RUN();
+armComposer();
 })();
