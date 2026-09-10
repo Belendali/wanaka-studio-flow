@@ -232,7 +232,7 @@ const SLOTS = [
 
 // ── Shell ─────────────────────────────────────────────────────────
 function mount() {
-  const w = pEl('div', 'ws');
+  const w = pEl('div', 'ws is-planb');
   w.innerHTML = `
     <header class="ws__top">
       <span class="ws__brand"><img src="assets/crew-planner.webp" alt=""><b>Plan Studio</b></span>
@@ -241,7 +241,7 @@ function mount() {
         <button class="st" data-s="1"><i></i><span>Game assets</span></button>
       </span>
       <span class="ws__doc"></span>
-      <button class="abtog" id="abtog"><i></i>Plan B · assets in the plan</button>
+      <button class="abtog is-on" id="abtog"><i></i>Plan B · assets in the plan</button>
       <span class="ws__faces">${CREW.map((k) =>
         `<img src="assets/crew-${k}.webp" alt="${CREW_NAME[k]}" title="${CREW_NAME[k]} Wana">`).join('')}</span>
     </header>
@@ -267,6 +267,7 @@ function mount() {
   };
   const close = document.querySelector('.b--sec');
   if (close) close.onclick = () => window.__closePanel && window.__closePanel();
+  goStep(0);                          // sets the footer button for the step we open on
 }
 
 // What pressing the button will actually do.
