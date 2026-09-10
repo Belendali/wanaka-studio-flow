@@ -185,14 +185,23 @@ const kid = (head, body, legs) => art(`
   <rect x="1" y="23" width="6" height="12" rx="3" fill="${legs}"/>`);
 
 const PIECE = {
-  star: 'M0 -26 l7 17 l18 1 l-14 12 l5 18 l-16 -10 l-16 10 l5 -18 l-14 -12 l18 -1 Z',
-  key: 'M-5 -24 a11 11 0 1 1 0 22 l0 24 l9 0 l-9 9 Z',
-  spool: 'M-16 -22 l32 0 l-9 10 l0 24 l9 10 l-32 0 l9 -10 l0 -24 Z',
-  marble: 'M0 -21 a21 21 0 1 1 -.1 0 Z',
+  star: (c) => `<path d="M0 -26 l7 17 l18 1 l-14 12 l5 18 l-16 -10 l-16 10 l5 -18 l-14 -12 l18 -1 Z" fill="${c}"/>`,
+  key: (c) => `
+    <circle cx="0" cy="-14" r="10" fill="none" stroke="${c}" stroke-width="6"/>
+    <rect x="-3" y="-6" width="6" height="30" rx="2" fill="${c}"/>
+    <rect x="3" y="9" width="10" height="5" rx="2" fill="${c}"/>
+    <rect x="3" y="18" width="7" height="5" rx="2" fill="${c}"/>`,
+  spool: (c) => `
+    <rect x="-17" y="-24" width="34" height="6" rx="3" fill="${c}"/>
+    <rect x="-17" y="18" width="34" height="6" rx="3" fill="${c}"/>
+    <rect x="-7" y="-18" width="14" height="36" fill="${c}" opacity=".75"/>`,
+  marble: (c) => `
+    <circle cx="0" cy="0" r="21" fill="${c}"/>
+    <circle cx="-7" cy="-8" r="5" fill="#fff" opacity=".55"/>`,
 };
 const piece = (c, k) => art(`
   <circle cx="0" cy="2" r="30" fill="${c}" opacity=".14"/>
-  <g transform="translate(0 2)"><path d="${PIECE[k]}" fill="${c}"/></g>`);
+  <g transform="translate(0 2)">${PIECE[k](c)}</g>`);
 
 const SLOTS = [
   ['house', 'The toy house', 'Walls, roof, and how the rooms connect', [
