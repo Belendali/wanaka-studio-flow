@@ -2,9 +2,15 @@
 
 The whole first run, on the new editor shell.
 
-A new user opens the editor, types what they want to make, the Plan crew
-asks two questions and drafts a plan, the plan opens in Plan Studio, they
-approve it, and the crew builds it while the scene fills in beside them.
+Plan is ON by default for a new project. A new user types what they want,
+the Plan crew drafts without stopping to interview them, the plan opens in
+Plan Studio, they approve, and the build takes over the viewport — one Wana
+at a time, eight seconds a card, while the scene assembles behind. When
+Version 1.0 lands the crew hands them two ways forward: say what to change,
+or click a model in the scene and swap it (library, or the Artist makes a
+new one).
+
+Add `?fast` to the URL to run the whole thing at 6× for a re-watch.
 
 - `editor.js` / `editor.css` — the editor shell, the chat, the crew card,
   the isometric scene that gains a part per build step. The whole script

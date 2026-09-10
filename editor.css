@@ -196,7 +196,7 @@ body{
   content:'';position:absolute;left:4px;top:3px;width:4px;height:6px;
   border-right:1.5px solid var(--mint);border-bottom:1.5px solid var(--mint);transform:rotate(42deg);
 }
-.qa{display:flex;flex-direction:column;gap:6px;align-items:flex-start;padding-left:35px}
+.qa{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-start;padding-left:35px}
 .qa__b{
   padding:7px 13px;border-radius:20px;cursor:pointer;
   background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--ink);
@@ -252,3 +252,181 @@ body{
   opacity:0;transition:opacity .26s ease;
 }
 .panelwrap.is-on{opacity:1}
+
+/* ── Building: the card that owns the middle of the viewport ────── */
+.bx{
+  position:absolute;inset:0;z-index:4;display:grid;place-items:center;
+  /* light enough that the scene keeps assembling in plain sight */
+  background:rgba(14,14,20,.52);backdrop-filter:blur(2px);
+  animation:fade .4s ease;
+}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.bx__card,.bx__done{
+  width:392px;border-radius:18px;overflow:hidden;
+  background:rgba(28,28,35,.95);border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 30px 90px rgba(0,0,0,.6);
+}
+.bx__art{position:relative;height:212px;background:#221D2B}
+.bx__art img{width:100%;height:100%;object-fit:cover;display:block}
+.bx__card.is-in .bx__art img{animation:kenburns 9s ease-out}
+@keyframes kenburns{from{transform:scale(1.1)}to{transform:scale(1)}}
+.bx__badge{
+  position:absolute;left:12px;bottom:12px;padding:5px 11px;border-radius:20px;
+  background:rgba(12,12,16,.72);backdrop-filter:blur(8px);
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--lime);
+}
+.bx__body{padding:15px 17px 4px}
+.bx__body b{display:block;font-size:16px;font-weight:600;letter-spacing:-.3px}
+.bx__body p{margin:6px 0 0;font-size:12.5px;line-height:1.55;color:var(--ink-3)}
+.bx__bar{height:3px;margin:15px 17px 0;border-radius:2px;background:rgba(255,255,255,.10)}
+.bx__bar i{display:block;height:100%;border-radius:2px;background:var(--lime);
+  transition:width 8s linear}
+.bx__nav{display:flex;align-items:center;gap:10px;padding:11px 12px 13px;justify-content:center}
+.bx__arrow{
+  width:26px;height:26px;border:0;border-radius:50%;cursor:pointer;
+  background:rgba(255,255,255,.07);color:var(--ink-2);font-size:14px;line-height:1;
+}
+.bx__arrow:disabled{opacity:.25;cursor:default}
+.bx__dots{display:flex;gap:5px}
+.bx__dots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.2)}
+.bx__dots i.is-done{background:rgba(255,255,255,.45)}
+.bx__dots i.is-on{background:var(--lime);width:14px;border-radius:3px}
+.bx__live{
+  display:block;width:100%;padding:9px;border:0;border-top:1px solid rgba(255,255,255,.08);
+  cursor:pointer;background:rgba(196,235,0,.08);color:var(--lime);
+  font-family:var(--font);font-size:11.5px;
+}
+
+.bx__done{padding:26px 24px 22px;text-align:center}
+.bx__done em{
+  font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--mint);
+}
+.bx__done b{display:block;margin-top:7px;font-size:19px;font-weight:600;letter-spacing:-.4px}
+.bx__done p{margin:7px 0 18px;font-size:12.5px;color:var(--ink-3)}
+.bx__done span{display:block;margin-top:10px;font-size:11.5px;color:var(--ink-4)}
+.bx__play{
+  width:100%;height:40px;border:0;border-radius:11px;cursor:pointer;
+  background:var(--lime);color:#12180A;font-family:var(--font);font-size:14px;font-weight:600;
+}
+
+/* ── Handover: the models become clickable ─────────────────────── */
+.hint{
+  position:absolute;left:50%;top:16px;transform:translateX(-50%);z-index:3;
+  display:flex;align-items:center;gap:9px;padding:8px 8px 8px 13px;border-radius:20px;
+  background:rgba(24,24,30,.92);border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(12px);font-size:12px;color:var(--ink-2);
+}
+.hint i{font-style:normal;color:var(--lime)}
+.hint button{width:20px;height:20px;border:0;border-radius:50%;cursor:pointer;
+  background:rgba(255,255,255,.08);color:var(--ink-3);font-size:10px}
+#scene svg{pointer-events:none}
+.is-swappable .hot{pointer-events:auto;cursor:pointer}
+.is-swappable .hot:hover{filter:brightness(1.35) drop-shadow(0 0 10px rgba(196,235,0,.6))}
+.hot{animation:breathe 2.4s ease-in-out infinite}
+@keyframes breathe{0%,100%{filter:none}50%{filter:drop-shadow(0 0 7px rgba(196,235,0,.45))}}
+.swapped{animation:swapflash .7s ease}
+@keyframes swapflash{0%{filter:brightness(2.6) saturate(0)}100%{filter:none}}
+
+/* ── The swap sheet ────────────────────────────────────────────── */
+.sheet{
+  position:absolute;right:12px;top:12px;bottom:12px;width:352px;z-index:5;
+  display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:none;
+  border-radius:14px;background:rgba(26,26,32,.97);border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(16px);box-shadow:0 24px 70px rgba(0,0,0,.55);
+  transform:translateX(14px);transition:transform .22s ease;
+}
+.sheet::-webkit-scrollbar{display:none}
+.sheet.is-on{transform:none}
+.sheet__h{display:flex;align-items:flex-start;gap:10px;padding:14px 13px 10px}
+.sheet__h span{flex:1;display:flex;flex-direction:column;gap:2px}
+.sheet__h em{
+  font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);
+}
+.sheet__h b{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.sheet__x{width:24px;height:24px;border:0;border-radius:7px;cursor:pointer;
+  background:rgba(255,255,255,.07);color:var(--ink-3);font-size:11px}
+.sheet__now{
+  position:relative;height:112px;margin:0 13px 4px;border-radius:10px;
+  background:radial-gradient(circle at 50% 42%,#3A3145,#1A1A22);
+  border:1px solid rgba(255,255,255,.08);
+}
+.sheet__tag{
+  position:absolute;left:9px;bottom:9px;padding:3px 9px;border-radius:14px;
+  background:rgba(12,12,16,.75);font-size:10px;color:var(--ink-3);
+}
+.sheet__sec{padding:12px 13px 4px}
+.sheet__sec h4{
+  margin:0 0 9px;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:400;
+}
+.sheet__grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.opt,.res{
+  display:flex;flex-direction:column;gap:3px;padding:6px;border-radius:10px;cursor:pointer;
+  background:rgba(255,255,255,.04);border:1px solid transparent;text-align:left;
+  font-family:var(--font);color:var(--ink);transition:border-color .16s,background .16s;
+}
+.opt__art{
+  display:block;height:68px;border-radius:7px;
+  background:radial-gradient(circle at 50% 45%,#332C40,#1E1E26);
+}
+.opt__art svg{width:100%;height:100%;display:block}
+.opt b,.res b{font-size:11.5px;font-weight:500;line-height:1.3}
+.opt em,.res em{font-style:normal;font-size:10px;color:var(--mint)}
+.opt:hover,.res:hover{background:rgba(255,255,255,.07)}
+.opt.is-on,.res.is-on{border-color:var(--mint);background:rgba(127,227,192,.08)}
+.sheet__gen{display:flex;gap:6px}
+.sheet__gen input{
+  flex:1;min-width:0;height:32px;padding:0 10px;border-radius:9px;
+  border:1px solid var(--line);background:var(--field);color:var(--ink);
+  font-family:var(--font);font-size:12px;
+}
+.sheet__gen input:focus{outline:none;border-color:var(--ring)}
+.sheet__gen button{
+  height:32px;padding:0 13px;border:0;border-radius:9px;cursor:pointer;
+  background:rgba(255,255,255,.09);color:var(--ink);font-family:var(--font);font-size:12px;
+}
+.sheet__out{margin-top:8px}
+.sheet__out.is-working{
+  display:flex;align-items:center;gap:9px;padding:12px;border-radius:10px;
+  background:rgba(255,255,255,.04);font-size:11.5px;color:var(--ink-3);
+}
+.sheet__out em{font-style:normal}
+.shim{
+  width:44px;height:44px;border-radius:8px;flex:none;
+  background:linear-gradient(100deg,#2A2530 30%,#3E3648 50%,#2A2530 70%);
+  background-size:220% 100%;animation:shim 1.3s linear infinite;
+}
+@keyframes shim{from{background-position:120% 0}to{background-position:-120% 0}}
+.sheet__f{
+  margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px 13px;
+  border-top:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);
+}
+.sheet__f span{flex:1;min-width:0;font-size:11.5px;color:var(--ink-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sheet__go{
+  height:30px;padding:0 15px;border:0;border-radius:9px;cursor:pointer;flex:none;
+  background:var(--mint);color:#06170D;font-family:var(--font);font-size:12.5px;font-weight:600;
+}
+.sheet__go:disabled{background:rgba(255,255,255,.08);color:var(--ink-4);cursor:default}
+
+/* ── The two ways forward, in the chat ─────────────────────────── */
+.next{display:flex;flex-direction:column;gap:7px;animation:rise .3s ease both}
+.next__row{
+  display:flex;align-items:flex-start;gap:11px;padding:11px;border-radius:12px;cursor:pointer;
+  background:var(--card);border:1px solid var(--line);text-align:left;
+  font-family:var(--font);color:var(--ink);transition:border-color .16s,background .16s;
+}
+.next__row:hover{border-color:rgba(255,255,255,.28);background:#282A2E}
+.next__row i{
+  width:26px;height:26px;flex:none;border-radius:8px;display:grid;place-items:center;
+  background:rgba(196,235,0,.12);color:var(--lime);font-style:normal;font-size:13px;
+}
+.next__row span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.next__row b{font-size:12.5px;font-weight:600}
+.next__row em{font-style:normal;font-size:11.5px;line-height:1.45;color:var(--ink-3)}
+.chat__composer.is-lit{border-color:rgba(196,235,0,.55)}
+
+/* the model as it stands in the scene right now */
+.sheet__now svg{position:absolute;inset:0;width:100%;height:100%}
