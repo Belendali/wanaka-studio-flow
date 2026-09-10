@@ -1,0 +1,416 @@
+/* ──────────────────────────────────────────────────────────────────
+   Plan Studio — faithful copy of the shipped panel.
+   Values measured off the live DOM at 1920×936.
+   ────────────────────────────────────────────────────────────────── */
+:root{
+  --page:#1D1D26;
+  --card:#232427;
+  --field:#1C1D1F;
+  --line:#2E3033;
+  --ring:#A9ABB3;
+  --ink:#F2F3F4;
+  --ink-2:rgba(242,243,244,.72);
+  --ink-3:rgba(255,255,255,.45);
+  --ink-4:rgba(255,255,255,.28);
+  --mint:#7FE3C0;
+  --blue:#4C86F0;
+  --font:'Inter',-apple-system,system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--page);color:var(--ink);
+  font-family:var(--font);font-size:13px;letter-spacing:-.16px;
+  -webkit-font-smoothing:antialiased;
+}
+#stage{height:100%}
+
+.ws{height:100%;display:flex;flex-direction:column;overflow:hidden}
+
+/* ── Top bar ──────────────────────────────────────────────────── */
+.ws__top{
+  display:flex;align-items:center;gap:14px;height:50px;flex:none;padding:0 14px;
+}
+.ws__brand{display:flex;align-items:center;gap:9px;flex:none;width:150px}
+.ws__brand img{width:24px;height:24px;border-radius:6px;object-fit:cover;background:#2A2530}
+.ws__brand b{font-size:13px;font-weight:600;font-family:Georgia,serif}
+.ws__steps{flex:1;display:flex;align-items:center;min-width:0}
+.st{
+  flex:1;display:flex;align-items:center;gap:7px;min-width:0;cursor:pointer;
+  background:none;border:0;padding:0;text-align:left;
+  font-family:var(--font);font-size:13px;color:var(--ink-3);
+}
+.st>i{
+  width:9px;height:9px;border-radius:50%;flex:none;display:block;
+  border:1px solid rgba(255,255,255,.3);
+}
+.st em{font-style:normal;font-size:11px;color:var(--ink-4)}
+.st span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st:not(:last-child)::after{
+  content:'';flex:1;min-width:14px;height:1px;background:rgba(255,255,255,.10);margin:0 12px;
+}
+.st.is-on{color:var(--ink)}
+.st.is-on>i{background:var(--mint);border-color:transparent}
+.ws__faces{display:flex;flex:none}
+.ws__faces img{
+  width:22px;height:22px;border-radius:50%;object-fit:cover;background:#2A2530;
+  margin-left:-6px;border:1.5px solid var(--page);
+}
+.ws__x{
+  width:26px;height:26px;border-radius:50%;flex:none;cursor:pointer;
+  background:rgba(255,255,255,.06);border:0;color:var(--ink-3);font-size:11px;
+}
+
+/* ── Main ─────────────────────────────────────────────────────── */
+.ws__main{flex:1;min-height:0;overflow-y:auto}
+.ws__main::-webkit-scrollbar{width:9px}
+.ws__main::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:5px;border:3px solid var(--page)}
+
+.split{display:grid;grid-template-columns:1fr 336px;height:100%;min-height:0}
+.pane{min-width:0;padding:0 0 12px 11px}
+.rail{
+  min-width:0;padding:0 16px 12px;border-left:1px solid rgba(255,255,255,.07);
+  display:flex;flex-direction:column;gap:10px;overflow-y:auto;
+}
+.rail::-webkit-scrollbar{width:8px}
+.rail::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:5px;border:2px solid var(--page)}
+
+/* the cover, as it renders today: the alt string on a black plate */
+.shot{
+  position:relative;height:100%;min-height:300px;
+  border:1px solid rgba(255,255,255,.09);border-radius:8px;background:#141419;
+}
+.shot__alt{position:absolute;left:12px;top:12px;font-size:13px;color:var(--ink)}
+.shot__retry{
+  position:absolute;right:14px;bottom:14px;
+  height:28px;padding:0 12px;border-radius:8px;cursor:pointer;
+  background:#2A2A31;border:1px solid rgba(255,255,255,.09);color:var(--ink);
+  font-family:var(--font);font-size:12.5px;
+}
+.shot--flat{height:34px;min-height:0;margin:6px 0;border-radius:6px}
+
+.preview{position:relative;height:100%;min-height:300px;border-radius:8px;overflow:hidden;background:#0D0D11}
+.preview img{width:100%;height:100%;object-fit:cover;display:block}
+.tip{
+  position:absolute;left:8px;top:8px;padding:8px 10px;border-radius:8px;
+  background:#141419;border:1px solid rgba(255,255,255,.10);
+  display:flex;flex-direction:column;gap:1px;max-width:190px;
+}
+.tip b{font-size:11.5px}
+.tip em{font-style:normal;font-size:9.5px;color:var(--ink-3);line-height:1.35}
+
+/* ── Rail sections ────────────────────────────────────────────── */
+.sect{background:var(--card);border-radius:10px;overflow:hidden;flex:none}
+.sect__h{
+  display:flex;align-items:center;gap:6px;padding:10px 12px;
+  border-bottom:1px solid var(--line);font-size:13px;font-weight:500;color:var(--ink);
+}
+.sect__b{padding:12px;display:flex;flex-direction:column;gap:8px}
+.h{
+  width:9px;height:8px;flex:none;display:block;
+  border-top:1px solid var(--ink-4);border-bottom:1px solid var(--ink-4);
+  position:relative;
+}
+.h::after{content:'';position:absolute;left:0;top:3px;width:9px;height:1px;background:var(--ink-4)}
+
+.lbl{font-size:13px;color:var(--ink);margin-top:2px}
+.inp,.sel,.ta{
+  width:100%;background:var(--field);border:1px solid var(--line);border-radius:6px;
+  padding:6px;color:var(--ink);font-family:var(--font);font-size:13px;
+}
+.sel{height:32px;appearance:auto}
+.ta{resize:vertical;line-height:1.5;min-height:66px}
+.ta--short{height:66px;overflow-y:scroll}
+.ta--wide{min-height:74px}
+.inp:focus,.sel:focus,.ta:focus{outline:1px solid rgba(255,255,255,.3)}
+
+.note{margin:0;font-size:13px;line-height:1.5;color:var(--ink-2)}
+
+/* option cards — a 1px ring, grey when idle and light when chosen */
+.pickcard{
+  display:flex;flex-direction:column;gap:5px;padding:12px;border-radius:8px;cursor:pointer;
+  background:var(--card);border:0;box-shadow:0 0 0 1px var(--line);text-align:left;
+  font-family:var(--font);color:var(--ink);
+}
+.pickcard b{font-size:13px;font-weight:600}
+.pickcard span{font-size:13px;line-height:1.45;color:var(--ink-2)}
+.pickcard.is-on{box-shadow:0 0 0 1px var(--ring)}
+.pickcard--row{padding:12px;gap:0}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sty{
+  display:flex;flex-direction:column;gap:6px;padding:0;border:0;border-radius:8px;cursor:pointer;
+  background:var(--card);box-shadow:0 0 0 1px var(--line);overflow:hidden;
+  font-family:var(--font);color:var(--ink);
+}
+.sty img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.sty span{font-size:13px;font-weight:600;padding:0 8px 8px}
+.sty.is-on{box-shadow:0 0 0 1px var(--blue)}
+
+/* ── Full-width stages ────────────────────────────────────────── */
+.wide{padding:0 12px 16px;display:flex;flex-direction:column;gap:10px}
+.band{background:var(--card);border-radius:8px;padding:10px 12px}
+.band__h{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600}
+.band__p{margin:6px 0 0;font-size:13px;color:var(--ink-2)}
+.blk{background:var(--card);border-radius:8px;padding:12px;position:relative}
+.blk--flat{background:none;padding:0}
+.blk__h{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;margin-bottom:8px}
+.blk__p{margin:0 0 6px;font-size:13px;color:var(--ink-2)}
+.blk__p--top{margin-top:0}
+.blk__b{margin:8px 0 2px;font-size:13px;font-weight:600}
+.blk__k{margin:0 0 6px;font-size:13px;color:var(--ink-2)}
+.blk__s{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:13px;color:var(--ink-2)}
+.spin{
+  width:12px;height:12px;flex:none;border-radius:50%;display:block;
+  border:2px solid rgba(255,255,255,.2);border-top-color:var(--ink-2);
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.chips{display:flex;gap:8px;margin-bottom:8px}
+.chip{
+  padding:4px 12px;border-radius:20px;cursor:pointer;
+  background:none;border:1px solid var(--line);color:var(--ink-2);
+  font-family:var(--font);font-size:12.5px;
+}
+.chip.is-on{border-color:var(--mint);color:var(--mint)}
+.choose{
+  background:#2A2A31;border-radius:5px;padding:4px 10px;font-size:12px;color:var(--ink-2);
+}
+.qrow{display:flex;align-items:center;gap:12px}
+.inp--q{flex:1}
+.qstate{font-size:13px;color:var(--ink-2);flex:none}
+
+.knobs4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.knob{background:var(--card);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.knob__t{display:flex;justify-content:space-between;font-size:13px}
+.knob__t b{font-weight:400}
+.knob input[type=range]{width:100%;accent-color:var(--blue)}
+.knob__e{display:flex;justify-content:space-between}
+.knob__e em{font-style:normal;font-size:12px;color:var(--ink-2)}
+
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+
+.wideb{
+  width:100%;background:var(--card);border:0;border-radius:8px;padding:9px;cursor:pointer;
+  color:var(--ink);font-family:var(--font);font-size:13px;font-weight:600;
+}
+.inc{position:absolute;right:12px;top:74px;display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer}
+.inc input{accent-color:var(--blue);width:14px;height:14px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+.colk{font-size:11px;letter-spacing:.04em;color:var(--ink-2)}
+.cols ul{margin:6px 0 0;padding-left:16px;display:flex;flex-direction:column;gap:3px}
+.cols li{font-size:13px;line-height:1.45;color:var(--ink)}
+
+/* ── Footer ───────────────────────────────────────────────────── */
+.ws__foot{
+  flex:none;height:56px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;
+}
+.ws__stage{font-size:8px;color:var(--ink-4)}
+.ws__acts{display:flex;gap:10px}
+.b{
+  height:34px;border-radius:10px;cursor:pointer;padding:0 15px;
+  font-family:var(--font);font-size:13.3px;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.b--sec{background:none;border:1px solid rgba(255,255,255,.09);color:var(--ink)}
+.b--sec:hover{background:rgba(255,255,255,.05)}
+.b--go{
+  border:0;color:#07120F;font-weight:500;min-width:160px;justify-content:center;
+  background:linear-gradient(180deg,#8FEBCB,#67D8B0);
+}
+.b--go i{font-style:normal;opacity:.55}
+.b--go:hover{filter:brightness(1.04)}
+
+/* ── Stage 01, reworked ───────────────────────────────────────────
+   The cover no longer stretches the full pane, the genre is picked
+   from pictures, and each scope says what you actually get. */
+.split{grid-template-columns:1fr 420px}
+/* the cover fills its frame — the pane is narrower than the shipped one,
+   and the art takes all of it */
+.pane{display:flex;padding:0 14px 12px 11px}
+.shot--art{
+  flex:1;min-width:0;min-height:0;width:auto;height:auto;
+  margin:0;position:relative;overflow:hidden;border-radius:10px;
+  border:1px solid rgba(255,255,255,.09);background:#141419;
+}
+.shot--art img{width:100%;height:100%;object-fit:cover;display:block}
+
+.ic{width:18px;height:18px;flex:none;display:block}
+
+/* ── Genre: a closed field that opens; each option explains itself
+      only when you point at it ───────────────────────────────────── */
+.gpick{position:relative;display:flex;flex-direction:column;gap:6px}
+.gpick__now{
+  display:flex;align-items:center;gap:9px;width:100%;height:34px;padding:0 10px;cursor:pointer;
+  background:var(--field);border:1px solid var(--line);border-radius:6px;
+  font-family:var(--font);font-size:13px;color:var(--ink);text-align:left;
+}
+.gpick__now .ic{color:var(--mint)}
+.gpick__now b{font-weight:400;flex:1}
+.chev{
+  width:7px;height:7px;flex:none;transform:rotate(45deg) translateY(-2px);
+  border-right:1.4px solid var(--ink-3);border-bottom:1.4px solid var(--ink-3);
+  transition:transform .18s;
+}
+.gpick.is-open .chev{transform:rotate(225deg) translateY(-2px)}
+.gpick__list{display:none;grid-template-columns:1fr 1fr;gap:6px}
+.gpick.is-open .gpick__list{display:grid}
+.gen{
+  display:flex;flex-direction:column;padding:9px 10px;border-radius:8px;cursor:pointer;
+  background:var(--card);border:0;box-shadow:0 0 0 1px var(--line);text-align:left;
+  font-family:var(--font);color:var(--ink);transition:box-shadow .16s,background .16s;
+}
+.gen__hd{display:flex;align-items:center;gap:8px}
+.gen__hd .ic{color:var(--ink-3);width:16px;height:16px}
+.gen__hd b{font-size:13px;font-weight:600}
+/* the line only exists while you are pointing at it */
+.gen__more{
+  font-size:11.5px;line-height:1.4;color:var(--ink-2);
+  max-height:0;opacity:0;overflow:hidden;transition:max-height .18s ease,opacity .18s ease,margin .18s;
+}
+.gen:hover .gen__more,.gen:focus-visible .gen__more{max-height:44px;opacity:1;margin-top:5px}
+.gen:hover{box-shadow:0 0 0 1px var(--ring)}
+.gen.is-on{background:rgba(127,227,192,.07);box-shadow:0 0 0 1px var(--mint)}
+.gen.is-on .ic{color:var(--mint)}
+
+/* ── Build scope: title only until you point at it ─────────────── */
+.scope{
+  display:flex;flex-direction:column;padding:10px 12px;border-radius:8px;cursor:pointer;width:100%;
+  background:var(--card);border:0;box-shadow:0 0 0 1px var(--line);text-align:left;
+  font-family:var(--font);color:var(--ink);transition:box-shadow .16s,background .16s;
+}
+.scope__hd{display:flex;align-items:center;gap:10px}
+.scope__hd .ic{color:var(--ink-3)}
+.scope__hd b{font-size:13px;font-weight:600}
+.scope__more{
+  display:flex;flex-direction:column;gap:3px;
+  max-height:0;opacity:0;overflow:hidden;transition:max-height .2s ease,opacity .2s ease,margin .2s;
+}
+.scope__more>span{font-size:12px;line-height:1.45;color:var(--ink-2)}
+.scope__more em{
+  font-style:normal;display:flex;justify-content:space-between;gap:10px;
+  font-size:11px;color:var(--ink-3);
+}
+.scope__more i{font-style:normal;color:var(--ink-2)}
+.scope:hover .scope__more,.scope.is-on .scope__more{max-height:70px;opacity:1;margin-top:7px}
+.scope:hover{box-shadow:0 0 0 1px var(--ring)}
+.scope.is-on{background:rgba(127,227,192,.07);box-shadow:0 0 0 1px var(--mint)}
+.scope.is-on .ic{color:var(--mint)}
+
+.ta--tall{min-height:86px}
+
+/* ── Visual style, folded into Overview ──────────────────────────
+   Closed it shows what you picked; open it shows the rest; the tier
+   sits underneath because it belongs to the same decision. */
+.spick{display:flex;flex-direction:column;gap:8px}
+.spick__now{
+  display:flex;align-items:center;gap:10px;width:100%;padding:6px;cursor:pointer;
+  background:var(--field);border:1px solid var(--line);border-radius:8px;
+  font-family:var(--font);font-size:13px;color:var(--ink);text-align:left;
+}
+.spick__now img{width:64px;height:36px;border-radius:5px;object-fit:cover;display:block;flex:none}
+.spick__now b{font-weight:500;flex:1}
+.spick__list{display:none;grid-template-columns:1fr 1fr;gap:7px}
+.spick.is-open .spick__list{display:grid}
+.sty2{
+  display:flex;flex-direction:column;gap:5px;padding:5px;border:0;border-radius:8px;cursor:pointer;
+  background:var(--card);box-shadow:0 0 0 1px var(--line);
+  font-family:var(--font);color:var(--ink);transition:box-shadow .16s,background .16s;
+}
+.sty2 img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:5px;display:block}
+.sty2 span{font-size:12px;padding:0 3px 2px}
+.sty2:hover{box-shadow:0 0 0 1px var(--ring)}
+.sty2.is-on{background:rgba(127,227,192,.07);box-shadow:0 0 0 1px var(--mint)}
+
+.qual{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.qual__k{font-size:12px;color:var(--ink-2)}
+.qual__row{display:flex;gap:0;background:var(--field);border:1px solid var(--line);border-radius:7px;padding:2px}
+.q{
+  flex:1;padding:5px 0;border:0;border-radius:5px;cursor:pointer;background:none;
+  font-family:var(--font);font-size:11.5px;color:var(--ink-3);
+}
+.q:hover{color:var(--ink)}
+.q.is-on{background:rgba(127,227,192,.14);color:var(--mint)}
+
+/* ── Session length and difficulty: one strip each ───────────────
+   These replace four engine sliders nobody can judge before playing. */
+.seg{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.seg__k{font-size:12px;color:var(--ink-2)}
+.seg__row{display:flex;background:var(--field);border:1px solid var(--line);border-radius:7px;padding:2px}
+.sg{
+  flex:1;padding:6px 0;border:0;border-radius:5px;cursor:pointer;background:none;
+  font-family:var(--font);font-size:12px;color:var(--ink-3);
+}
+.sg:hover{color:var(--ink)}
+.sg.is-on{background:rgba(127,227,192,.14);color:var(--mint)}
+.seg__n{font-size:11px;color:var(--ink-3)}
+/* Platform is a pair of independent switches, so it must not look like the
+   pick-one strips above it: separate pills, each with its own box. */
+.plats{display:flex;gap:8px}
+.plat{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:8px 10px;border-radius:8px;cursor:pointer;
+  background:var(--card);border:0;box-shadow:0 0 0 1px var(--line);
+  font-family:var(--font);font-size:12.5px;color:var(--ink-3);transition:all .16s;
+}
+.box{
+  width:14px;height:14px;flex:none;border-radius:4px;position:relative;
+  border:1px solid var(--line-2);transition:all .16s;
+}
+.plat:hover{color:var(--ink);box-shadow:0 0 0 1px var(--ring)}
+.plat.is-on{background:rgba(127,227,192,.08);box-shadow:0 0 0 1px var(--mint);color:var(--ink)}
+.plat.is-on .box{background:var(--mint);border-color:transparent}
+.plat.is-on .box::after{
+  content:'';position:absolute;left:4px;top:1px;width:5px;height:8px;
+  border-right:2px solid #07120F;border-bottom:2px solid #07120F;transform:rotate(42deg);
+}
+
+/* the title sits with the brand; the crew holds the right edge */
+.ws__doc{
+  flex:1;min-width:0;font-size:13px;color:var(--ink-2);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ws__faces img{width:30px;height:30px;margin-left:-8px;border-width:2px}
+.ws__x{display:none}
+
+/* ── Advanced: the drawer for everything the page decided for you ── */
+.adv{background:var(--card);border-radius:10px;overflow:hidden}
+.adv__h{
+  width:100%;background:none;border:0;cursor:pointer;color:var(--ink);
+  font-family:var(--font);border-bottom:1px solid transparent;
+}
+.adv.is-open .adv__h{border-bottom-color:var(--line)}
+.adv__h .chev{margin-left:auto;transition:transform .18s}
+.adv.is-open .adv__h .chev{transform:rotate(225deg) translateY(-2px)}
+.adv__n{
+  font-size:10px;color:var(--ink-3);border:1px solid var(--line);border-radius:20px;
+  padding:1px 7px;margin-left:2px;
+}
+.adv__b{display:none;gap:14px}
+.adv.is-open .adv__b{display:flex}
+.adv__i{display:flex;flex-direction:column;gap:6px}
+.adv__k{font-size:12.5px;font-weight:500;color:var(--ink)}
+.adv__p{margin:2px 0 0;font-size:11px;line-height:1.45;color:var(--ink-3)}
+.ck{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2);cursor:pointer}
+.ck input{accent-color:var(--mint);width:14px;height:14px;cursor:pointer}
+.pat{
+  display:flex;flex-direction:column;gap:2px;padding:9px 10px;border-radius:8px;cursor:pointer;
+  background:var(--field);border:0;box-shadow:0 0 0 1px var(--line);text-align:left;
+  font-family:var(--font);color:var(--ink);
+}
+.pat b{font-size:12.5px;font-weight:600}
+.pat em{font-style:normal;font-size:11px;color:var(--ink-3)}
+.pat.is-on{background:rgba(127,227,192,.07);box-shadow:0 0 0 1px var(--mint)}
+.kn{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.kn__t{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-2)}
+.kn__t b{font-family:var(--font);font-size:11.5px;color:var(--mint);font-weight:400}
+.kn input[type=range]{width:100%;height:3px;border-radius:2px;accent-color:var(--mint);cursor:pointer}
+.kn__e{display:flex;justify-content:space-between}
+.kn__e em{font-style:normal;font-size:10px;color:var(--ink-3)}
+/* the crew's four steps: a name you can read, and what it covers */
+.ck--two{align-items:flex-start}
+.ck--two input{margin-top:2px}
+.ck--two span{display:flex;flex-direction:column;gap:1px}
+.ck--two b{font-size:12.5px;font-weight:500;color:var(--ink)}
+.ck--two em{font-style:normal;font-size:11px;color:var(--ink-3)}
