@@ -71,17 +71,27 @@ green phosphor — same layout, three different products.
   a dock down the outer edge, no controls at all.
 
 - **G · Desk** — the one we are taking forward. A game cartridge rises out
-  of the bottom of the screen with the cover in its window (3D: four copies
+  of the bottom of the screen with the cover in its window (3D: nine copies
   of the outline pushed back in z give the body its thickness; it leans
   toward the pointer). Two sheets of ruled notebook paper fly in from the
   top right and land on a blue and a lavender backing sheet under a copper
-  paperclip. **Page 1 is the plan, page 2 is the assets** — "page 2 →"
-  slides sheet 1 out and tucks it under sheet 2; "← page 1" brings it back.
-  Page 2 keeps Plan B's rules: tick as many as you like per line, or leave
-  it to the Artist. Approve is a rubber stamp; it inks the page and loads
-  the cartridge. Everything on the paper is a multiple of one ruled line
-  (`--ln`, page height / 20), so the writing stays on the lines at any size.
-  Opens by default; `↻ Replay` re-runs the entrance.
+  paperclip.
+
+  **Page 1 is the plan, and it is editable** — the same fields as Plan
+  Studio with Advanced removed: name, genre, what you do, how it feels,
+  look + render quality, scope, platforms, session length, difficulty.
+  Written the paper way: type on the lines, circle one, tick all that
+  apply; genre and look open as a second slip of paper. Picking a look
+  re-renders the cartridge in that style and re-lights the desk from it.
+  A name and "what you do" are required — page 2 will not turn without
+  them. **Page 2 is the assets** (Plan B's rules: tick several per line, or
+  leave it to the Artist). "page 2 →" tucks sheet 1 under sheet 2; Approve
+  is a rubber stamp that inks the page and loads the cartridge.
+
+  Everything on the paper is a multiple of one ruled line (`--ln`, page
+  height / 20), so the writing stays on the lines at any size. Style
+  renders of the cover come from a small PIL script (tone-based, no edge
+  detection) — `assets/boy-<style>.jpg` and `assets/boy-sty-<style>.jpg`.
 
 ### If you are drawing the shell
 

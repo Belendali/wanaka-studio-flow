@@ -17,29 +17,35 @@ const E = (t, c, h) => { const n = document.createElement(t);
 // ── The three plans we can show ───────────────────────────────────
 const PLANS = {
   toy: {
-    parts: [['The toy house', ['Dollhouse', 'Card fort', 'Log cabin'], 0],
-            ['Furniture', ['Nursery', 'Attic', 'Workshop'], -1],
-            ['Puzzle pieces', ['Stars', 'Keys', 'Marbles'], -1],
-            ['The girl', ['Tin girl', 'Paper scout', 'Rag doll'], -1]],
-    cover: 'assets/cover-girl.jpg',
+    set: 'boy',
+    cover: 'assets/boy.jpg',
+    parts: [['The bedroom', ['Toy blocks', 'Book stacks', 'Shelves'], 0],
+            ['Big toys', ['Basketball', 'Truck', 'Teddy'], -1],
+            ['To collect', ['Stars', 'Marbles', 'Cards'], -1],
+            ['The kid', ['Backpacker', 'Robot pal', 'Dino suit'], -1]],
+    form: { genre: 'adventure', style: 'default', quality: 'High', scope: 'standard',
+            plat: ['web', 'mobile'], len: 1, diff: 1 },
     title: 'Tiny Explorer',
-    sub: 'The Wooden Toy House',
+    sub: 'The Giant Bedroom',
     genre: 'Adventure',
-    pitch: 'You are the size of a thumb. The dollhouse on the bedroom floor is '
-         + 'a country, and someone has scattered the pieces of your story through it.',
-    doing: 'Walk the rooms of a giant wooden dollhouse, find the puzzle pieces '
-         + 'hidden under the furniture, and carry them home one at a time. '
-         + 'Nothing chases you. The pleasure is in noticing.',
-    feel: 'Small and curious. Warm lamp light, oversized grain, a cat the size '
-        + 'of a hill who is entirely uninterested in you.',
-    style: 'Stylized toon', quality: 'High',
+    pitch: 'You are the size of a thumb. The bedroom is a country, '
+         + 'and the hoop on the far shelf is the edge of the map.',
+    doing: 'Cross a bedroom the size of a country — over the rug, up the blocks, '
+         + 'past the truck — to the hoop on the far shelf.',
+    feel: 'Small and brave, in a room that was built for someone much bigger.',
+    style: 'Default', quality: 'High',
     rooms: '4 rooms', assets: '6 assets', mins: '~12 min',
     credits: '320–560', platform: 'Web + Mobile', length: '8–12 min a run',
-    checks: ['She can walk, climb and carry', 'Every room has a way out',
-             'A dropped piece can be found again', 'The last piece ends the story',
+    checks: ['He can run, climb and jump', 'Every shelf has a way down',
+             'A fallen block can be climbed again', 'Reaching the hoop ends the run',
              'Runs at 60fps on a three-year-old phone', 'A new player finishes without help'],
   },
   horror: {
+    set: 'cover',
+    form: { genre: 'adventure', style: 'ink-wash', quality: 'Ultra', scope: 'standard',
+            plat: ['web'], len: 2, diff: 1,
+            what: 'Search the house by torchlight for what happened here. The batteries do not last.',
+            feel: 'Watched. Cold where the lamp does not reach, and never quite alone.' },
     parts: [['The house', ['Terrace', 'Farmhouse', 'Flat'], 0],
             ['The toys', ['Dolls', 'Soldiers', 'Music box'], -1],
             ['What you find', ['Photos', 'Diary', 'Keys'], -1],
@@ -62,6 +68,11 @@ const PLANS = {
              'Runs at 60fps with the lights off', 'A new player finishes without help'],
   },
   pixel: {
+    set: 'cover',
+    form: { genre: 'platformer', style: 'phosphor', quality: 'Medium', scope: 'ambitious',
+            plat: ['web', 'mobile'], len: 0, diff: 2,
+            what: 'Sprint a bedroom built of blocks and books, and grab every star before the light goes out.',
+            feel: 'Fast and legible. You lose because you were greedy, and you know it.' },
     parts: [['The bedroom', ['Blocks', 'Books', 'Shelves'], 0],
             ['Hazards', ['Spikes', 'Toy cars', 'The cat'], -1],
             ['To collect', ['Stars', 'Candy', 'Coins'], -1],
@@ -500,6 +511,46 @@ function compF(p) {
    all multiples of one line height, and the line height is the page
    height / 20, so it scales with the screen and never drifts off. */
 
+const F = {
+  genres: [['adventure', 'Adventure'], ['platformer', 'Platformer'], ['puzzle', 'Puzzle'],
+           ['collect', 'Collectathon'], ['racing', 'Racing'], ['action', 'Action']],
+  styles: [['default', 'Default'], ['realistic', 'Realistic'], ['toon', 'Stylized Toon'],
+           ['graphic-ink', 'Graphic Ink'], ['ink-wash', 'Ink Wash'], ['pixel', 'Pixel Screen'],
+           ['crosshatch', 'Crosshatch'], ['one-bit', 'One-Bit'], ['phosphor', 'Phosphor'],
+           ['retro-warm', 'Retro Warm'], ['horror', 'Horror']],
+  quality: ['Low', 'Medium', 'High', 'Ultra', 'Cinematic'],
+  scopes: [['slice', 'Slice', '1 room · 3 assets', '180–260 cr', '~6 min'],
+           ['standard', 'Standard', '4 rooms · 6 assets', '320–560 cr', '~12 min'],
+           ['ambitious', 'Ambitious', '7 rooms · 11 assets', '640–980 cr', '~25 min']],
+  length: ['3–5 min', '8–12 min', '15–20 min'],
+  difficulty: ['Gentle', 'Normal', 'Tough'],
+};
+const GICON = {
+  adventure: ic('<path d="M3 18l5-11 5 8 3-5 5 8z"/>'),
+  platformer: ic('<path d="M3 19h5v-5h5v-5h5V5h3"/>'),
+  puzzle: ic('<path d="M5 9h3.5a2 2 0 1 1 4 0H16v3.5a2 2 0 1 0 0 4V20H5z"/>'),
+  collect: ic('<path d="M12 4l2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/>'),
+  racing: ic('<path d="M5 21V4m0 1h12l-2 4 2 4H5"/>'),
+  action: ic('<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>'),
+};
+// each cover has its own set of style renders
+const full = (p, k) => (p.set === 'boy' ? `assets/boy-${k}.jpg` : `assets/cover-${k}.jpg`);
+const thumb = (p, k) => (p.set === 'boy' ? `assets/boy-sty-${k}.jpg` : `assets/sty-${k}.jpg`);
+const opt = (label, v, on, title = '') =>
+  `<button class="o${on ? ' is-on' : ''}" data-v="${v}"${title ? ` title="${title}"` : ''}>${label}</button>`;
+const genreV = (k) => {
+  const g = F.genres.find((x) => x[0] === k) || F.genres[0];
+  return `${GICON[g[0]]}${g[1]}`;
+};
+const lookV = (p, k, q) => {
+  const st = F.styles.find((x) => x[0] === k) || F.styles[0];
+  return `<img src="${thumb(p, k)}" alt="">${st[1]} · ${q}`;
+};
+const sumV = (k) => {
+  const sc = F.scopes.find((x) => x[0] === k) || F.scopes[1];
+  return `${sc[2].split(' · ')[0]} · ${sc[3]}`;
+};
+
 const CART = 'M16 0H298L324 26V184Q324 200 308 200H16Q0 200 0 184V16Q0 0 16 0Z';
 const RIM = 'M19 6H295L318 29V181Q318 194 305 194H19Q6 194 6 181V19Q6 6 19 6Z';
 const CLIP = 'M12 30V86a9 9 0 0 0 18 0V16a13 13 0 0 0 -26 0V92a17 17 0 0 0 34 0V28';
@@ -509,9 +560,10 @@ function compG(p) {
     `<button class="ck${on ? ' is-on' : ''}"><i></i>${label}</button>`;
   const later = (on) =>
     `<button class="ck ck--later${on ? ' is-on' : ''}">✦ Artist</button>`;
-  const layers = [4, 3, 2, 1].map((n) =>
-    `<svg class="cart__layer" style="--z:${-n * 3.4}px" viewBox="0 0 324 200"><path d="${CART}"/></svg>`).join('');
-  const slot = (n, label) => `<span class="n__slot"><b>${n}</b><em>${label}</em></span>`;
+  const layers = [9, 8, 7, 6, 5, 4, 3, 2, 1].map((n) =>
+    `<svg class="cart__layer" style="--z:${-n * 2.9}px;fill:hsl(230 6% ${4 + (9 - n) * 1.6}%)"
+      viewBox="0 0 324 200"><path d="${CART}"/></svg>`).join('');
+  const f = p.form;
   const faces = CREW.map(([k]) => `<img src="assets/crew-${k}.webp" alt="">`).join('');
 
   return `
@@ -572,25 +624,50 @@ function compG(p) {
 
         <article class="sheet sheet--note sheet--1">
           <div class="note">
-            <div class="n__row"><span class="n__pg">p.1 / 2</span><span class="n__tag">${p.genre}</span></div>
-            <h1 class="n__title">${p.title}</h1>
-            <p class="n__sub"><mark>${p.sub}</mark></p>
-            <p class="n__pitch">${p.pitch}</p>
-            <div class="n__slots">
-              ${slot(p.rooms.split(' ')[0], 'rooms')}
-              ${slot(p.assets.split(' ')[0], 'assets')}
-              ${slot(p.mins.replace('~', ''), 'to play')}
+            <div class="n__row"><span class="n__pg">p.1 / 2</span><span class="n__tag">The plan</span></div>
+            <input class="n__title f-title" value="${p.title}" placeholder="Name your game" spellcheck="false">
+            <div class="fl"><span class="fl__k">Genre</span>
+              <button class="pick" data-slip="genre"><span class="pick__v" id="g-genre">${genreV(f.genre)}</span><i class="chev">▾</i></button>
             </div>
-            <dl class="n__spec">
-              ${[['Look', p.style], ['Plays on', p.platform], ['A run', p.length],
-                 ['Cost', p.credits + ' cr']].map(([k, v]) =>
-                `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}
-            </dl>
+            <div class="fta"><span class="fl__k">What you do</span>
+              <textarea class="ta f-what" spellcheck="false" placeholder="What does the player do?">${f.what || p.doing}</textarea>
+            </div>
+            <div class="fta"><span class="fl__k">How it feels</span>
+              <textarea class="ta f-feel" spellcheck="false" placeholder="What should it feel like?">${f.feel || p.feel}</textarea>
+            </div>
+            <div class="fl"><span class="fl__k">Look</span>
+              <button class="pick" data-slip="look"><span class="pick__v" id="g-look">${lookV(p, f.style, f.quality)}</span><i class="chev">▾</i></button>
+            </div>
+            <div class="fl"><span class="fl__k">Scope</span>
+              <span class="opts" data-k="scope">${F.scopes.map(([k, n, what, cr, t]) =>
+                opt(n, k, k === f.scope, `${what} · ${cr} · ${t}`)).join('')}</span>
+            </div>
+            <div class="fl"><span class="fl__k">Plays on</span>
+              <span class="opts opts--multi">${[['Web', 'web'], ['Mobile', 'mobile']].map(([n, k]) =>
+                `<button class="ck${f.plat.includes(k) ? ' is-on' : ''}" data-v="${k}"><i></i>${n}</button>`).join('')}</span>
+            </div>
+            <div class="fl"><span class="fl__k">A run</span>
+              <span class="opts" data-k="len">${F.length.map((n, i) => opt(n, i, i === f.len)).join('')}</span>
+            </div>
+            <div class="fl"><span class="fl__k">Difficulty</span>
+              <span class="opts" data-k="diff">${F.difficulty.map((n, i) => opt(n, i, i === f.diff)).join('')}</span>
+            </div>
             <footer class="n__foot">
               <span class="n__faces">${faces}</span>
-              <em>drawn up by the crew</em>
+              <em id="g-sum">${sumV(f.scope)}</em>
               <button class="pgbtn" data-go="2">page 2 →</button>
             </footer>
+
+            <div class="slip slip--genre" id="slip-genre" hidden>
+              ${F.genres.map(([k, n]) =>
+                `<button class="slip__g${k === f.genre ? ' is-on' : ''}" data-g="${k}">${GICON[k]}${n}</button>`).join('')}
+            </div>
+            <div class="slip slip--look" id="slip-look" hidden>
+              <div class="slip__grid">${F.styles.map(([k, n]) =>
+                `<button class="slip__s${k === f.style ? ' is-on' : ''}" data-s="${k}"><img src="${thumb(p, k)}" alt=""><span>${n}</span></button>`).join('')}</div>
+              <div class="slip__q"><em>Quality</em>${F.quality.map((q) =>
+                `<button class="o${q === f.quality ? ' is-on' : ''}" data-q="${q}">${q}</button>`).join('')}</div>
+            </div>
           </div>
         </article>
 
@@ -607,9 +684,25 @@ function compG(p) {
   </div>`;
 }
 
-function wireG() {
+function wireG(p) {
   const stack = $('stack');
+
+  // a name and what the player does are the two things the crew cannot guess
+  const need = [stack.querySelector('.f-title'), stack.querySelector('.f-what')];
+  const formOK = () => {
+    const miss = need.filter((x) => !x.value.trim());
+    need.forEach((x) => x.classList.toggle('is-missing', miss.includes(x)));
+    if (miss.length) {
+      const b = stack.querySelector('.sheet--1 [data-go="2"]');
+      b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+      miss[0].focus();
+    }
+    return !miss.length;
+  };
+  need.forEach((x) => x.addEventListener('input', () => x.classList.remove('is-missing')));
+
   const turn = (n) => {
+    if (n === 2 && !formOK()) return;
     stack.classList.remove(n === 2 ? 'is-back' : 'is-p2');
     void stack.offsetWidth;                  // restart the keyframes
     stack.classList.add(n === 2 ? 'is-p2' : 'is-back');
@@ -652,13 +745,86 @@ function wireG() {
     const r = col.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - .5;
     const y = (e.clientY - r.top) / r.height - .5;
-    cart.style.setProperty('--ry', `${-13 + x * 24}deg`);
-    cart.style.setProperty('--rx', `${7 - y * 16}deg`);
+    cart.style.setProperty('--ry', `${-18 + x * 24}deg`);
+    cart.style.setProperty('--rx', `${9 - y * 16}deg`);
     cart.style.setProperty('--mx', `${50 - x * 90}%`);
   };
   col.onmouseleave = () => ['--ry', '--rx', '--mx'].forEach((v) => cart.style.removeProperty(v));
 
   $('replay').onclick = paint;
+  wireForm(p);
+}
+
+// Page 1: pickers that open as slips of paper, circle-one options, tick boxes.
+function wireForm(p) {
+  const note = document.querySelector('.sheet--1 .note');
+  const f = { ...p.form };
+  const slips = () => note.querySelectorAll('.slip');
+  const close = () => slips().forEach((x) => { x.hidden = true; });
+
+  note.querySelectorAll('.pick').forEach((b) => {
+    b.onclick = (e) => {
+      e.stopPropagation();
+      const slip = $('slip-' + b.dataset.slip);
+      const wasShut = slip.hidden;
+      close();
+      slip.hidden = !wasShut;
+    };
+  });
+  note.addEventListener('click', (e) => {
+    if (!e.target.closest('.slip') && !e.target.closest('.pick')) close();
+  });
+
+  $('slip-genre').querySelectorAll('[data-g]').forEach((b) => {
+    b.onclick = () => {
+      f.genre = b.dataset.g;
+      $('slip-genre').querySelectorAll('[data-g]').forEach((x) => x.classList.toggle('is-on', x === b));
+      $('g-genre').innerHTML = genreV(f.genre);
+      close();
+    };
+  });
+
+  // choosing a look re-renders the cartridge and re-lights the desk from it
+  const look = () => { $('g-look').innerHTML = lookV(p, f.style, f.quality); };
+  $('slip-look').querySelectorAll('[data-s]').forEach((b) => {
+    b.onclick = () => {
+      f.style = b.dataset.s;
+      $('slip-look').querySelectorAll('[data-s]').forEach((x) => x.classList.toggle('is-on', x === b));
+      look();
+      const src = full(p, f.style);
+      document.querySelector('.cart__win img').src = src;
+      const img = new Image();
+      img.onload = () => theme(readPalette(img));
+      img.src = src;
+    };
+  });
+  $('slip-look').querySelectorAll('[data-q]').forEach((b) => {
+    b.onclick = () => {
+      f.quality = b.dataset.q;
+      $('slip-look').querySelectorAll('[data-q]').forEach((x) => x.classList.toggle('is-on', x === b));
+      look();
+    };
+  });
+
+  note.querySelectorAll('.opts:not(.opts--multi)').forEach((g) => {
+    g.querySelectorAll('.o').forEach((o) => {
+      o.onclick = () => {
+        g.querySelectorAll('.o').forEach((x) => x.classList.toggle('is-on', x === o));
+        if (g.dataset.k === 'scope') $('g-sum').textContent = sumV(o.dataset.v);
+      };
+    });
+  });
+
+  // a game has to ship somewhere: the last platform will not untick
+  note.querySelectorAll('.opts--multi .ck').forEach((c) => {
+    c.onclick = () => {
+      if (c.classList.contains('is-on') && note.querySelectorAll('.opts--multi .ck.is-on').length === 1) {
+        c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
+        return;
+      }
+      c.classList.toggle('is-on');
+    };
+  });
 }
 
 // ── Wiring ────────────────────────────────────────────────────────
@@ -669,7 +835,7 @@ function paint() {
   const p = PLANS[plan];
   $('stage').className = 'stage stage--' + which;
   $('stage').innerHTML = COMPS[which](p);
-  if (which === 'g') wireG();
+  if (which === 'g') wireG(p);
   document.querySelectorAll('.sw__b').forEach((b) =>
     b.classList.toggle('is-on', b.dataset.c === which));
   document.querySelectorAll('.sw__p').forEach((b) =>
