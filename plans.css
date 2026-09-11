@@ -812,3 +812,27 @@ input.n__title:hover,.ta:hover{
    pass through the two wrappers and land on what is inside them. */
 .con,.con__body{pointer-events:none}
 .con__half,.con__lid,.con__hinge{pointer-events:auto}
+
+/* ── one fixed palette: grey room, Wanaka lime for marks and buttons ── */
+:root{
+  --bg:#16171A;--bg2:#1E1F23;--line:#2E3035;
+  --ink:#F2F3F4;--ink2:rgba(242,243,244,.66);
+  --accent:#C4EB00;--accentSoft:rgba(255,255,255,.05);--far:#7F93B0;
+  --paper:#F1EEE6;--paperInk:#26272B;--paperLine:#C9C6BE;
+  --shell:#3A3B3F;--shellHi:#4B4C51;--shellLo:#26272B;--shellEdge:#141518;--shellInk:#0A0A0C;
+  --screenOff:#0E0F11;
+}
+.sw__b.is-on,.sw__p.is-on{color:#141A00}
+/* rooms and desks: neutral light, no tint */
+.room{background:
+  radial-gradient(900px 540px at 50% 16%,rgba(255,255,255,.06),transparent 70%),
+  linear-gradient(180deg,var(--shell) 0%,var(--shellLo) 58%,var(--shellEdge) 100%)}
+.room__lamp,.desk__lamp{background:radial-gradient(closest-side,rgba(255,255,255,.07),transparent);mix-blend-mode:normal}
+.desk__lamp{background:radial-gradient(900px 640px at 62% 38%,rgba(255,255,255,.06),transparent 70%)}
+.room__desk{background:
+  linear-gradient(180deg,rgba(0,0,0,.55),transparent 50%),
+  repeating-linear-gradient(90deg,rgba(0,0,0,.12) 0 2px,transparent 2px 11px,
+    rgba(255,255,255,.035) 11px 13px,transparent 13px 29px),
+  linear-gradient(180deg,#36373C,#17181B)}
+/* on paper, lime is too bright to read as ink; the marks use a deep green */
+.note{--tick:#5E7A00}

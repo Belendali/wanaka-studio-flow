@@ -45,7 +45,9 @@ quality, scope, platforms, session length, difficulty; then the assets
 page), wired by the same code: `wireForm`, `wireAssets` and `formCheck` in
 `plans.js` work on data hooks (`data-slip`, `data-k`, `data-multi`,
 `data-part`, `data-need`…), so each direction only owns its looks.
-Palettes are read off the cover at runtime; switch the cover top right.
+The palette is fixed: neutral grey for the room, Wanaka lime (#C4EB00) for
+buttons and anything that marks a choice. Switching the cover top right
+changes the game and its copy, not the colours.
 
 - **E · Handheld** — a clamshell console standing open on a desk in a
   lamp-lit room. It arrives shut (the lid's back shows), lands, and the lid

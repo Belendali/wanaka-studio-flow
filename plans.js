@@ -1,13 +1,11 @@
 /* ──────────────────────────────────────────────────────────────────
-   Four ways to show a plan.
+   Two ways to show a plan: E, a handheld console standing open on a desk;
+   G, a cartridge and two sheets of notebook paper on a desk.
 
-   The plan itself is the same in all four — Tiny Explorer, four rooms,
-   stylized toon. What changes is how it is put in front of a person.
-
-   Every screen takes its colours from the cover image at runtime: the
-   canvas quantises it, the palette gets sorted into roles, and the page
-   re-themes. A plan for a warm toy house and a plan for a horror game
-   are not supposed to look like the same product.
+   The plan is the same in both, and so are its rules. The palette is
+   fixed — neutral grey for the room, Wanaka lime for everything you can
+   press or that marks a choice. Switching the cover changes the game,
+   not the colours.
    ────────────────────────────────────────────────────────────────── */
 
 const $ = (id) => document.getElementById(id);
@@ -103,75 +101,6 @@ const CREW = [
   ['tester', 'Tester', 'Six things it has to pass. If it fails one I send it back before you ever see it.'],
   ['marketing', 'Publisher', 'This screenshots well. That matters more than it should.'],
 ];
-
-// ── Colour, taken from the cover ──────────────────────────────────
-const hsl = (r, g, b) => {
-  r /= 255; g /= 255; b /= 255;
-  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2;
-  if (mx === mn) return { h: 0, s: 0, l };
-  const d = mx - mn;
-  const s = l > .5 ? d / (2 - mx - mn) : d / (mx + mn);
-  const h = mx === r ? ((g - b) / d + (g < b ? 6 : 0))
-          : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
-  return { h: h * 60, s, l };
-};
-const css = (h, s, l) => `hsl(${Math.round(h)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%)`;
-
-function readPalette(img) {
-  const c = E('canvas');
-  c.width = c.height = 80;
-  const x = c.getContext('2d', { willReadFrequently: true });
-  x.drawImage(img, 0, 0, 80, 80);
-  const d = x.getImageData(0, 0, 80, 80).data;
-
-  const bins = new Map();
-  for (let i = 0; i < d.length; i += 4) {
-    const r = d[i], g = d[i + 1], b = d[i + 2];
-    const k = ((r >> 4) << 8) | ((g >> 4) << 4) | (b >> 4);
-    let e = bins.get(k);
-    if (!e) bins.set(k, (e = { n: 0, r: 0, g: 0, b: 0 }));
-    e.n++; e.r += r; e.g += g; e.b += b;
-  }
-  const all = [...bins.values()].map((e) => {
-    const r = e.r / e.n, g = e.g / e.n, b = e.b / e.n;
-    return Object.assign({ n: e.n }, hsl(r, g, b));
-  }).sort((a, z) => z.n - a.n).slice(0, 90);
-
-  // the accent is the colour that carries the picture: saturated, mid-bright,
-  // and actually present in quantity
-  const score = (p) => p.s * Math.sqrt(p.n) * (p.l > .3 && p.l < .8 ? 1 : .15);
-  const accent = all.slice().sort((a, z) => score(z) - score(a))[0] || { h: 30, s: .6, l: .55 };
-  const far = all.slice().sort((a, z) => score(z) - score(a))
-    .find((p) => Math.abs(((p.h - accent.h + 540) % 360) - 180) < 120) || accent;
-
-  // the ground is the darkest colour with real presence, pushed down
-  const deep = all.slice(0, 40).sort((a, z) => a.l - z.l)[0] || { h: accent.h, s: .2, l: .1 };
-
-  return {
-    accent: css(accent.h, Math.min(.85, accent.s + .12), Math.min(.66, Math.max(.48, accent.l))),
-    accentSoft: css(accent.h, accent.s * .5, .22),
-    far: css(far.h, Math.min(.7, far.s + .1), .58),
-    bg: css(deep.h, Math.min(.35, deep.s), .055),
-    bg2: css(deep.h, Math.min(.3, deep.s), .105),
-    line: css(deep.h, Math.min(.25, deep.s), .19),
-    ink: css(accent.h, .16, .95),
-    ink2: css(accent.h, .10, .68),
-    paper: css(accent.h, .26, .93),
-    paperInk: css(accent.h, .55, .13),
-    paperLine: css(accent.h, .22, .74),
-    shell: css(accent.h, .08, .245),
-    shellHi: css(accent.h, .07, .345),
-    shellLo: css(accent.h, .11, .145),
-    shellEdge: css(accent.h, .14, .075),
-    shellInk: css(accent.h, .2, .05),
-    screenOff: css(accent.h, .12, .055),
-  };
-}
-
-function theme(pal) {
-  const r = document.documentElement.style;
-  Object.entries(pal).forEach(([k, v]) => r.setProperty('--' + k, v));
-}
 
 // ── E · the handheld ──────────────────────────────────────────────
 /* A clamshell standing open on a desk. It arrives shut, lands, and swings
@@ -497,12 +426,6 @@ function compG(p) {
 }
 
 // ── Shared by E and G: the form, the asset rows, the required fields ──
-const retheme = (src) => {
-  const img = new Image();
-  img.onload = () => theme(readPalette(img));
-  img.src = src;
-};
-
 // pickers that open a slip, pick-one groups, and the platform ticks
 function wireForm(p, root, onLook) {
   const f = { ...p.form };
@@ -650,7 +573,7 @@ function wireG(p) {
   col.onmouseleave = () => ['--ry', '--rx', '--mx'].forEach((v) => cart.style.removeProperty(v));
 
   $('replay').onclick = paint;
-  wireForm(p, page1, (src) => { document.querySelector('.cart__win img').src = src; retheme(src); });
+  wireForm(p, page1, (src) => { document.querySelector('.cart__win img').src = src; });
 }
 
 function wireE(p) {
@@ -756,7 +679,7 @@ function wireE(p) {
   room.onmouseleave = () => ['--ry', '--rx'].forEach((v) => body.style.removeProperty(v));
 
   wireAssets(ts);
-  wireForm(p, ts, (src) => { $('congame').src = src; retheme(src); });
+  wireForm(p, ts, (src) => { $('congame').src = src; });
   $('replay').onclick = paint;
 }
 
@@ -775,10 +698,6 @@ function paint() {
   document.querySelectorAll('.sw__p').forEach((b) =>
     b.classList.toggle('is-on', b.dataset.p === plan));
 
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onload = () => theme(readPalette(img));
-  img.src = p.cover;
 }
 
 document.querySelectorAll('.sw__b').forEach((b) =>
