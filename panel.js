@@ -365,7 +365,7 @@ function stOverview() {
           ${multi('Platform', P.platforms)}
           ${seg('Session length', P.length, 'len')}
           ${seg('Difficulty', P.difficulty, 'diff')}`)}
-        ${advanced()}
+        ${''/* advanced() — hidden for now */}
       </aside>
     </div>`;
 }
