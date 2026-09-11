@@ -246,7 +246,7 @@ function compE(p) {
               </div>
               <footer class="ts__foot">
                 <span class="ts__sum"><b data-sum>${sumV(f.scope)}</b><em data-count></em></span>
-                <button class="ts__go" id="tsgo">Next · Assets →</button>
+                <button class="ts__go" id="tsgo">Next · Assets<i class="kb">A</i></button>
               </footer>
 
               <div class="eslip eslip--genre" data-slipbox="genre" hidden>
@@ -261,10 +261,24 @@ function compE(p) {
               </div>
             </div>
           </div>
-          <div class="con__ctrl" aria-hidden="true">
-            <span class="con__dpad"></span>
-            <span class="con__abxy"><i>X</i><i>Y</i><i>A</i><i>B</i></span>
-            <span class="con__sys"><i></i><i></i></span>
+          <div class="con__ctrl">
+            <span class="con__dpad">
+              <button class="con__pad con__pad--up" data-pad="up" aria-label="Scroll up"></button>
+              <button class="con__pad con__pad--left" data-pad="left" aria-label="Step 1"></button>
+              <button class="con__pad con__pad--right" data-pad="right" aria-label="Step 2"></button>
+              <button class="con__pad con__pad--down" data-pad="down" aria-label="Scroll down"></button>
+            </span>
+            <span class="con__abxy">
+              <button data-key="x" title="X · look">X</button>
+              <button data-key="y" title="Y · genre">Y</button>
+              <button data-key="a" title="A · next / approve">A</button>
+              <button data-key="b" title="B · back">B</button>
+            </span>
+            <span class="con__legend">A next<br>B back</span>
+            <span class="con__sys">
+              <button data-key="select" title="Select · next look"></button>
+              <button data-key="start" title="Start · next / approve"></button>
+            </span>
             <span class="con__grille">${dots}</span>
             <span class="con__led"></span>
           </div>
@@ -278,6 +292,7 @@ function compE(p) {
             <div class="con__glass con__glass--game">
               <img id="congame" src="${p.cover}" alt="">
               <span class="con__scan"></span>
+              <span class="con__sweep"></span>
             </div>
           </div>
           <div class="con__back"><span>WANAKA</span></div>
@@ -384,6 +399,7 @@ function compG(p) {
                 <img src="${p.cover}" alt="">
                 <span class="cart__sheen"></span>
               </div>
+              <span class="cart__sweep"></span>
             </div>
           </div>
         </div>
@@ -475,7 +491,6 @@ function compG(p) {
       </div>
     </div>
 
-    <span class="pencil"></span>
     <span class="desk__vig"></span>
     <button class="replay" id="replay">↻ Replay</button>
   </div>`;
@@ -614,8 +629,12 @@ function wireG(p) {
 
   $('stamp').onclick = () => {
     stack.classList.add('is-approved');
-    $('cart').classList.add('is-loaded');
-    $('cartlab').innerHTML = '<i></i>Loaded · building v1';
+    const rise = document.querySelector('.cart__rise');
+    rise.classList.remove('is-pop'); void rise.offsetWidth; rise.classList.add('is-pop');
+    setTimeout(() => {
+      $('cart').classList.add('is-loaded');
+      $('cartlab').innerHTML = '<i></i>Loaded · building v1';
+    }, 240);
   };
 
   // the cartridge leans toward the pointer
@@ -636,28 +655,105 @@ function wireG(p) {
 
 function wireE(p) {
   const ts = $('ts');
+  const con = $('con');
   const go = $('tsgo');
   const page1 = ts.querySelector('[data-page="1"]');
   needWatch(page1);
+
+  const key = (k) => con.querySelector(`[data-key="${k}"]`);
+  const pad = con.querySelector('.con__dpad');
+  const press = (el) => {
+    if (!el) return;
+    el.classList.add('is-down');
+    setTimeout(() => el.classList.remove('is-down'), 170);
+  };
+  const tip = (d) => {
+    pad.classList.add('is-' + d);
+    setTimeout(() => pad.classList.remove('is-' + d), 170);
+  };
+
   const step = (n) => {
     if (n === 2 && !formCheck(page1, go)) return;
     ts.dataset.step = n;
     ts.querySelectorAll('.ts__tab').forEach((t) => t.classList.toggle('is-on', +t.dataset.step === n));
     ts.querySelectorAll('.ts__page').forEach((pg) => pg.classList.toggle('is-on', +pg.dataset.page === n));
-    go.innerHTML = n === 1 ? 'Next · Assets →' : 'Approve ▶';
+    if (!con.classList.contains('is-approved')) {
+      go.innerHTML = n === 1 ? 'Next · Assets<i class="kb">A</i>' : 'Approve<i class="kb">A</i>';
+    }
   };
   ts.querySelectorAll('.ts__tab').forEach((t) => { t.onclick = () => step(+t.dataset.step); });
 
   const cat = $('pcat');
   const hop = () => { cat.classList.remove('is-hop'); void cat.offsetWidth; cat.classList.add('is-hop'); };
   go.onclick = () => {
+    press(key('a'));
     if (ts.dataset.step === '1') { step(2); return; }
-    $('con').classList.add('is-approved');
+    if (con.classList.contains('is-approved')) return;
+    con.classList.add('is-approved');
     go.innerHTML = 'Approved ✓';
     go.disabled = true;
     hop();
   };
   cat.onclick = hop;
+
+  // the console's own buttons drive the screen
+  const openSlip = () => ts.querySelector('[data-slipbox]:not([hidden])');
+  const act = {
+    a: () => go.click(),
+    start: () => go.click(),
+    b: () => {
+      const s = openSlip();
+      if (s) { s.hidden = true; return; }
+      if (ts.dataset.step === '2') step(1);
+    },
+    x: () => ts.querySelector('[data-slip="look"]').click(),
+    y: () => ts.querySelector('[data-slip="genre"]').click(),
+    select: () => {                            // flick through the looks
+      const all = [...ts.querySelectorAll('[data-slipbox="look"] [data-s]')];
+      const at = all.findIndex((x) => x.classList.contains('is-on'));
+      all[(at + 1) % all.length].click();
+    },
+  };
+  Object.keys(act).forEach((k) => {
+    const el = key(k);
+    el.onclick = (e) => { e.stopPropagation(); press(el); act[k](); };
+  });
+  const page = () => ts.querySelector('.ts__page.is-on');
+  const dir = {
+    left: () => step(1),
+    right: () => step(2),
+    up: () => page().scrollBy({ top: -70, behavior: 'smooth' }),
+    down: () => page().scrollBy({ top: 70, behavior: 'smooth' }),
+  };
+  pad.querySelectorAll('[data-pad]').forEach((b) => {
+    b.onclick = () => { tip(b.dataset.pad); dir[b.dataset.pad](); };
+  });
+
+  // and so does the keyboard, unless you are typing
+  if (window.__eKeys) document.removeEventListener('keydown', window.__eKeys);
+  window.__eKeys = (e) => {
+    if (which !== 'e' || !document.getElementById('ts')) return;
+    const typing = /INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || '');
+    if (typing) { if (e.key === 'Escape') document.activeElement.blur(); return; }
+    const m = { ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down' }[e.key];
+    if (m) { e.preventDefault(); pad.querySelector(`[data-pad="${m}"]`).click(); return; }
+    if (e.key === 'Enter') { e.preventDefault(); key('a').click(); }
+    if (e.key === 'Escape' || e.key === 'Backspace') { e.preventDefault(); key('b').click(); }
+  };
+  document.addEventListener('keydown', window.__eKeys);
+
+  // the body turns a little toward the pointer — but holds still while you use the screen
+  const room = document.querySelector('.room');
+  const body = document.querySelector('.con__body');
+  room.onmousemove = (e) => {
+    if (e.target.closest('.ts')) return;
+    const r = room.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5;
+    const y = (e.clientY - r.top) / r.height - .5;
+    body.style.setProperty('--ry', `${x * 7}deg`);
+    body.style.setProperty('--rx', `${10 - y * 5}deg`);
+  };
+  room.onmouseleave = () => ['--ry', '--rx'].forEach((v) => body.style.removeProperty(v));
 
   wireAssets(ts);
   wireForm(p, ts, (src) => { $('congame').src = src; retheme(src); });
