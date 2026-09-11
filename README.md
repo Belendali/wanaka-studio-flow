@@ -70,10 +70,18 @@ green phosphor — same layout, three different products.
   which is most of what stops a screen reading as generated. Glass tiles,
   a dock down the outer edge, no controls at all.
 
-- **G · Desk** — not a screen at all. The cover is a photograph held by a
-  paperclip, the plan is a page torn out of something and written on, both
-  lying on a wooden desk under a lamp; Approve is a rubber stamp. Paper and
-  ink take the cover's hue, so horror becomes a cold case file.
+- **G · Desk** — the one we are taking forward. A game cartridge rises out
+  of the bottom of the screen with the cover in its window (3D: four copies
+  of the outline pushed back in z give the body its thickness; it leans
+  toward the pointer). Two sheets of ruled notebook paper fly in from the
+  top right and land on a blue and a lavender backing sheet under a copper
+  paperclip. **Page 1 is the plan, page 2 is the assets** — "page 2 →"
+  slides sheet 1 out and tucks it under sheet 2; "← page 1" brings it back.
+  Page 2 keeps Plan B's rules: tick as many as you like per line, or leave
+  it to the Artist. Approve is a rubber stamp; it inks the page and loads
+  the cartridge. Everything on the paper is a multiple of one ruled line
+  (`--ln`, page height / 20), so the writing stays on the lines at any size.
+  Opens by default; `↻ Replay` re-runs the entrance.
 
 ### If you are drawing the shell
 

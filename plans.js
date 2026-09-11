@@ -17,6 +17,10 @@ const E = (t, c, h) => { const n = document.createElement(t);
 // ── The three plans we can show ───────────────────────────────────
 const PLANS = {
   toy: {
+    parts: [['The toy house', ['Dollhouse', 'Card fort', 'Log cabin'], 0],
+            ['Furniture', ['Nursery', 'Attic', 'Workshop'], -1],
+            ['Puzzle pieces', ['Stars', 'Keys', 'Marbles'], -1],
+            ['The girl', ['Tin girl', 'Paper scout', 'Rag doll'], -1]],
     cover: 'assets/cover-girl.jpg',
     title: 'Tiny Explorer',
     sub: 'The Wooden Toy House',
@@ -36,6 +40,10 @@ const PLANS = {
              'Runs at 60fps on a three-year-old phone', 'A new player finishes without help'],
   },
   horror: {
+    parts: [['The house', ['Terrace', 'Farmhouse', 'Flat'], 0],
+            ['The toys', ['Dolls', 'Soldiers', 'Music box'], -1],
+            ['What you find', ['Photos', 'Diary', 'Keys'], -1],
+            ['Your light', ['Lantern', 'Torch', 'Candle'], -1]],
     cover: 'assets/cover-ink-wash.jpg',
     title: 'Small Hours',
     sub: 'What Is Left In The Nursery',
@@ -54,6 +62,10 @@ const PLANS = {
              'Runs at 60fps with the lights off', 'A new player finishes without help'],
   },
   pixel: {
+    parts: [['The bedroom', ['Blocks', 'Books', 'Shelves'], 0],
+            ['Hazards', ['Spikes', 'Toy cars', 'The cat'], -1],
+            ['To collect', ['Stars', 'Candy', 'Coins'], -1],
+            ['The runner', ['Pixel kid', 'Robot', 'Frog'], -1]],
     cover: 'assets/cover-phosphor.jpg',
     title: 'Toybox Run',
     sub: 'Eight Rooms, One Breath',
@@ -480,101 +492,184 @@ function compF(p) {
 }
 
 // ── G · the desk ──────────────────────────────────────────────────
-/* Not a screen at all. The cover is a photograph held down by a paperclip,
-   the plan is a page torn out of something and written on, and both are
-   lying on a desk under a lamp. Everything is paper, ink and light. */
+/* A cartridge rises out of the bottom of the screen with the cover in its
+   window; two sheets of notebook paper fly in from the top right and land
+   on a desk. Page 1 is the plan, page 2 is the assets. Turning the page
+   slides sheet 1 out and tucks it under sheet 2, the way you would on a
+   real desk. Everything on the paper sits on the ruled lines: sizes are
+   all multiples of one line height, and the line height is the page
+   height / 20, so it scales with the screen and never drifts off. */
 
-// a ragged edge, so the page looks torn rather than cut
-function tornEdge(seed) {
-  let r = seed;
-  const rnd = () => (r = (r * 9301 + 49297) % 233280) / 233280;
-  const pts = ['100% 0'];
-  pts.push('100% 100%');
-  for (let y = 100; y >= 0; y -= 4) pts.push(`${(rnd() * 2.4).toFixed(2)}% ${y}%`);
-  return `polygon(${pts.join(',')})`;
-}
+const CART = 'M16 0H298L324 26V184Q324 200 308 200H16Q0 200 0 184V16Q0 0 16 0Z';
+const RIM = 'M19 6H295L318 29V181Q318 194 305 194H19Q6 194 6 181V19Q6 6 19 6Z';
+const CLIP = 'M12 30V86a9 9 0 0 0 18 0V16a13 13 0 0 0 -26 0V92a17 17 0 0 0 34 0V28';
 
 function compG(p) {
-  const slot = (n, label) => `
-    <span class="slot"><b>${n}</b><em>${label}</em></span>`;
+  const ck = (label, on) =>
+    `<button class="ck${on ? ' is-on' : ''}"><i></i>${label}</button>`;
+  const later = (on) =>
+    `<button class="ck ck--later${on ? ' is-on' : ''}">✦ Artist</button>`;
+  const layers = [4, 3, 2, 1].map((n) =>
+    `<svg class="cart__layer" style="--z:${-n * 3.4}px" viewBox="0 0 324 200"><path d="${CART}"/></svg>`).join('');
+  const slot = (n, label) => `<span class="n__slot"><b>${n}</b><em>${label}</em></span>`;
+  const faces = CREW.map(([k]) => `<img src="assets/crew-${k}.webp" alt="">`).join('');
+
   return `
   <div class="desk">
     <span class="desk__lamp"></span>
 
-    <!-- left · the photograph -->
-    <div class="desk__l">
-      <span class="paper paper--back paper--b1"></span>
-      <span class="paper paper--back paper--b2"></span>
-      <figure class="photo">
-        <img src="${p.cover}" alt="">
-        <figcaption>
-          <b>${p.title}</b>
-          <em>${p.sub}</em>
-        </figcaption>
-        <span class="photo__gloss"></span>
-      </figure>
-      <svg class="clip" viewBox="0 0 60 130" aria-hidden="true">
-        <path d="M30 122 V26 a14 14 0 0 1 28 0 V104 a22 22 0 0 1 -44 0 V22 a20 20 0 0 1 40 0 V112"
-              fill="none" stroke="#B9BCC2" stroke-width="7" stroke-linecap="round"/>
-        <path d="M30 122 V26 a14 14 0 0 1 28 0 V104 a22 22 0 0 1 -44 0 V22 a20 20 0 0 1 40 0 V112"
-              fill="none" stroke="#EDEFF2" stroke-width="2.5" stroke-linecap="round"/>
-      </svg>
-      <span class="pencil"></span>
-    </div>
-
-    <!-- right · the page -->
-    <div class="desk__r">
-      <article class="page" style="clip-path:${tornEdge(7)}">
-        <span class="page__rule"></span>
-        <header class="page__h">
-          <span class="banner">${p.genre}</span>
-          <h1>${p.title}</h1>
-          <span class="ribbon">${p.sub} <i>Lv 1</i></span>
-        </header>
-
-        <p class="page__lede">${p.pitch}</p>
-
-        <div class="slots">
-          ${slot(p.rooms.split(' ')[0], 'rooms')}
-          ${slot(p.assets.split(' ')[0], 'assets')}
-          ${slot(p.mins.replace('~', ''), 'to play')}
+    <!-- left · the cartridge -->
+    <div class="cartcol" id="cartcol">
+      <div class="cart__rise">
+        <div class="cart__float">
+          <div class="cart" id="cart">
+            ${layers}
+            <div class="cart__face">
+              <svg class="cart__svg" viewBox="0 0 324 200" aria-hidden="true">
+                <defs><linearGradient id="cartg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#46474D"/><stop offset=".55" stop-color="#2B2C31"/>
+                  <stop offset="1" stop-color="#1C1D21"/></linearGradient></defs>
+                <path d="${CART}" fill="url(#cartg)"/>
+                <path d="${RIM}" fill="none" stroke="rgba(255,255,255,.17)" stroke-width="1.2"/>
+                <path d="M258 11h18M258 15.5h18M258 20h18" stroke="rgba(255,255,255,.24)"
+                      stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+              <span class="cart__lab" id="cartlab"><i></i>Game Cartridge</span>
+              <div class="cart__win">
+                <img src="${p.cover}" alt="">
+                <span class="cart__sheen"></span>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <dl class="page__spec">
-          ${[['Look', p.style], ['Plays on', p.platform],
-             ['A run', p.length], ['Cost', p.credits + ' credits']]
-            .map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}
-        </dl>
-
-        <footer class="page__f">
-          <span class="page__faces">${CREW.map(([k]) =>
-            `<img src="assets/crew-${k}.webp" alt="">`).join('')}</span>
-          <em>drawn up by the crew</em>
-        </footer>
-      </article>
-
-      <button class="stamp">Approve</button>
-      <svg class="loupe" viewBox="0 0 120 140" aria-hidden="true">
-        <circle cx="60" cy="52" r="42" fill="rgba(255,255,255,.10)"
-                stroke="#C9A24A" stroke-width="7"/>
-        <circle cx="60" cy="52" r="34" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2"/>
-        <path d="M34 84 L14 128" stroke="#8A5A2A" stroke-width="13" stroke-linecap="round"/>
-      </svg>
-      <span class="tape tape--tr"></span>
+        <span class="cart__shadow"></span>
+      </div>
     </div>
 
+    <!-- right · two sheets of notebook paper -->
+    <div class="stackcol">
+      <div class="stack" id="stack">
+        <span class="sheet sheet--lav"><span class="fill"></span></span>
+        <span class="sheet sheet--blue"><span class="fill"></span></span>
+
+        <article class="sheet sheet--note sheet--2">
+          <div class="note">
+            <div class="n__row"><span class="n__pg">p.2 / 2</span><span class="n__tag">Assets</span></div>
+            <h2 class="n__title">Game assets</h2>
+            <p class="n__hint">Tick any. Skip a line and the Artist makes it.</p>
+            <div class="n__parts">
+              ${p.parts.map(([name, opts, pick]) => `
+                <p class="part"><b>${name}</b>${opts.map((o, i) => ck(o, i === pick)).join('')}${later(pick < 0)}</p>`).join('')}
+            </div>
+            <footer class="n__foot">
+              <button class="pgbtn pgbtn--back" data-go="1">← page 1</button>
+              <span class="n__count" id="count"></span>
+            </footer>
+            <button class="stamp" id="stamp">Approve</button>
+            <span class="inked">Approved</span>
+          </div>
+        </article>
+
+        <article class="sheet sheet--note sheet--1">
+          <div class="note">
+            <div class="n__row"><span class="n__pg">p.1 / 2</span><span class="n__tag">${p.genre}</span></div>
+            <h1 class="n__title">${p.title}</h1>
+            <p class="n__sub"><mark>${p.sub}</mark></p>
+            <p class="n__pitch">${p.pitch}</p>
+            <div class="n__slots">
+              ${slot(p.rooms.split(' ')[0], 'rooms')}
+              ${slot(p.assets.split(' ')[0], 'assets')}
+              ${slot(p.mins.replace('~', ''), 'to play')}
+            </div>
+            <dl class="n__spec">
+              ${[['Look', p.style], ['Plays on', p.platform], ['A run', p.length],
+                 ['Cost', p.credits + ' cr']].map(([k, v]) =>
+                `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}
+            </dl>
+            <footer class="n__foot">
+              <span class="n__faces">${faces}</span>
+              <em>drawn up by the crew</em>
+              <button class="pgbtn" data-go="2">page 2 →</button>
+            </footer>
+          </div>
+        </article>
+
+        <svg class="pclip" viewBox="0 0 42 112" aria-hidden="true">
+          <path d="${CLIP}" fill="none" stroke="#A9683F" stroke-width="4.4" stroke-linecap="round"/>
+          <path d="${CLIP}" fill="none" stroke="#EBB590" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <span class="pencil"></span>
     <span class="desk__vig"></span>
+    <button class="replay" id="replay">↻ Replay</button>
   </div>`;
+}
+
+function wireG() {
+  const stack = $('stack');
+  const turn = (n) => {
+    stack.classList.remove(n === 2 ? 'is-back' : 'is-p2');
+    void stack.offsetWidth;                  // restart the keyframes
+    stack.classList.add(n === 2 ? 'is-p2' : 'is-back');
+  };
+  stack.querySelectorAll('[data-go]').forEach((b) => { b.onclick = () => turn(+b.dataset.go); });
+
+  const count = () => {
+    const parts = [...stack.querySelectorAll('.part')];
+    const picked = stack.querySelectorAll('.ck.is-on:not(.ck--later)').length;
+    const left = parts.filter((x) => !x.querySelector('.ck.is-on:not(.ck--later)')).length;
+    $('count').textContent = `${picked} picked · ${left} left to the Artist`;
+  };
+  stack.querySelectorAll('.part').forEach((part) => {
+    const later = part.querySelector('.ck--later');
+    part.querySelectorAll('.ck:not(.ck--later)').forEach((c) => {
+      c.onclick = () => {
+        c.classList.toggle('is-on');
+        later.classList.toggle('is-on', !part.querySelector('.ck.is-on:not(.ck--later)'));
+        count();
+      };
+    });
+    // leaving it to the Artist is the same as clearing the line
+    later.onclick = () => {
+      part.querySelectorAll('.ck').forEach((c) => c.classList.remove('is-on'));
+      later.classList.add('is-on');
+      count();
+    };
+  });
+  count();
+
+  $('stamp').onclick = () => {
+    stack.classList.add('is-approved');
+    $('cart').classList.add('is-loaded');
+    $('cartlab').innerHTML = '<i></i>Loaded · building v1';
+  };
+
+  // the cartridge leans toward the pointer
+  const col = $('cartcol'), cart = $('cart');
+  col.onmousemove = (e) => {
+    const r = col.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5;
+    const y = (e.clientY - r.top) / r.height - .5;
+    cart.style.setProperty('--ry', `${-13 + x * 24}deg`);
+    cart.style.setProperty('--rx', `${7 - y * 16}deg`);
+    cart.style.setProperty('--mx', `${50 - x * 90}%`);
+  };
+  col.onmouseleave = () => ['--ry', '--rx', '--mx'].forEach((v) => cart.style.removeProperty(v));
+
+  $('replay').onclick = paint;
 }
 
 // ── Wiring ────────────────────────────────────────────────────────
 const COMPS = { a: compA, b: compB, c: compC, d: compD, e: compE, f: compF, g: compG };
-let which = 'a', plan = 'toy';
+let which = 'g', plan = 'toy';
 
 function paint() {
   const p = PLANS[plan];
   $('stage').className = 'stage stage--' + which;
   $('stage').innerHTML = COMPS[which](p);
+  if (which === 'g') wireG();
   document.querySelectorAll('.sw__b').forEach((b) =>
     b.classList.toggle('is-on', b.dataset.c === which));
   document.querySelectorAll('.sw__p').forEach((b) =>
