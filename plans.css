@@ -906,16 +906,24 @@ input.n__title::placeholder,.ta::placeholder{color:inherit;opacity:.35}
 .is-missing::placeholder{color:rgba(190,50,40,.9);opacity:1}
 
 .pick{
-  justify-self:start;display:inline-flex;align-items:center;gap:7px;height:calc(var(--ln)*.86);
-  padding:0 2px;border:0;border-bottom:1.5px dashed color-mix(in srgb,currentColor 38%,transparent);
-  background:none;cursor:pointer;color:inherit;font-family:var(--hand);font-size:calc(var(--ln)*.78);font-weight:600;
+  justify-self:start;align-self:center;display:inline-flex;align-items:center;gap:8px;
+  height:calc(var(--ln)*.86);margin-top:calc(var(--ln)*.1);
+  padding:0 calc(var(--ln)*.16) 0 calc(var(--ln)*.32);
+  border:1.5px solid color-mix(in srgb,currentColor 26%,transparent);border-radius:999px;
+  background:rgba(255,255,255,.66);cursor:pointer;color:inherit;
+  font-family:var(--hand);font-size:calc(var(--ln)*.76);font-weight:600;
+  box-shadow:0 2px 0 color-mix(in srgb,currentColor 20%,transparent);
+  transition:transform .12s,box-shadow .12s,border-color .12s,background .12s;
 }
-.pick:hover{border-bottom-color:var(--tick)}
+.pick:hover{transform:translateY(-1px);border-color:var(--tick);background:#fff;
+  box-shadow:0 3px 0 color-mix(in srgb,var(--tick) 45%,transparent)}
+.pick:active{transform:translateY(1px);box-shadow:0 1px 0 color-mix(in srgb,var(--tick) 45%,transparent)}
 .pick__v{display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
 .pick .ti,.slip__g .ti{width:calc(var(--ln)*.6);height:calc(var(--ln)*.6)}
-.pick__v img{width:calc(var(--ln)*1.15);height:calc(var(--ln)*.72);object-fit:cover;border-radius:3px;
+.pick__v img{width:calc(var(--ln)*1.1);height:calc(var(--ln)*.62);object-fit:cover;border-radius:3px;
   box-shadow:0 0 0 1px rgba(0,0,0,.18)}
-.chev{font-style:normal;font-size:calc(var(--ln)*.46);opacity:.5}
+.chev{display:grid;place-items:center;width:calc(var(--ln)*.54);height:calc(var(--ln)*.54);border-radius:50%;
+  font-style:normal;font-size:calc(var(--ln)*.32);line-height:1;background:var(--tick);color:#FFF8EC}
 
 /* circle one */
 .opts{display:flex;align-items:flex-end;gap:calc(var(--ln)*.44);height:var(--ln)}
@@ -925,7 +933,7 @@ input.n__title::placeholder,.ta::placeholder{color:inherit;opacity:.35}
 }
 .o:hover{opacity:.85}
 .o.is-on{opacity:1;font-weight:700}
-.o.is-on::before{content:'';position:absolute;inset:4px -7px 2px;border:1.6px solid var(--tick);
+.slip__q .o.is-on::before{content:'';position:absolute;inset:4px -7px 2px;border:1.6px solid var(--tick);
   border-radius:50%;transform:rotate(-3deg)}
 .opts--multi .ck{font-size:calc(var(--ln)*.76)}
 .shake{animation:shake .38s}
@@ -963,3 +971,53 @@ input.n__title::placeholder,.ta::placeholder{color:inherit;opacity:.35}
 .slip__q em{font-style:normal;font-family:var(--mono);font-size:calc(var(--ln)*.27);letter-spacing:.14em;
   text-transform:uppercase;opacity:.55;padding-bottom:calc(var(--ln)*.24);margin-right:4px}
 .slip__q .o{font-size:calc(var(--ln)*.64)}
+
+/* ── making the paper read as something you can press ─────────── */
+.n__try{margin-left:6px;font-size:calc(var(--ln)*.6);color:var(--tick);opacity:.9;white-space:nowrap}
+
+/* text you can write on: a pencil at the end, and the lines light up under the pointer */
+.f-tw{position:relative}
+input.n__title{padding-right:calc(var(--ln)*.9)}
+.ta{padding-right:calc(var(--ln)*.7)}
+.pen{position:absolute;right:2px;font-style:normal;font-size:calc(var(--ln)*.6);line-height:1;
+  color:var(--tick);opacity:.5;pointer-events:none;transition:opacity .15s,transform .15s}
+.f-tw .pen{bottom:calc(var(--ln)*.24)}
+.fta .pen{top:calc(var(--ln)*.26);z-index:1}
+.f-tw:hover .pen,.fta:hover .pen,.f-tw:focus-within .pen,.fta:focus-within .pen{opacity:1;transform:rotate(-12deg)}
+input.n__title:hover,.ta:hover{
+  cursor:text;
+  background-image:linear-gradient(90deg,color-mix(in srgb,var(--accent) 11%,transparent),transparent 85%);
+}
+
+/* pick one: a radio mark in front of every option */
+.opts{gap:calc(var(--ln)*.18)}
+.opts .o{display:inline-flex;align-items:center;gap:4px;padding:0 3px;border-radius:7px;opacity:.8;
+  font-size:calc(var(--ln)*.7);transition:background .12s,opacity .12s}
+.opts .o:hover{opacity:1;background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.opts .o.is-on{opacity:1;font-weight:700}
+.rd{position:relative;flex:none;width:calc(var(--ln)*.42);height:calc(var(--ln)*.42);border-radius:50%;
+  border:1.6px solid currentColor;opacity:.75}
+.opts .o:hover .rd{border-color:var(--tick);opacity:1}
+.o.is-on .rd{border-color:var(--tick);opacity:1}
+.o.is-on .rd::after{content:'';position:absolute;inset:2px;border-radius:50%;background:var(--tick)}
+
+/* tick all that apply: bigger boxes, and the same hover wash */
+.ck{border-radius:7px;padding:0 4px;transition:background .12s}
+.ck:hover{background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.ck i{width:calc(var(--ln)*.46);height:calc(var(--ln)*.46)}
+.ck:hover i{border-color:var(--tick);opacity:1}
+
+/* the way forward is a real button */
+.pgbtn--cta{
+  height:calc(var(--ln)*1.02);padding:0 calc(var(--ln)*.38);border-radius:999px;
+  background:var(--tick);color:#FFF8EC;font-size:calc(var(--ln)*.74);
+  box-shadow:0 3px 0 color-mix(in srgb,var(--tick) 55%,#000),0 6px 14px rgba(0,0,0,.18);
+}
+.pgbtn--cta:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.pgbtn--cta:active{transform:translateY(2px);box-shadow:0 1px 0 color-mix(in srgb,var(--tick) 55%,#000)}
+.n__faces img{width:calc(var(--ln)*.7);height:calc(var(--ln)*.7)}
+
+/* the stamp breathes until it is used */
+.stamp{animation:breathe 2.6s ease-in-out 2s infinite}
+@keyframes breathe{0%,100%{box-shadow:0 0 0 0 rgba(162,52,42,0)}50%{box-shadow:0 0 0 7px rgba(162,52,42,.12)}}
+.stack.is-approved .stamp{animation:none}

@@ -537,7 +537,7 @@ const GICON = {
 const full = (p, k) => (p.set === 'boy' ? `assets/boy-${k}.jpg` : `assets/cover-${k}.jpg`);
 const thumb = (p, k) => (p.set === 'boy' ? `assets/boy-sty-${k}.jpg` : `assets/sty-${k}.jpg`);
 const opt = (label, v, on, title = '') =>
-  `<button class="o${on ? ' is-on' : ''}" data-v="${v}"${title ? ` title="${title}"` : ''}>${label}</button>`;
+  `<button class="o${on ? ' is-on' : ''}" data-v="${v}"${title ? ` title="${title}"` : ''}><i class="rd"></i>${label}</button>`;
 const genreV = (k) => {
   const g = F.genres.find((x) => x[0] === k) || F.genres[0];
   return `${GICON[g[0]]}${g[1]}`;
@@ -624,15 +624,19 @@ function compG(p) {
 
         <article class="sheet sheet--note sheet--1">
           <div class="note">
-            <div class="n__row"><span class="n__pg">p.1 / 2</span><span class="n__tag">The plan</span></div>
-            <input class="n__title f-title" value="${p.title}" placeholder="Name your game" spellcheck="false">
+            <div class="n__row"><span class="n__pg">p.1 / 2</span><span class="n__tag">The plan</span>
+              <span class="n__try">✎ tap to edit</span></div>
+            <div class="f-tw">
+              <input class="n__title f-title" value="${p.title}" placeholder="Name your game" spellcheck="false">
+              <i class="pen">✎</i>
+            </div>
             <div class="fl"><span class="fl__k">Genre</span>
               <button class="pick" data-slip="genre"><span class="pick__v" id="g-genre">${genreV(f.genre)}</span><i class="chev">▾</i></button>
             </div>
-            <div class="fta"><span class="fl__k">What you do</span>
+            <div class="fta"><span class="fl__k">What you do</span><i class="pen">✎</i>
               <textarea class="ta f-what" spellcheck="false" placeholder="What does the player do?">${f.what || p.doing}</textarea>
             </div>
-            <div class="fta"><span class="fl__k">How it feels</span>
+            <div class="fta"><span class="fl__k">How it feels</span><i class="pen">✎</i>
               <textarea class="ta f-feel" spellcheck="false" placeholder="What should it feel like?">${f.feel || p.feel}</textarea>
             </div>
             <div class="fl"><span class="fl__k">Look</span>
@@ -655,7 +659,7 @@ function compG(p) {
             <footer class="n__foot">
               <span class="n__faces">${faces}</span>
               <em id="g-sum">${sumV(f.scope)}</em>
-              <button class="pgbtn" data-go="2">page 2 →</button>
+              <button class="pgbtn pgbtn--cta" data-go="2">page 2 →</button>
             </footer>
 
             <div class="slip slip--genre" id="slip-genre" hidden>
