@@ -805,3 +805,10 @@ input.n__title:hover,.ta:hover{
 .con.is-approved .con__sweep::after{animation:sweep 1.5s cubic-bezier(.4,0,.2,1) 1.05s}
 .con.is-approved .con__glass--game img{animation:boot .9s ease-out}
 @keyframes boot{25%{filter:brightness(1.7) saturate(1.2)}}
+
+/* The body leans back 10deg, which puts the screens and buttons behind the
+   z=0 plane of .con's 3D context — so .con itself was the thing under the
+   pointer, and nothing on the console could be clicked. Let the pointer
+   pass through the two wrappers and land on what is inside them. */
+.con,.con__body{pointer-events:none}
+.con__half,.con__lid,.con__hinge{pointer-events:auto}
