@@ -173,332 +173,125 @@ function theme(pal) {
   Object.entries(pal).forEach(([k, v]) => r.setProperty('--' + k, v));
 }
 
-// ── A · the one-pager ─────────────────────────────────────────────
-function compA(p) {
-  return `
-  <article class="ed">
-    <figure class="ed__cover"><img src="${p.cover}" alt=""></figure>
-    <div class="ed__body">
-      <p class="ed__kicker">${p.genre} · a plan for a game that does not exist yet</p>
-      <h1 class="ed__title">${p.title}<em>${p.sub}</em></h1>
-      <p class="ed__stand">${p.pitch}</p>
-      <div class="ed__cols">
-        <section><h3>What you do</h3><p>${p.doing}</p></section>
-        <section><h3>What it feels like</h3><p>${p.feel}</p></section>
-      </div>
-      <div class="ed__spec">
-        ${[[p.genre, 'Genre'], [p.style, 'Look'], [p.rooms, 'Scope'],
-           [p.length, 'A run'], [p.platform, 'Plays on'], [p.credits, 'Credits']]
-          .map(([v, k]) => `<span><b>${v}</b><em>${k}</em></span>`).join('')}
-      </div>
-      <footer class="ed__sign">
-        <span class="ed__faces">${CREW.map(([k]) =>
-          `<img src="assets/crew-${k}.webp" alt="">`).join('')}</span>
-        Drafted by the Plan crew · nothing gets built until you approve it
-      </footer>
-    </div>
-  </article>`;
-}
-
-// ── B · the crew's wall ───────────────────────────────────────────
-function compB(p) {
-  const note = (k, name, said, extra, cls) => `
-    <div class="pin ${cls}">
-      <span class="pin__tape"></span>
-      ${extra}
-      <footer class="pin__by">
-        <img src="assets/crew-${k}.webp" alt="">
-        <span><b>${name} Wana</b><em>${said}</em></span>
-      </footer>
-    </div>`;
-  return `
-  <article class="wall">
-    <header class="wall__h">
-      <h1>${p.title}<em>${p.sub}</em></h1>
-      <p>What the crew put on the wall. Change anything — nothing is built until you approve.</p>
-    </header>
-    <div class="wall__grid">
-      ${note('planner', 'Planner', CREW[0][2], `
-        <h3 class="pin__h">The idea</h3>
-        <p class="pin__p">${p.pitch}</p>
-        <p class="pin__p">${p.doing}</p>`, 'pin--a')}
-      ${note('artist', 'Artist', CREW[1][2], `
-        <figure class="pin__shot"><img src="${p.cover}" alt=""></figure>
-        <p class="pin__k">${p.style} · ${p.quality} quality</p>`, 'pin--b')}
-      ${note('developer', 'Developer', CREW[2][2], `
-        <h3 class="pin__h">The build</h3>
-        <ul class="pin__nums">
-          ${[[p.rooms, 'to walk'], [p.assets, 'to make'], [p.mins, 'to play'],
-             [p.credits, 'credits']].map(([a, b]) =>
-            `<li><b>${a}</b><em>${b}</em></li>`).join('')}
-        </ul>`, 'pin--c')}
-      ${note('tester', 'Tester', CREW[3][2], `
-        <h3 class="pin__h">It has to pass</h3>
-        <ul class="pin__check">${p.checks.map((c) => `<li>${c}</li>`).join('')}</ul>`, 'pin--d')}
-    </div>
-  </article>`;
-}
-
-// ── C · the box ───────────────────────────────────────────────────
-function compC(p) {
-  return `
-  <article class="box">
-    <div class="box__front">
-      <img src="${p.cover}" alt="">
-      <div class="box__spine">WANAKA</div>
-      <div class="box__face">
-        <em>${p.genre}</em>
-        <h1>${p.title}</h1>
-        <span>${p.sub}</span>
-      </div>
-    </div>
-    <div class="box__back">
-      <h2>${p.sub}</h2>
-      <p class="box__pitch">${p.pitch}</p>
-      <ul class="box__feat">
-        <li>${p.doing}</li>
-        <li>${p.feel}</li>
-      </ul>
-      <div class="box__shots">
-        ${[0, 1, 2].map(() => '<span>screenshot<i>after the build</i></span>').join('')}
-      </div>
-      <table class="box__spec">
-        ${[['Genre', p.genre], ['Look', p.style + ' · ' + p.quality],
-           ['Scope', p.rooms + ' · ' + p.assets], ['A run', p.length],
-           ['Plays on', p.platform], ['Cost to build', p.credits + ' credits · ' + p.mins]]
-          .map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join('')}
-      </table>
-      <footer class="box__foot">
-        <span class="box__faces">${CREW.map(([k]) =>
-          `<img src="assets/crew-${k}.webp" alt="">`).join('')}</span>
-        <button class="box__go">Make it real ↗</button>
-      </footer>
-    </div>
-  </article>`;
-}
-
-// ── D · the blueprint ─────────────────────────────────────────────
-function compD(p) {
-  return `
-  <article class="bp">
-    <div class="bp__sheet">
-      <svg class="bp__draw" viewBox="0 0 760 470">
-        <g class="bp__iso">
-          <path d="M380 70 L700 230 L380 390 L60 230 Z"/>
-          <path d="M200 230 L300 180 L400 230 L300 280 Z"/>
-          <path d="M200 230 L200 300 L300 350 L300 280 Z"/>
-          <path d="M300 280 L400 230 L400 300 L300 350 Z"/>
-          <path d="M400 175 L500 125 L600 175 L500 225 Z"/>
-          <path d="M400 175 L400 245 L500 295 L500 225 Z"/>
-          <path d="M500 225 L600 175 L600 245 L500 295 Z"/>
-        </g>
-        <g class="bp__dim">
-          <path d="M60 420 L700 420"/><path d="M60 410 L60 430"/><path d="M700 410 L700 430"/>
-          <text x="380" y="412" text-anchor="middle">${p.rooms.toUpperCase()}</text>
-          <path d="M726 70 L726 390"/><path d="M716 70 L736 70"/><path d="M716 390 L736 390"/>
-        </g>
-        <g class="bp__call">
-          <path d="M300 230 L250 120 L150 120"/><circle cx="300" cy="230" r="4"/>
-          <text x="150" y="112">START · she wakes here</text>
-          <path d="M500 175 L560 90 L660 90"/><circle cx="500" cy="175" r="4"/>
-          <text x="660" y="82" text-anchor="end">GOAL · the last piece</text>
-        </g>
-      </svg>
-      <div class="bp__block">
-        <div class="bp__row bp__row--big">
-          <span><em>Project</em><b>${p.title}</b></span>
-          <span><em>Sheet</em><b>01 / 01</b></span>
-        </div>
-        <div class="bp__row">
-          ${[['Genre', p.genre], ['Look', p.style], ['Scope', p.rooms + ' · ' + p.assets],
-             ['A run', p.length], ['Plays on', p.platform], ['Budget', p.credits + ' cr']]
-            .map(([k, v]) => `<span><em>${k}</em><b>${v}</b></span>`).join('')}
-        </div>
-        <div class="bp__row bp__row--sign">
-          <span><em>Drawn by</em><b>The Plan crew</b></span>
-          <span class="bp__faces">${CREW.map(([k]) =>
-            `<img src="assets/crew-${k}.webp" alt="">`).join('')}</span>
-          <span><em>Status</em><b>Awaiting your approval</b></span>
-        </div>
-      </div>
-    </div>
-  </article>`;
-}
-
 // ── E · the handheld ──────────────────────────────────────────────
-/* A clamshell turned on its side: the game on the left panel, the plan
-   on the right one as a touch menu, physical buttons down the far edge.
-
-   Everything here is drawn in code so we can move it around cheaply —
-   the wobble in the linework is a turbulence filter, not a steady hand.
-   Once the layout is settled this shell gets replaced by real art. */
-
+/* A clamshell standing open on a desk. It arrives shut, lands, and swings
+   open around its hinge; both screens flicker on; the Planner drops onto
+   the desk beside it. The left screen is the game and nothing else. The
+   right one is the plan as a touch screen — the same fields and rules as
+   G's notebook, wired by the same code. */
 const ic = (d, extra = '') => `<svg class="ti" viewBox="0 0 24 24" fill="none"
   stroke="currentColor" stroke-width="1.9" stroke-linecap="round"
   stroke-linejoin="round">${d}${extra}</svg>`;
-const GRILLE = (x, y) => [0, 1, 2].map((r) => [0, 1, 2].map((c) =>
-  `<circle cx="${x + c * 22}" cy="${y + r * 22}" r="6"/>`).join('')).join('');
-const ICON = {
-  genre: ic('<path d="M3 18l5-11 5 8 3-5 5 8z"/>'),
-  look: ic('<path d="M12 3a9 9 0 100 18c1 0 1.6-.7 1.6-1.5 0-1.4-1.3-1.6-1.3-2.7 0-.8.7-1.4 1.6-1.4H16a5 5 0 005-5c0-4-4-7.4-9-7.4z"/><circle cx="7.5" cy="11" r="1.1" fill="currentColor"/><circle cx="11" cy="7.5" r="1.1" fill="currentColor"/><circle cx="15.5" cy="8.5" r="1.1" fill="currentColor"/>'),
-  scope: ic('<rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/>'),
-  plat: ic('<rect x="2" y="4" width="13" height="10" rx="1.5"/><rect x="16" y="9" width="6" height="11" rx="1.5"/><path d="M6 18h5"/>'),
-  run: ic('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>'),
-  crew: ic('<circle cx="12" cy="15" r="4"/><circle cx="6" cy="8" r="2.2"/><circle cx="18" cy="8" r="2.2"/><circle cx="9.5" cy="5" r="2"/><circle cx="14.5" cy="5" r="2"/>'),
-};
 
 function compE(p) {
-  const row = (k, label, value) => `
-    <button class="ds__row">
-      <span class="ds__ico">${ICON[k]}</span>
-      <span class="ds__lab">${label}</span>
-      <span class="ds__val">${value}</span>
-    </button>`;
+  const f = p.form;
+  const so = (label, v, on, title = '') =>
+    `<button class="eo${on ? ' is-on' : ''}" data-v="${v}"${title ? ` title="${title}"` : ''}>${label}</button>`;
+  const seg = (k, items) => `<span class="eseg" data-k="${k}">${items}</span>`;
+  const dots = Array.from({ length: 12 }, () => '<i></i>').join('');
   return `
-  <div class="dev">
-    <div class="dev__body">
-      <!-- LEFT · the game -->
-      <section class="dev__half dev__half--l">
-        <div class="dev__glass">
-          <div class="dev__screen dev__screen--game">
-            <img src="${p.cover}" alt="">
-            <div class="dev__title">
-              <em>${p.genre}</em>
-              <b>${p.title}</b>
-              <span>${p.sub}</span>
-            </div>
-          </div>
-        </div>
-        <span class="dev__mark">WANAKA</span>
-      </section>
+  <div class="room">
+    <span class="room__lamp"></span>
+    <span class="room__desk"></span>
 
-      <span class="dev__hinge" aria-hidden="true"></span>
-
-      <!-- RIGHT · the plan, on the touch panel -->
-      <section class="dev__half dev__half--r">
-        <div class="dev__glass">
-          <div class="dev__screen dev__screen--menu">
-            <div class="ds">
-              <header class="ds__tabs">
-                <button class="ds__tab is-on">Plan</button>
-                <button class="ds__tab">Assets</button>
-                <button class="ds__tab">Crew</button>
-                <span class="ds__cart"><img src="${p.cover}" alt=""></span>
+    <div class="con" id="con">
+      <div class="con__body">
+        <!-- the half that stays on the desk: the plan, and the buttons -->
+        <section class="con__half con__base">
+          <div class="con__glass">
+            <div class="ts" id="ts" data-step="1">
+              <header class="ts__top">
+                <button class="ts__tab is-on" data-step="1"><b>1</b>Plan</button>
+                <button class="ts__tab" data-step="2"><b>2</b>Assets</button>
+                <span class="ts__bat"></span>
               </header>
-              <div class="ds__body">
-                <label class="ds__field">
-                  <em>Name</em>
-                  <input value="${p.title}">
-                </label>
-                <label class="ds__field">
-                  <em>The idea</em>
-                  <textarea rows="3">${p.pitch}</textarea>
-                </label>
-                <div class="ds__rows">
-                  ${row('genre', 'Genre', p.genre)}
-                  ${row('look', 'Look', p.style)}
-                  ${row('scope', 'Scope', p.rooms + ' · ' + p.assets)}
-                  ${row('plat', 'Plays on', p.platform)}
-                  ${row('run', 'A run', p.length)}
-                </div>
-                <div class="ds__crew">
-                  <span class="ds__faces">${CREW.map(([k]) =>
-                    `<img src="assets/crew-${k}.webp" alt="">`).join('')}</span>
-                  <span class="ds__cost">${p.credits} credits</span>
-                </div>
+              <div class="ts__pages">
+                <section class="ts__page is-on" data-page="1">
+                  <input class="ts__name" data-need value="${p.title}" placeholder="Name your game" spellcheck="false">
+                  <div class="tr"><span class="tr__k">Genre</span>
+                    <button class="ep" data-slip="genre"><span class="ep__v" data-val>${genreV(f.genre)}</span><i class="ep__c">▾</i></button>
+                  </div>
+                  <label class="tf"><span class="tr__k">What you do</span>
+                    <textarea data-need rows="2" spellcheck="false" placeholder="What does the player do?">${f.what || p.doing}</textarea>
+                  </label>
+                  <label class="tf"><span class="tr__k">How it feels</span>
+                    <textarea rows="2" spellcheck="false" placeholder="What should it feel like?">${f.feel || p.feel}</textarea>
+                  </label>
+                  <div class="tr"><span class="tr__k">Look</span>
+                    <button class="ep" data-slip="look"><span class="ep__v" data-val>${lookV(p, f.style, f.quality)}</span><i class="ep__c">▾</i></button>
+                  </div>
+                  <div class="tr"><span class="tr__k">Scope</span>
+                    ${seg('scope', F.scopes.map(([k, n, w, cr, t]) => so(n, k, k === f.scope, `${w} · ${cr} · ${t}`)).join(''))}
+                  </div>
+                  <div class="tr"><span class="tr__k">Plays on</span>
+                    <span class="emulti" data-multi>${[['Web', 'web'], ['Mobile', 'mobile']].map(([n, k]) =>
+                      `<button class="eck${f.plat.includes(k) ? ' is-on' : ''}" data-v="${k}"><i></i>${n}</button>`).join('')}</span>
+                  </div>
+                  <div class="tr"><span class="tr__k">A run</span>
+                    ${seg('len', F.length.map((n, i) => so(n, i, i === f.len)).join(''))}
+                  </div>
+                  <div class="tr"><span class="tr__k">Difficulty</span>
+                    ${seg('diff', F.difficulty.map((n, i) => so(n, i, i === f.diff)).join(''))}
+                  </div>
+                </section>
+                <section class="ts__page" data-page="2">
+                  <p class="ts__hint">Tick as many as you like. Leave a row alone and the Artist makes it.</p>
+                  ${p.parts.map(([name, opts, pick]) => `
+                    <div class="ta2" data-part><span class="tr__k">${name}</span>
+                      <span class="ta2__o">${opts.map((o, i) =>
+                        `<button class="echip${i === pick ? ' is-on' : ''}" data-po>${o}</button>`).join('')}<button
+                        class="echip echip--later${pick < 0 ? ' is-on' : ''}" data-later>✦ Artist</button></span>
+                    </div>`).join('')}
+                </section>
               </div>
-              <footer class="ds__foot">
-                <button class="ds__go">Put the cartridge in</button>
+              <footer class="ts__foot">
+                <span class="ts__sum"><b data-sum>${sumV(f.scope)}</b><em data-count></em></span>
+                <button class="ts__go" id="tsgo">Next · Assets →</button>
               </footer>
+
+              <div class="eslip eslip--genre" data-slipbox="genre" hidden>
+                ${F.genres.map(([k, n]) =>
+                  `<button class="eslip__g${k === f.genre ? ' is-on' : ''}" data-g="${k}">${GICON[k]}${n}</button>`).join('')}
+              </div>
+              <div class="eslip eslip--look" data-slipbox="look" hidden>
+                <div class="eslip__grid">${F.styles.map(([k, n]) =>
+                  `<button class="eslip__s${k === f.style ? ' is-on' : ''}" data-s="${k}"><img src="${thumb(p, k)}" alt=""><span>${n}</span></button>`).join('')}</div>
+                <div class="eslip__q">${F.quality.map((q) =>
+                  `<button class="eo${q === f.quality ? ' is-on' : ''}" data-q="${q}">${q}</button>`).join('')}</div>
+              </div>
             </div>
           </div>
-        </div>
+          <div class="con__ctrl" aria-hidden="true">
+            <span class="con__dpad"></span>
+            <span class="con__abxy"><i>X</i><i>Y</i><i>A</i><i>B</i></span>
+            <span class="con__sys"><i></i><i></i></span>
+            <span class="con__grille">${dots}</span>
+            <span class="con__led"></span>
+          </div>
+        </section>
 
-        <div class="dev__ctrl" aria-hidden="true">
-          <span class="dev__dpad"></span>
-          <span class="dev__abxy">
-            <i>X</i><i>Y</i><i>A</i><i>B</i>
-          </span>
-          <span class="dev__sys"><i></i><i></i></span>
-          <span class="dev__led"></span>
-        </div>
-      </section>
-    </div>
-    <span class="dev__cast" aria-hidden="true"></span>
-  </div>`;
-}
+        <span class="con__hinge" aria-hidden="true"><i></i><i></i></span>
 
-// ── F · the foldable ──────────────────────────────────────────────
-/* One continuous screen with a crease down it. The cover becomes the
-   wallpaper, so the whole surface is already the right colour, and the
-   plan is laid out as widgets rather than as a form — a tile can be a
-   different size from its neighbour, which is most of what stops a
-   screen reading as generated. */
-function compF(p) {
-  const tile = (k, label, value, cls = '') => `
-    <button class="w ${cls}">
-      <span class="w__top">${ICON[k]}<em>${label}</em></span>
-      <b>${value}</b>
-    </button>`;
-  return `
-  <div class="fold">
-    <div class="fold__dev">
-      <div class="fold__glass">
-        <img class="fold__wall" src="${p.cover}" alt="">
-        <span class="fold__scrim"></span>
-
-        <div class="fold__pages">
-          <!-- left · the game -->
-          <section class="fold__page">
-            <span class="fold__status fold__status--l">${p.genre}</span>
-            <figure class="hero">
-              <img src="${p.cover}" alt="">
-              <figcaption>
-                <em>Your game, unbuilt</em>
-                <b>${p.title}</b>
-                <span>${p.sub}</span>
-              </figcaption>
-              <button class="hero__play">▶</button>
-            </figure>
-          </section>
-
-          <!-- right · the plan, as widgets -->
-          <section class="fold__page fold__page--r">
-            <span class="fold__status">9:41 · ${p.credits} cr</span>
-            <div class="grid">
-              <div class="w w--wide w--title">
-                <em>${p.genre}</em>
-                <b>${p.title}</b>
-                <span>${p.sub}</span>
-              </div>
-              <div class="w w--wide w--idea">
-                <span class="w__top">${ICON.genre}<em>The idea</em></span>
-                <p>${p.pitch}</p>
-              </div>
-              ${tile('look', 'Look', p.style)}
-              ${tile('scope', 'Scope', p.rooms)}
-              ${tile('plat', 'Plays on', p.platform)}
-              ${tile('run', 'A run', p.length)}
-              <div class="w w--wide w--crew">
-                <span class="w__top">${ICON.crew}<em>On it</em></span>
-                <span class="w__faces">${CREW.map(([k]) =>
-                  `<img src="assets/crew-${k}.webp" alt="">`).join('')}</span>
-              </div>
-              <button class="w w--wide w--go">Approve the plan</button>
+        <!-- the lid: swings open around the hinge, the game on its face -->
+        <section class="con__lid">
+          <div class="con__face">
+            <div class="con__glass con__glass--game">
+              <img id="congame" src="${p.cover}" alt="">
+              <span class="con__scan"></span>
             </div>
-            <nav class="dock">
-              <button class="dock__b is-on" title="Plan">${ICON.genre}</button>
-              <button class="dock__b" title="Assets">${ICON.scope}</button>
-              <button class="dock__b" title="Look">${ICON.look}</button>
-              <button class="dock__b" title="Crew">${ICON.crew}</button>
-            </nav>
-          </section>
-        </div>
-
-        <span class="fold__crease"></span>
+          </div>
+          <div class="con__back"><span>WANAKA</span></div>
+        </section>
       </div>
+      <span class="con__shadow"></span>
     </div>
-    <span class="fold__cast"></span>
+
+    <button class="pcat" id="pcat" title="Planner Wana">
+      <span class="pcat__shadow"></span>
+      <img src="assets/crew-planner.webp" alt="Planner Wana">
+    </button>
+
+    <button class="replay" id="replay">↻ Replay</button>
   </div>`;
 }
 
@@ -557,9 +350,9 @@ const CLIP = 'M12 30V86a9 9 0 0 0 18 0V16a13 13 0 0 0 -26 0V92a17 17 0 0 0 34 0V
 
 function compG(p) {
   const ck = (label, on) =>
-    `<button class="ck${on ? ' is-on' : ''}"><i></i>${label}</button>`;
+    `<button class="ck${on ? ' is-on' : ''}" data-po><i></i>${label}</button>`;
   const later = (on) =>
-    `<button class="ck ck--later${on ? ' is-on' : ''}">✦ Artist</button>`;
+    `<button class="ck ck--later${on ? ' is-on' : ''}" data-later>✦ Artist</button>`;
   const layers = [9, 8, 7, 6, 5, 4, 3, 2, 1].map((n) =>
     `<svg class="cart__layer" style="--z:${-n * 2.9}px;fill:hsl(230 6% ${4 + (9 - n) * 1.6}%)"
       viewBox="0 0 324 200"><path d="${CART}"/></svg>`).join('');
@@ -611,11 +404,11 @@ function compG(p) {
             <p class="n__hint">Tick any. Skip a line and the Artist makes it.</p>
             <div class="n__parts">
               ${p.parts.map(([name, opts, pick]) => `
-                <p class="part"><b>${name}</b>${opts.map((o, i) => ck(o, i === pick)).join('')}${later(pick < 0)}</p>`).join('')}
+                <p class="part" data-part><b>${name}</b>${opts.map((o, i) => ck(o, i === pick)).join('')}${later(pick < 0)}</p>`).join('')}
             </div>
             <footer class="n__foot">
               <button class="pgbtn pgbtn--back" data-go="1">← page 1</button>
-              <span class="n__count" id="count"></span>
+              <span class="n__count" id="count" data-count></span>
             </footer>
             <button class="stamp" id="stamp">Approve</button>
             <span class="inked">Approved</span>
@@ -627,27 +420,27 @@ function compG(p) {
             <div class="n__row"><span class="n__pg">p.1 / 2</span><span class="n__tag">The plan</span>
               <span class="n__try">✎ tap to edit</span></div>
             <div class="f-tw">
-              <input class="n__title f-title" value="${p.title}" placeholder="Name your game" spellcheck="false">
+              <input class="n__title f-title" data-need value="${p.title}" placeholder="Name your game" spellcheck="false">
               <i class="pen">✎</i>
             </div>
             <div class="fl"><span class="fl__k">Genre</span>
-              <button class="pick" data-slip="genre"><span class="pick__v" id="g-genre">${genreV(f.genre)}</span><i class="chev">▾</i></button>
+              <button class="pick" data-slip="genre"><span class="pick__v" id="g-genre" data-val>${genreV(f.genre)}</span><i class="chev">▾</i></button>
             </div>
             <div class="fta"><span class="fl__k">What you do</span><i class="pen">✎</i>
-              <textarea class="ta f-what" spellcheck="false" placeholder="What does the player do?">${f.what || p.doing}</textarea>
+              <textarea class="ta f-what" data-need spellcheck="false" placeholder="What does the player do?">${f.what || p.doing}</textarea>
             </div>
             <div class="fta"><span class="fl__k">How it feels</span><i class="pen">✎</i>
               <textarea class="ta f-feel" spellcheck="false" placeholder="What should it feel like?">${f.feel || p.feel}</textarea>
             </div>
             <div class="fl"><span class="fl__k">Look</span>
-              <button class="pick" data-slip="look"><span class="pick__v" id="g-look">${lookV(p, f.style, f.quality)}</span><i class="chev">▾</i></button>
+              <button class="pick" data-slip="look"><span class="pick__v" id="g-look" data-val>${lookV(p, f.style, f.quality)}</span><i class="chev">▾</i></button>
             </div>
             <div class="fl"><span class="fl__k">Scope</span>
               <span class="opts" data-k="scope">${F.scopes.map(([k, n, what, cr, t]) =>
                 opt(n, k, k === f.scope, `${what} · ${cr} · ${t}`)).join('')}</span>
             </div>
             <div class="fl"><span class="fl__k">Plays on</span>
-              <span class="opts opts--multi">${[['Web', 'web'], ['Mobile', 'mobile']].map(([n, k]) =>
+              <span class="opts opts--multi" data-multi>${[['Web', 'web'], ['Mobile', 'mobile']].map(([n, k]) =>
                 `<button class="ck${f.plat.includes(k) ? ' is-on' : ''}" data-v="${k}"><i></i>${n}</button>`).join('')}</span>
             </div>
             <div class="fl"><span class="fl__k">A run</span>
@@ -658,15 +451,15 @@ function compG(p) {
             </div>
             <footer class="n__foot">
               <span class="n__faces">${faces}</span>
-              <em id="g-sum">${sumV(f.scope)}</em>
+              <em id="g-sum" data-sum>${sumV(f.scope)}</em>
               <button class="pgbtn pgbtn--cta" data-go="2">page 2 →</button>
             </footer>
 
-            <div class="slip slip--genre" id="slip-genre" hidden>
+            <div class="slip slip--genre" id="slip-genre" data-slipbox="genre" hidden>
               ${F.genres.map(([k, n]) =>
                 `<button class="slip__g${k === f.genre ? ' is-on' : ''}" data-g="${k}">${GICON[k]}${n}</button>`).join('')}
             </div>
-            <div class="slip slip--look" id="slip-look" hidden>
+            <div class="slip slip--look" id="slip-look" data-slipbox="look" hidden>
               <div class="slip__grid">${F.styles.map(([k, n]) =>
                 `<button class="slip__s${k === f.style ? ' is-on' : ''}" data-s="${k}"><img src="${thumb(p, k)}" alt=""><span>${n}</span></button>`).join('')}</div>
               <div class="slip__q"><em>Quality</em>${F.quality.map((q) =>
@@ -688,54 +481,136 @@ function compG(p) {
   </div>`;
 }
 
-function wireG(p) {
-  const stack = $('stack');
+// ── Shared by E and G: the form, the asset rows, the required fields ──
+const retheme = (src) => {
+  const img = new Image();
+  img.onload = () => theme(readPalette(img));
+  img.src = src;
+};
 
-  // a name and what the player does are the two things the crew cannot guess
-  const need = [stack.querySelector('.f-title'), stack.querySelector('.f-what')];
-  const formOK = () => {
-    const miss = need.filter((x) => !x.value.trim());
-    need.forEach((x) => x.classList.toggle('is-missing', miss.includes(x)));
-    if (miss.length) {
-      const b = stack.querySelector('.sheet--1 [data-go="2"]');
-      b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
-      miss[0].focus();
-    }
-    return !miss.length;
-  };
-  need.forEach((x) => x.addEventListener('input', () => x.classList.remove('is-missing')));
+// pickers that open a slip, pick-one groups, and the platform ticks
+function wireForm(p, root, onLook) {
+  const f = { ...p.form };
+  const box = (k) => root.querySelector(`[data-slipbox="${k}"]`);
+  const val = (k) => root.querySelector(`[data-slip="${k}"] [data-val]`);
+  const close = () => root.querySelectorAll('[data-slipbox]').forEach((x) => { x.hidden = true; });
 
-  const turn = (n) => {
-    if (n === 2 && !formOK()) return;
-    stack.classList.remove(n === 2 ? 'is-back' : 'is-p2');
-    void stack.offsetWidth;                  // restart the keyframes
-    stack.classList.add(n === 2 ? 'is-p2' : 'is-back');
-  };
-  stack.querySelectorAll('[data-go]').forEach((b) => { b.onclick = () => turn(+b.dataset.go); });
+  root.querySelectorAll('[data-slip]').forEach((b) => {
+    b.onclick = (e) => {
+      e.stopPropagation();
+      const slip = box(b.dataset.slip);
+      const wasShut = slip.hidden;
+      close();
+      slip.hidden = !wasShut;
+    };
+  });
+  root.addEventListener('click', (e) => {
+    if (!e.target.closest('[data-slipbox]') && !e.target.closest('[data-slip]')) close();
+  });
 
+  box('genre').querySelectorAll('[data-g]').forEach((b) => {
+    b.onclick = () => {
+      f.genre = b.dataset.g;
+      box('genre').querySelectorAll('[data-g]').forEach((x) => x.classList.toggle('is-on', x === b));
+      val('genre').innerHTML = genreV(f.genre);
+      close();
+    };
+  });
+  // choosing a look re-renders the game in that style and re-lights the room
+  box('look').querySelectorAll('[data-s]').forEach((b) => {
+    b.onclick = () => {
+      f.style = b.dataset.s;
+      box('look').querySelectorAll('[data-s]').forEach((x) => x.classList.toggle('is-on', x === b));
+      val('look').innerHTML = lookV(p, f.style, f.quality);
+      onLook(full(p, f.style));
+    };
+  });
+  box('look').querySelectorAll('[data-q]').forEach((b) => {
+    b.onclick = () => {
+      f.quality = b.dataset.q;
+      box('look').querySelectorAll('[data-q]').forEach((x) => x.classList.toggle('is-on', x === b));
+      val('look').innerHTML = lookV(p, f.style, f.quality);
+    };
+  });
+
+  root.querySelectorAll('[data-k]').forEach((g) => {
+    g.querySelectorAll('[data-v]').forEach((o) => {
+      o.onclick = () => {
+        g.querySelectorAll('[data-v]').forEach((x) => x.classList.toggle('is-on', x === o));
+        const sum = root.querySelector('[data-sum]');
+        if (g.dataset.k === 'scope' && sum) sum.textContent = sumV(o.dataset.v);
+      };
+    });
+  });
+
+  // a game has to ship somewhere: the last platform will not untick
+  root.querySelectorAll('[data-multi] [data-v]').forEach((c) => {
+    c.onclick = () => {
+      const on = root.querySelectorAll('[data-multi] [data-v].is-on').length;
+      if (c.classList.contains('is-on') && on === 1) {
+        c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
+        return;
+      }
+      c.classList.toggle('is-on');
+    };
+  });
+}
+
+// several per row, or leave it to the Artist — which is the same as clearing it
+function wireAssets(root) {
   const count = () => {
-    const parts = [...stack.querySelectorAll('.part')];
-    const picked = stack.querySelectorAll('.ck.is-on:not(.ck--later)').length;
-    const left = parts.filter((x) => !x.querySelector('.ck.is-on:not(.ck--later)')).length;
-    $('count').textContent = `${picked} picked · ${left} left to the Artist`;
+    const parts = [...root.querySelectorAll('[data-part]')];
+    const picked = root.querySelectorAll('[data-po].is-on').length;
+    const left = parts.filter((x) => !x.querySelector('[data-po].is-on')).length;
+    const c = root.querySelector('[data-count]');
+    if (c) c.textContent = `${picked} picked · ${left} left to the Artist`;
   };
-  stack.querySelectorAll('.part').forEach((part) => {
-    const later = part.querySelector('.ck--later');
-    part.querySelectorAll('.ck:not(.ck--later)').forEach((c) => {
+  root.querySelectorAll('[data-part]').forEach((part) => {
+    const later = part.querySelector('[data-later]');
+    part.querySelectorAll('[data-po]').forEach((c) => {
       c.onclick = () => {
         c.classList.toggle('is-on');
-        later.classList.toggle('is-on', !part.querySelector('.ck.is-on:not(.ck--later)'));
+        later.classList.toggle('is-on', !part.querySelector('[data-po].is-on'));
         count();
       };
     });
-    // leaving it to the Artist is the same as clearing the line
     later.onclick = () => {
-      part.querySelectorAll('.ck').forEach((c) => c.classList.remove('is-on'));
+      part.querySelectorAll('[data-po]').forEach((c) => c.classList.remove('is-on'));
       later.classList.add('is-on');
       count();
     };
   });
   count();
+}
+
+// a name and what the player does are the two things the crew cannot guess
+function needWatch(root) {
+  root.querySelectorAll('[data-need]').forEach((x) =>
+    x.addEventListener('input', () => x.classList.remove('is-missing')));
+}
+function formCheck(root, btn) {
+  const need = [...root.querySelectorAll('[data-need]')];
+  const miss = need.filter((x) => !x.value.trim());
+  need.forEach((x) => x.classList.toggle('is-missing', miss.includes(x)));
+  if (miss.length) {
+    btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
+    miss[0].focus();
+  }
+  return !miss.length;
+}
+
+function wireG(p) {
+  const stack = $('stack');
+  const page1 = stack.querySelector('.sheet--1 .note');
+  needWatch(page1);
+  const turn = (n) => {
+    if (n === 2 && !formCheck(page1, page1.querySelector('[data-go="2"]'))) return;
+    stack.classList.remove(n === 2 ? 'is-back' : 'is-p2');
+    void stack.offsetWidth;                  // restart the keyframes
+    stack.classList.add(n === 2 ? 'is-p2' : 'is-back');
+  };
+  stack.querySelectorAll('[data-go]').forEach((b) => { b.onclick = () => turn(+b.dataset.go); });
+  wireAssets(stack.querySelector('.sheet--2 .note'));
 
   $('stamp').onclick = () => {
     stack.classList.add('is-approved');
@@ -756,90 +631,49 @@ function wireG(p) {
   col.onmouseleave = () => ['--ry', '--rx', '--mx'].forEach((v) => cart.style.removeProperty(v));
 
   $('replay').onclick = paint;
-  wireForm(p);
+  wireForm(p, page1, (src) => { document.querySelector('.cart__win img').src = src; retheme(src); });
 }
 
-// Page 1: pickers that open as slips of paper, circle-one options, tick boxes.
-function wireForm(p) {
-  const note = document.querySelector('.sheet--1 .note');
-  const f = { ...p.form };
-  const slips = () => note.querySelectorAll('.slip');
-  const close = () => slips().forEach((x) => { x.hidden = true; });
+function wireE(p) {
+  const ts = $('ts');
+  const go = $('tsgo');
+  const page1 = ts.querySelector('[data-page="1"]');
+  needWatch(page1);
+  const step = (n) => {
+    if (n === 2 && !formCheck(page1, go)) return;
+    ts.dataset.step = n;
+    ts.querySelectorAll('.ts__tab').forEach((t) => t.classList.toggle('is-on', +t.dataset.step === n));
+    ts.querySelectorAll('.ts__page').forEach((pg) => pg.classList.toggle('is-on', +pg.dataset.page === n));
+    go.innerHTML = n === 1 ? 'Next · Assets →' : 'Approve ▶';
+  };
+  ts.querySelectorAll('.ts__tab').forEach((t) => { t.onclick = () => step(+t.dataset.step); });
 
-  note.querySelectorAll('.pick').forEach((b) => {
-    b.onclick = (e) => {
-      e.stopPropagation();
-      const slip = $('slip-' + b.dataset.slip);
-      const wasShut = slip.hidden;
-      close();
-      slip.hidden = !wasShut;
-    };
-  });
-  note.addEventListener('click', (e) => {
-    if (!e.target.closest('.slip') && !e.target.closest('.pick')) close();
-  });
+  const cat = $('pcat');
+  const hop = () => { cat.classList.remove('is-hop'); void cat.offsetWidth; cat.classList.add('is-hop'); };
+  go.onclick = () => {
+    if (ts.dataset.step === '1') { step(2); return; }
+    $('con').classList.add('is-approved');
+    go.innerHTML = 'Approved ✓';
+    go.disabled = true;
+    hop();
+  };
+  cat.onclick = hop;
 
-  $('slip-genre').querySelectorAll('[data-g]').forEach((b) => {
-    b.onclick = () => {
-      f.genre = b.dataset.g;
-      $('slip-genre').querySelectorAll('[data-g]').forEach((x) => x.classList.toggle('is-on', x === b));
-      $('g-genre').innerHTML = genreV(f.genre);
-      close();
-    };
-  });
-
-  // choosing a look re-renders the cartridge and re-lights the desk from it
-  const look = () => { $('g-look').innerHTML = lookV(p, f.style, f.quality); };
-  $('slip-look').querySelectorAll('[data-s]').forEach((b) => {
-    b.onclick = () => {
-      f.style = b.dataset.s;
-      $('slip-look').querySelectorAll('[data-s]').forEach((x) => x.classList.toggle('is-on', x === b));
-      look();
-      const src = full(p, f.style);
-      document.querySelector('.cart__win img').src = src;
-      const img = new Image();
-      img.onload = () => theme(readPalette(img));
-      img.src = src;
-    };
-  });
-  $('slip-look').querySelectorAll('[data-q]').forEach((b) => {
-    b.onclick = () => {
-      f.quality = b.dataset.q;
-      $('slip-look').querySelectorAll('[data-q]').forEach((x) => x.classList.toggle('is-on', x === b));
-      look();
-    };
-  });
-
-  note.querySelectorAll('.opts:not(.opts--multi)').forEach((g) => {
-    g.querySelectorAll('.o').forEach((o) => {
-      o.onclick = () => {
-        g.querySelectorAll('.o').forEach((x) => x.classList.toggle('is-on', x === o));
-        if (g.dataset.k === 'scope') $('g-sum').textContent = sumV(o.dataset.v);
-      };
-    });
-  });
-
-  // a game has to ship somewhere: the last platform will not untick
-  note.querySelectorAll('.opts--multi .ck').forEach((c) => {
-    c.onclick = () => {
-      if (c.classList.contains('is-on') && note.querySelectorAll('.opts--multi .ck.is-on').length === 1) {
-        c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
-        return;
-      }
-      c.classList.toggle('is-on');
-    };
-  });
+  wireAssets(ts);
+  wireForm(p, ts, (src) => { $('congame').src = src; retheme(src); });
+  $('replay').onclick = paint;
 }
 
 // ── Wiring ────────────────────────────────────────────────────────
-const COMPS = { a: compA, b: compB, c: compC, d: compD, e: compE, f: compF, g: compG };
-let which = 'g', plan = 'toy';
+const COMPS = { e: compE, g: compG };
+let which = 'e', plan = 'toy';
 
 function paint() {
   const p = PLANS[plan];
   $('stage').className = 'stage stage--' + which;
   $('stage').innerHTML = COMPS[which](p);
   if (which === 'g') wireG(p);
+  if (which === 'e') wireE(p);
   document.querySelectorAll('.sw__b').forEach((b) =>
     b.classList.toggle('is-on', b.dataset.c === which));
   document.querySelectorAll('.sw__p').forEach((b) =>

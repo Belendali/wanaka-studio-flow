@@ -37,40 +37,26 @@ Candidates are drawn inline (`house`/`chair`/`kid`/`piece` in `panel.js`)
 so four entries in a slot look like four different models. Swap in real
 library renders when there are some.
 
-## Four ways to show a plan
+## Two ways to show a plan
 
-`plans.html` — four static comps of the same plan, to argue about before
-building any of it.
+`plans.html` — the plan presented as an object, in two directions. Both use
+the same fields and rules (name, genre, what you do, how it feels, look +
+quality, scope, platforms, session length, difficulty; then the assets
+page), wired by the same code: `wireForm`, `wireAssets` and `formCheck` in
+`plans.js` work on data hooks (`data-slip`, `data-k`, `data-multi`,
+`data-part`, `data-need`…), so each direction only owns its looks.
+Palettes are read off the cover at runtime; switch the cover top right.
 
-- **A · One-pager** — an editorial spread. Prose, not fields; the settings
-  demoted to a spec strip like a film's technical credits.
-- **B · Crew wall** — what the five Wanas each pinned up, in their own
-  voice, signed. Uses the one thing nobody else's AI has.
-- **C · Game box** — the plan as packaging for a game that does not exist
-  yet. Approve = "Make it real".
-- **D · Blueprint** — the toy house drawn as a technical sheet, specs in a
-  title block.
+- **E · Handheld** — a clamshell console standing open on a desk in a
+  lamp-lit room. It arrives shut (the lid's back shows), lands, and the lid
+  swings open around its hinge while the body slides to centre; both
+  screens flicker on; the Planner drops onto the desk at the bottom right
+  and hops when you tap it or approve. The left screen is only the game.
+  The right one is the plan as a touch screen: segmented controls for
+  pick-one, tick chips for platforms, pills that open slips for genre and
+  look. Step 1 Plan → step 2 Assets → Approve.
 
-Every screen takes its palette from the cover **at runtime** (`readPalette`
-in `plans.js` quantises the image on a canvas and sorts the result into
-roles). Switch the cover in the top right: warm toy house, cold horror,
-green phosphor — same layout, three different products.
-
-- **E · Handheld** — a clamshell laid back on a desk: the game on the left
-  panel, the plan on the right one, five controls down the far edge. Built
-  entirely in CSS — a real front face hinged off the bottom edge gives the
-  thickness, one specular streak does the glass. **The shell stays near
-  neutral so the only colour in the room comes off the screens**, which is
-  what keeps it from looking like a toy.
-
-- **F · Foldable** — one continuous screen with a crease down it, in a thin
-  light frame on a light desk. The cover becomes the wallpaper, so the whole
-  surface is already the right colour, and the plan is laid out as **widgets
-  rather than fields** — a tile can be a different size from its neighbour,
-  which is most of what stops a screen reading as generated. Glass tiles,
-  a dock down the outer edge, no controls at all.
-
-- **G · Desk** — the one we are taking forward. A game cartridge rises out
+- **G · Desk** — A game cartridge rises out
   of the bottom of the screen with the cover in its window (3D: nine copies
   of the outline pushed back in z give the body its thickness; it leans
   toward the pointer). Two sheets of ruled notebook paper fly in from the
