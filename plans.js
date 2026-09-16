@@ -722,6 +722,16 @@ function wireE(p) {
    into the line, and the cartridge lights and loads. */
 const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
+function hBg() { try { return localStorage.getItem('h-bg') || 'room'; } catch (e) { return 'room'; } }
+function wireHBg() {
+  const c = document.getElementById('charge'); if (!c) return;
+  const mark = () => document.querySelectorAll('.hbgsw [data-bg]').forEach((b) => b.classList.toggle('is-on', b.dataset.bg === c.dataset.bg));
+  document.querySelectorAll('.hbgsw [data-bg]').forEach((b) => b.addEventListener('click', () => {
+    c.dataset.bg = b.dataset.bg; mark();
+    try { localStorage.setItem('h-bg', b.dataset.bg); } catch (e) {}
+  }));
+  mark();
+}
 function compH(p) {
   const f = p.form;
   const sc = F.scopes.find((x) => x[0] === f.scope) || F.scopes[1];
@@ -734,7 +744,11 @@ function compH(p) {
       <span class="tbub__art">${p.partImg ? `<img src="${p.partImg(name)}" alt="">` : `<b>${name[0]}</b>`}</span>
       <span class="tbub__n">${name}</span></button>`;
   return `
-  <div class="charge" id="charge">
+  <div class="charge" id="charge" data-bg="${hBg()}">
+    <div class="hbg" aria-hidden="true">
+      <i class="hbg__glow hbg__glow--a"></i><i class="hbg__glow hbg__glow--b"></i>
+      <div class="hbg__room"><i class="hbg__wall"></i><i class="hbg__floor"></i><i class="hbg__horizon"></i></div>
+    </div>
     ${cartridge(p, { pins: true, shape: '4:3' })}
 
     <svg class="link" id="link" aria-hidden="true">
@@ -828,6 +842,7 @@ function compH(p) {
 
     <svg class="zap" id="zap" aria-hidden="true"></svg>
     <button class="replay" id="replay">↻ Replay</button>
+    <span class="hbgsw" role="group" aria-label="Background"><em>Background</em><button data-bg="glow">Glow</button><button data-bg="room">3D room</button><button data-bg="none">Off</button></span>
   </div>`;
 }
 
@@ -985,6 +1000,7 @@ function charge() {
 }
 
 function wireH(p) {
+  wireHBg();
   const scr = $('gl');
   const go = $('glgo');
   const page1 = scr.querySelector('[data-page="1"]');
