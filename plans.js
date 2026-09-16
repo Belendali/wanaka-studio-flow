@@ -1,6 +1,7 @@
 /* ──────────────────────────────────────────────────────────────────
-   Two ways to show a plan: E, a handheld console standing open on a desk;
-   G, a cartridge and two sheets of notebook paper on a desk.
+   Three ways to show a plan: H, a cartridge charged from a pane of glass;
+   E, a handheld console standing open on a desk; G, a cartridge and two
+   sheets of notebook paper on a desk.
 
    The plan is the same in both, and so are its rules. The palette is
    fixed — neutral grey for the room, Wanaka lime for everything you can
@@ -17,10 +18,12 @@ const PLANS = {
   toy: {
     set: 'boy',
     cover: 'assets/boy.jpg',
-    parts: [['The bedroom', ['Toy blocks', 'Book stacks', 'Shelves'], 0],
+    parts: [['The bedroom', ['Toy blocks', 'Book stacks', 'Dresser'], 0],
             ['Big toys', ['Basketball', 'Truck', 'Teddy'], -1],
-            ['To collect', ['Stars', 'Marbles', 'Cards'], -1],
+            ['To collect', ['Stars', 'Baseballs', 'Pencils'], -1],
             ['The kid', ['Backpacker', 'Robot pal', 'Dino suit'], -1]],
+    // bubble art for the asset page, cut from the cover
+    partImg: (n) => `assets/boy-part-${slug(n)}.jpg`,
     form: { genre: 'adventure', style: 'default', quality: 'High', scope: 'standard',
             plat: ['web', 'mobile'], len: 1, diff: 1 },
     title: 'Tiny Explorer',
@@ -292,21 +295,14 @@ const CART = 'M16 0H298L324 26V184Q324 200 308 200H16Q0 200 0 184V16Q0 0 16 0Z';
 const RIM = 'M19 6H295L318 29V181Q318 194 305 194H19Q6 194 6 181V19Q6 6 19 6Z';
 const CLIP = 'M12 30V86a9 9 0 0 0 18 0V16a13 13 0 0 0 -26 0V92a17 17 0 0 0 34 0V28';
 
-function compG(p) {
-  const ck = (label, on) =>
-    `<button class="ck${on ? ' is-on' : ''}" data-po><i></i>${label}</button>`;
-  const later = (on) =>
-    `<button class="ck ck--later${on ? ' is-on' : ''}" data-later>✦ Artist</button>`;
+// The cartridge G and H share. H asks for the contacts its current arcs into.
+const PINS = `<g class="pins">${Array.from({ length: 9 }, (_, i) =>
+  `<rect x="310" y="${60 + i * 12}" width="8" height="8" rx="1.6"/>`).join('')}</g>`;
+function cartridge(p, { pins = false } = {}) {
   const layers = [9, 8, 7, 6, 5, 4, 3, 2, 1].map((n) =>
     `<svg class="cart__layer" style="--z:${-n * 2.9}px;fill:hsl(230 6% ${4 + (9 - n) * 1.6}%)"
       viewBox="0 0 324 200"><path d="${CART}"/></svg>`).join('');
-  const f = p.form;
-  const faces = CREW.map(([k]) => `<img src="assets/crew-${k}.webp" alt="">`).join('');
-
   return `
-  <div class="desk">
-    <span class="desk__lamp"></span>
-
     <!-- left · the cartridge -->
     <div class="cartcol" id="cartcol">
       <div class="cart__rise">
@@ -322,6 +318,7 @@ function compG(p) {
                 <path d="${RIM}" fill="none" stroke="rgba(255,255,255,.17)" stroke-width="1.2"/>
                 <path d="M258 11h18M258 15.5h18M258 20h18" stroke="rgba(255,255,255,.24)"
                       stroke-width="1.6" stroke-linecap="round"/>
+                ${pins ? PINS : ''}
               </svg>
               <span class="cart__lab" id="cartlab"><i></i>Game Cartridge</span>
               <div class="cart__win">
@@ -329,12 +326,29 @@ function compG(p) {
                 <span class="cart__sheen"></span>
               </div>
               <span class="cart__sweep"></span>
+              <span class="cart__zap"></span>
             </div>
           </div>
         </div>
         <span class="cart__shadow"></span>
       </div>
     </div>
+`;
+}
+
+function compG(p) {
+  const ck = (label, on) =>
+    `<button class="ck${on ? ' is-on' : ''}" data-po><i></i>${label}</button>`;
+  const later = (on) =>
+    `<button class="ck ck--later${on ? ' is-on' : ''}" data-later>✦ Artist</button>`;
+  const f = p.form;
+  const faces = CREW.map(([k]) => `<img src="assets/crew-${k}.webp" alt="">`).join('');
+
+  return `
+  <div class="desk">
+    <span class="desk__lamp"></span>
+
+    ${cartridge(p)}
 
     <!-- right · two sheets of notebook paper -->
     <div class="stackcol">
@@ -683,9 +697,266 @@ function wireE(p) {
   $('replay').onclick = paint;
 }
 
+// ── H · the charge ────────────────────────────────────────────────
+/* G's cartridge on the left; on the right, the plan as a pane of glass
+   floating over slow colour. Approving sends current out of every choice
+   you made, gathers it at the edge of the glass, and arcs it across the gap
+   into the cartridge's contacts. */
+const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
+function compH(p) {
+  const f = p.form;
+  const so = (label, v, on, title = '') =>
+    `<button class="gopt${on ? ' is-on' : ''}" data-v="${v}"${title ? ` title="${title}"` : ''}>${label}</button>`;
+  const seg = (k, items) => `<span class="gseg" data-k="${k}">${items}</span>`;
+  const bub = (name, on) => `<button class="bub${on ? ' is-on' : ''}" data-po>
+      <span class="bub__art">${p.partImg ? `<img src="${p.partImg(name)}" alt="">` : `<b>${name[0]}</b>`}</span>
+      <span class="bub__n">${name}</span></button>`;
+  return `
+  <div class="charge" id="charge">
+    <span class="charge__blob charge__blob--a"></span>
+    <span class="charge__blob charge__blob--b"></span>
+    <span class="charge__blob charge__blob--c"></span>
+
+    ${cartridge(p, { pins: true })}
+
+    <div class="glcol">
+      <div class="gl" id="gl" data-step="1">
+        <header class="gl__top">
+          <span class="gl__tabs">
+            <button class="gl__tab is-on" data-step="1">Plan</button>
+            <button class="gl__tab" data-step="2">Assets</button>
+          </span>
+          <span class="gl__dots"><i></i><i></i></span>
+        </header>
+        <div class="gl__pages">
+          <section class="gl__page is-on" data-page="1">
+            <input class="gl__name" data-need value="${p.title}" placeholder="Name your game" spellcheck="false">
+            <div class="gr"><span class="gr__k">Genre</span>
+              <button class="gpick" data-slip="genre"><span class="gpick__v" data-val>${genreV(f.genre)}</span><i class="gpick__c">⌄</i></button>
+            </div>
+            <label class="gf"><span class="gr__k">What you do</span>
+              <textarea data-need spellcheck="false" placeholder="What does the player do?">${f.what || p.doing}</textarea>
+            </label>
+            <label class="gf"><span class="gr__k">How it feels</span>
+              <textarea spellcheck="false" placeholder="What should it feel like?">${f.feel || p.feel}</textarea>
+            </label>
+            <div class="gr"><span class="gr__k">Look</span>
+              <button class="gpick" data-slip="look"><span class="gpick__v" data-val>${lookV(p, f.style, f.quality)}</span><i class="gpick__c">⌄</i></button>
+            </div>
+            <div class="gr"><span class="gr__k">Scope</span>
+              ${seg('scope', F.scopes.map(([k, n, w2, cr, t]) => so(n, k, k === f.scope, `${w2} · ${cr} · ${t}`)).join(''))}
+            </div>
+            <div class="gr"><span class="gr__k">Plays on</span>
+              <span class="gtog" data-multi>${[['Web', 'web'], ['Mobile', 'mobile']].map(([n, k]) =>
+                `<button class="gsw${f.plat.includes(k) ? ' is-on' : ''}" data-v="${k}"><i></i>${n}</button>`).join('')}</span>
+            </div>
+            <div class="gr"><span class="gr__k">A run</span>
+              ${seg('len', F.length.map((n, i) => so(n, i, i === f.len)).join(''))}
+            </div>
+            <div class="gr"><span class="gr__k">Difficulty</span>
+              ${seg('diff', F.difficulty.map((n, i) => so(n, i, i === f.diff)).join(''))}
+            </div>
+          </section>
+          <section class="gl__page" data-page="2">
+            <p class="gl__hint">The Artist picked three for each part. Tick any, or leave it to the Artist.</p>
+            <div class="gparts">
+              ${p.parts.map(([name, opts, pick]) => `
+                <div class="gpart" data-part>
+                  <div class="gpart__h"><b>${name}</b><button class="gmore" data-more>All ${opts.length + 21} ›</button></div>
+                  <div class="gpart__o">${opts.map((o, i) => bub(o, i === pick)).join('')}<button
+                    class="bub bub--later${pick < 0 ? ' is-on' : ''}" data-later><span class="bub__art"><b>✦</b></span><span class="bub__n">Artist</span></button></div>
+                  <div class="gpart__all">${'<i></i>'.repeat(8)}</div>
+                </div>`).join('')}
+            </div>
+          </section>
+        </div>
+        <footer class="gl__foot">
+          <span class="gl__sum"><b data-sum>${sumV(f.scope)}</b><em data-count></em></span>
+          <button class="gbtn" id="glgo"><span>Next · Assets</span></button>
+        </footer>
+
+        <div class="gslip gslip--genre" data-slipbox="genre" hidden>
+          ${F.genres.map(([k, n]) =>
+            `<button class="gslip__g${k === f.genre ? ' is-on' : ''}" data-g="${k}">${GICON[k]}${n}</button>`).join('')}
+        </div>
+        <div class="gslip gslip--look" data-slipbox="look" hidden>
+          <div class="gslip__grid">${F.styles.map(([k, n]) =>
+            `<button class="gslip__s${k === f.style ? ' is-on' : ''}" data-s="${k}"><img src="${thumb(p, k)}" alt=""><span>${n}</span></button>`).join('')}</div>
+          <div class="gslip__q">${F.quality.map((q) =>
+            `<button class="gopt${q === f.quality ? ' is-on' : ''}" data-q="${q}">${q}</button>`).join('')}</div>
+        </div>
+      </div>
+    </div>
+
+    <svg class="zap" id="zap" aria-hidden="true"></svg>
+    <button class="replay" id="replay">↻ Replay</button>
+  </div>`;
+}
+
+// a seeded random, so any given moment of the arc always looks the same
+const rng = (seed) => {
+  let x = (Math.abs(Math.floor(seed)) % 2147483646) + 1;
+  return () => ((x = (x * 16807) % 2147483647) - 1) / 2147483646;
+};
+const clamp01 = (v) => Math.max(0, Math.min(1, v));
+const easeOut = (v) => 1 - Math.pow(1 - v, 3);
+
+/* The whole charge is one function of elapsed time, so any moment of it
+   can be drawn on its own.
+     0–420   the button fills
+   260–1100  a trail leaves every choice and runs to the edge of the glass
+   820–2100  the arc grows across the gap, flickers, and fades
+  1060–1700  sparks at the contacts; the card lights from that side
+  1450       the cartridge is loaded                                  */
+function charge() {
+  const root = $('charge'), gl = $('gl'), go = $('glgo'), zap = $('zap');
+  const cart = $('cart'), pinsEl = cart.querySelector('.pins');
+  const box = root.getBoundingClientRect();
+  const mid = (el) => {
+    const r = el.getBoundingClientRect();
+    return { x: r.left - box.left + r.width / 2, y: r.top - box.top + r.height / 2 };
+  };
+  const glr = gl.getBoundingClientRect();
+  const target = mid(pinsEl);
+  const merge = {
+    x: glr.left - box.left - 4,
+    y: Math.max(glr.top - box.top + 40, Math.min(glr.bottom - box.top - 40, target.y)),
+  };
+  const sources = [...gl.querySelectorAll('.gl__page.is-on [data-po].is-on, .gl__page.is-on [data-later].is-on'), go].map(mid);
+
+  zap.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
+  zap.innerHTML = `<defs><linearGradient id="zgrad" gradientUnits="userSpaceOnUse"
+      x1="${merge.x}" y1="0" x2="${target.x}" y2="0">
+      <stop offset="0" stop-color="#A58BFF"/><stop offset="1" stop-color="#8FF7FF"/></linearGradient></defs>
+    ${sources.map((q) => `<path class="ztrail" d="M${q.x} ${q.y} C${q.x - 90} ${q.y} ${merge.x + 70} ${merge.y} ${merge.x} ${merge.y}"/>`).join('')}
+    <path class="zarc zarc--outer"/><path class="zarc zarc--glow"/><path class="zarc zarc--core"/>
+    <path class="zfork"/><path class="zfork"/>
+    <g class="zsparks">${'<circle r="0"/>'.repeat(16)}</g>`;
+  const trails = [...zap.querySelectorAll('.ztrail')].map((el) => ({ el, len: el.getTotalLength() }));
+  trails.forEach(({ el, len }) => { el.style.strokeDasharray = len; el.style.strokeDashoffset = len; });
+  const arcs = [...zap.querySelectorAll('.zarc')];
+  const forks = [...zap.querySelectorAll('.zfork')];
+  const sparks = [...zap.querySelectorAll('.zsparks circle')];
+  const sr = rng(11);
+  const spray = sparks.map(() => {
+    const a = (sr() - .5) * Math.PI * .95, v = 90 + sr() * 210;
+    return { vx: Math.cos(a) * v, vy: Math.sin(a) * v - 50 };
+  });
+
+  const dx = target.x - merge.x, dy = target.y - merge.y, L = Math.hypot(dx, dy) || 1;
+  const nx = -dy / L, ny = dx / L, N = 16;
+  const jag = (seed) => {
+    const r = rng(seed * 97 + 3), pts = [];
+    for (let i = 0; i <= N; i++) {
+      const u = i / N, o = (i === 0 || i === N) ? 0 : (r() - .5) * 38 * Math.sin(Math.PI * u);
+      pts.push([merge.x + dx * u + nx * o, merge.y + dy * u + ny * o]);
+    }
+    return pts;
+  };
+  const path = (pts) => 'M' + pts.map((q) => `${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join(' L');
+  const lab = $('cartlab');
+
+  const frame = (t) => {
+    go.style.setProperty('--fill', clamp01(t / 420).toFixed(3));
+    trails.forEach(({ el, len }, i) => {
+      el.style.strokeDashoffset = (len * (1 - easeOut(clamp01((t - 260 - i * 70) / 460)))).toFixed(1);
+      el.style.opacity = t < 1050 ? 1 : clamp01(1 - (t - 1050) / 300);
+    });
+    const grow = easeOut(clamp01((t - 820) / 240));
+    const on = t >= 820 && t < 2100;
+    const fade = t < 1700 ? 1 : clamp01(1 - (t - 1700) / 400);
+    const seed = Math.floor(t / 50);
+    let pts = jag(seed);
+    if (grow < 1) {
+      const n = grow * N, k = Math.floor(n), fr = n - k;
+      const a = pts[k], b = pts[Math.min(k + 1, N)];
+      pts = pts.slice(0, k + 1).concat([[a[0] + (b[0] - a[0]) * fr, a[1] + (b[1] - a[1]) * fr]]);
+    }
+    arcs.forEach((el) => { el.setAttribute('d', on && grow > 0 ? path(pts) : ''); el.style.opacity = fade; });
+    forks.forEach((el, j) => {
+      if (!on || grow < 1 || t > 1650) { el.setAttribute('d', ''); return; }
+      const r = rng(seed * 31 + j * 7 + 1);
+      let [x, y] = pts[3 + Math.floor(r() * 10)];
+      const pp = [[x, y]];
+      for (let q = 0; q < 4; q++) { x += 10 + r() * 16; y += (r() - .5) * 36 + (j ? 12 : -12); pp.push([x, y]); }
+      el.setAttribute('d', path(pp));
+      el.style.opacity = fade * .85;
+    });
+    sparks.forEach((c, i) => {
+      const s = (t - 1060) / 1000;
+      if (s < 0 || s > .65) { c.setAttribute('r', 0); return; }
+      c.setAttribute('cx', (target.x + spray[i].vx * s).toFixed(1));
+      c.setAttribute('cy', (target.y + spray[i].vy * s + 300 * s * s).toFixed(1));
+      c.setAttribute('r', (2.3 * (1 - s / .65)).toFixed(2));
+    });
+    pinsEl.classList.toggle('is-hot', t >= 1060 && t < 2000);
+    if (t >= 1100) cart.classList.add('is-charging');
+    if (t >= 1450 && !cart.classList.contains('is-loaded')) {
+      cart.classList.add('is-loaded');
+      lab.innerHTML = '<i></i>Loaded · building v1';
+    }
+    if (t >= 1700) gl.classList.add('is-done');
+  };
+  window.__chargeFrame = frame;          // draw any moment by hand when checking it
+
+  gl.classList.add('is-charging');
+  go.querySelector('span').textContent = 'Charging…';
+  if (window.__chargeHold) { frame(0); return; }
+  const t0 = performance.now();
+  const tick = (now) => {
+    const t = now - t0;
+    frame(t);
+    if (t < 2200) { requestAnimationFrame(tick); return; }
+    gl.classList.remove('is-charging');
+    go.querySelector('span').textContent = 'Approved ✓';
+    go.disabled = true;
+    zap.innerHTML = '';
+  };
+  requestAnimationFrame(tick);
+}
+
+function wireH(p) {
+  const gl = $('gl');
+  const go = $('glgo');
+  const page1 = gl.querySelector('[data-page="1"]');
+  needWatch(page1);
+  const step = (n) => {
+    if (n === 2 && !formCheck(page1, go)) return;
+    gl.dataset.step = n;
+    gl.querySelectorAll('.gl__tab').forEach((t) => t.classList.toggle('is-on', +t.dataset.step === n));
+    gl.querySelectorAll('.gl__page').forEach((pg) => pg.classList.toggle('is-on', +pg.dataset.page === n));
+    if (!gl.classList.contains('is-done')) go.querySelector('span').textContent = n === 1 ? 'Next · Assets' : 'Approve';
+  };
+  gl.querySelectorAll('.gl__tab').forEach((t) => { t.onclick = () => step(+t.dataset.step); });
+  gl.querySelectorAll('[data-more]').forEach((b) => {
+    b.onclick = () => b.closest('[data-part]').classList.toggle('is-open');
+  });
+  go.onclick = () => {
+    if (gl.dataset.step === '1') { step(2); return; }
+    if (gl.classList.contains('is-done') || gl.classList.contains('is-charging')) return;
+    charge();
+  };
+  wireAssets(gl);
+  wireForm(p, gl, (src) => { document.querySelector('.cart__win img').src = src; });
+
+  // the cartridge leans toward the pointer, as in G
+  const col = $('cartcol'), cart = $('cart');
+  col.onmousemove = (e) => {
+    const r = col.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - .5;
+    const y = (e.clientY - r.top) / r.height - .5;
+    cart.style.setProperty('--ry', `${-10 + x * 20}deg`);
+    cart.style.setProperty('--rx', `${7 - y * 14}deg`);
+    cart.style.setProperty('--mx', `${50 - x * 90}%`);
+  };
+  col.onmouseleave = () => ['--ry', '--rx', '--mx'].forEach((v) => cart.style.removeProperty(v));
+  $('replay').onclick = paint;
+}
+
 // ── Wiring ────────────────────────────────────────────────────────
-const COMPS = { e: compE, g: compG };
-let which = 'e', plan = 'toy';
+const COMPS = { h: compH, e: compE, g: compG };
+let which = 'h', plan = 'toy';
 
 function paint() {
   const p = PLANS[plan];
@@ -693,6 +964,7 @@ function paint() {
   $('stage').innerHTML = COMPS[which](p);
   if (which === 'g') wireG(p);
   if (which === 'e') wireE(p);
+  if (which === 'h') wireH(p);
   document.querySelectorAll('.sw__b').forEach((b) =>
     b.classList.toggle('is-on', b.dataset.c === which));
   document.querySelectorAll('.sw__p').forEach((b) =>
