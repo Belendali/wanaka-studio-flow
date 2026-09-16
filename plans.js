@@ -1,5 +1,5 @@
 /* ──────────────────────────────────────────────────────────────────
-   Three ways to show a plan: H, a cartridge charged from a pane of glass;
+   Three ways to show a plan: H, a cartridge charged from a dark tablet;
    E, a handheld console standing open on a desk; G, a cartridge and two
    sheets of notebook paper on a desk.
 
@@ -698,93 +698,96 @@ function wireE(p) {
 }
 
 // ── H · the charge ────────────────────────────────────────────────
-/* G's cartridge on the left; on the right, the plan as a pane of glass
-   floating over slow colour. Approving sends current out of every choice
-   you made, gathers it at the edge of the glass, and arcs it across the gap
-   into the cartridge's contacts. */
+/* G's cartridge on the left; on the right, the plan on an abstract dark
+   tablet — black glass with a faint dot grid, cards that glow low from one
+   edge, dot-matrix numbers. Approving draws light out of the screen in a
+   wave, opens it into a cone at the tablet's edge, and narrows it to a
+   single line that lands in the cartridge's contacts. */
 const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
 function compH(p) {
   const f = p.form;
   const so = (label, v, on, title = '') =>
-    `<button class="gopt${on ? ' is-on' : ''}" data-v="${v}"${title ? ` title="${title}"` : ''}>${label}</button>`;
-  const seg = (k, items) => `<span class="gseg" data-k="${k}">${items}</span>`;
-  const bub = (name, on) => `<button class="bub${on ? ' is-on' : ''}" data-po>
-      <span class="bub__art">${p.partImg ? `<img src="${p.partImg(name)}" alt="">` : `<b>${name[0]}</b>`}</span>
-      <span class="bub__n">${name}</span></button>`;
+    `<button class="topt${on ? ' is-on' : ''}" data-v="${v}"${title ? ` title="${title}"` : ''}>${label}</button>`;
+  const seg = (k, items) => `<span class="tseg" data-k="${k}">${items}</span>`;
+  const bub = (name, on) => `<button class="tbub${on ? ' is-on' : ''}" data-po>
+      <span class="tbub__art">${p.partImg ? `<img src="${p.partImg(name)}" alt="">` : `<b>${name[0]}</b>`}</span>
+      <span class="tbub__n">${name}</span></button>`;
   return `
   <div class="charge" id="charge">
-    <span class="charge__blob charge__blob--a"></span>
-    <span class="charge__blob charge__blob--b"></span>
-    <span class="charge__blob charge__blob--c"></span>
-
     ${cartridge(p, { pins: true })}
 
-    <div class="glcol">
-      <div class="gl" id="gl" data-step="1">
-        <header class="gl__top">
-          <span class="gl__tabs">
-            <button class="gl__tab is-on" data-step="1">Plan</button>
-            <button class="gl__tab" data-step="2">Assets</button>
-          </span>
-          <span class="gl__dots"><i></i><i></i></span>
-        </header>
-        <div class="gl__pages">
-          <section class="gl__page is-on" data-page="1">
-            <input class="gl__name" data-need value="${p.title}" placeholder="Name your game" spellcheck="false">
-            <div class="gr"><span class="gr__k">Genre</span>
-              <button class="gpick" data-slip="genre"><span class="gpick__v" data-val>${genreV(f.genre)}</span><i class="gpick__c">⌄</i></button>
-            </div>
-            <label class="gf"><span class="gr__k">What you do</span>
-              <textarea data-need spellcheck="false" placeholder="What does the player do?">${f.what || p.doing}</textarea>
-            </label>
-            <label class="gf"><span class="gr__k">How it feels</span>
-              <textarea spellcheck="false" placeholder="What should it feel like?">${f.feel || p.feel}</textarea>
-            </label>
-            <div class="gr"><span class="gr__k">Look</span>
-              <button class="gpick" data-slip="look"><span class="gpick__v" data-val>${lookV(p, f.style, f.quality)}</span><i class="gpick__c">⌄</i></button>
-            </div>
-            <div class="gr"><span class="gr__k">Scope</span>
-              ${seg('scope', F.scopes.map(([k, n, w2, cr, t]) => so(n, k, k === f.scope, `${w2} · ${cr} · ${t}`)).join(''))}
-            </div>
-            <div class="gr"><span class="gr__k">Plays on</span>
-              <span class="gtog" data-multi>${[['Web', 'web'], ['Mobile', 'mobile']].map(([n, k]) =>
-                `<button class="gsw${f.plat.includes(k) ? ' is-on' : ''}" data-v="${k}"><i></i>${n}</button>`).join('')}</span>
-            </div>
-            <div class="gr"><span class="gr__k">A run</span>
-              ${seg('len', F.length.map((n, i) => so(n, i, i === f.len)).join(''))}
-            </div>
-            <div class="gr"><span class="gr__k">Difficulty</span>
-              ${seg('diff', F.difficulty.map((n, i) => so(n, i, i === f.diff)).join(''))}
-            </div>
-          </section>
-          <section class="gl__page" data-page="2">
-            <p class="gl__hint">The Artist picked three for each part. Tick any, or leave it to the Artist.</p>
-            <div class="gparts">
-              ${p.parts.map(([name, opts, pick]) => `
-                <div class="gpart" data-part>
-                  <div class="gpart__h"><b>${name}</b><button class="gmore" data-more>All ${opts.length + 21} ›</button></div>
-                  <div class="gpart__o">${opts.map((o, i) => bub(o, i === pick)).join('')}<button
-                    class="bub bub--later${pick < 0 ? ' is-on' : ''}" data-later><span class="bub__art"><b>✦</b></span><span class="bub__n">Artist</span></button></div>
-                  <div class="gpart__all">${'<i></i>'.repeat(8)}</div>
-                </div>`).join('')}
-            </div>
-          </section>
-        </div>
-        <footer class="gl__foot">
-          <span class="gl__sum"><b data-sum>${sumV(f.scope)}</b><em data-count></em></span>
-          <button class="gbtn" id="glgo"><span>Next · Assets</span></button>
-        </footer>
+    <div class="tabcol">
+      <div class="tb" id="tab">
+        <div class="tb__screen" id="gl" data-step="1">
+          <span class="tb__grid"></span>
+          <header class="tb__top">
+            <span class="tb__brand">PLAN</span>
+            <span class="tb__tabs">
+              <button class="tb__tab is-on" data-step="1">Plan</button>
+              <button class="tb__tab" data-step="2">Assets</button>
+            </span>
+          </header>
 
-        <div class="gslip gslip--genre" data-slipbox="genre" hidden>
-          ${F.genres.map(([k, n]) =>
-            `<button class="gslip__g${k === f.genre ? ' is-on' : ''}" data-g="${k}">${GICON[k]}${n}</button>`).join('')}
-        </div>
-        <div class="gslip gslip--look" data-slipbox="look" hidden>
-          <div class="gslip__grid">${F.styles.map(([k, n]) =>
-            `<button class="gslip__s${k === f.style ? ' is-on' : ''}" data-s="${k}"><img src="${thumb(p, k)}" alt=""><span>${n}</span></button>`).join('')}</div>
-          <div class="gslip__q">${F.quality.map((q) =>
-            `<button class="gopt${q === f.quality ? ' is-on' : ''}" data-q="${q}">${q}</button>`).join('')}</div>
+          <div class="tb__pages">
+            <section class="tb__page is-on" data-page="1">
+              <div class="tc tc--game">
+                <div class="tc__row"><span class="tc__k">Game</span><span class="tc__tag">V1 DRAFT</span></div>
+                <input class="tb__name" data-need value="${p.title}" placeholder="Name your game" spellcheck="false">
+                <div class="tc__picks">
+                  <button class="tpick" data-slip="genre"><span data-val>${genreV(f.genre)}</span><i>⌄</i></button>
+                  <button class="tpick" data-slip="look"><span data-val>${lookV(p, f.style, f.quality)}</span><i>⌄</i></button>
+                </div>
+              </div>
+              <div class="tc tc--story">
+                <label class="tf"><span class="tc__k">What you do</span>
+                  <textarea data-need spellcheck="false" placeholder="What does the player do?">${f.what || p.doing}</textarea></label>
+                <label class="tf"><span class="tc__k">How it feels</span>
+                  <textarea spellcheck="false" placeholder="What should it feel like?">${f.feel || p.feel}</textarea></label>
+              </div>
+              <div class="tc tc--build">
+                <div class="tc__row"><span class="tc__k">Build</span><span class="dm" data-sum>${sumV(f.scope)}</span></div>
+                <div class="tr"><span class="tc__k">Scope</span>
+                  ${seg('scope', F.scopes.map(([k, n, w2, cr, t]) => so(n, k, k === f.scope, `${w2} · ${cr} · ${t}`)).join(''))}</div>
+                <div class="tr"><span class="tc__k">Plays on</span>
+                  <span class="ttog" data-multi>${[['Web', 'web'], ['Mobile', 'mobile']].map(([n, k]) =>
+                    `<button class="tsw${f.plat.includes(k) ? ' is-on' : ''}" data-v="${k}"><i></i>${n}</button>`).join('')}</span></div>
+                <div class="tr"><span class="tc__k">A run</span>
+                  ${seg('len', F.length.map((n, i) => so(n, i, i === f.len)).join(''))}</div>
+                <div class="tr"><span class="tc__k">Difficulty</span>
+                  ${seg('diff', F.difficulty.map((n, i) => so(n, i, i === f.diff)).join(''))}</div>
+              </div>
+            </section>
+
+            <section class="tb__page" data-page="2">
+              <p class="tb__hint">The Artist picked three for each part. Tick any, or leave it to the Artist.</p>
+              <div class="tparts">
+                ${p.parts.map(([name, opts, pick]) => `
+                  <div class="tc tpart" data-part>
+                    <div class="tpart__h"><b>${name}</b><button class="tmore" data-more>ALL ${opts.length + 21}</button></div>
+                    <div class="tpart__o">${opts.map((o, i) => bub(o, i === pick)).join('')}<button
+                      class="tbub tbub--later${pick < 0 ? ' is-on' : ''}" data-later><span class="tbub__art"><b>✦</b></span><span class="tbub__n">Artist</span></button></div>
+                    <div class="tpart__all">${'<i></i>'.repeat(8)}</div>
+                  </div>`).join('')}
+              </div>
+            </section>
+          </div>
+
+          <footer class="tb__foot">
+            <span class="tb__sum"><b data-stepn>01 / 02</b><em data-count></em></span>
+            <button class="tbtn" id="glgo"><span>Next · Assets</span><i class="tbtn__ic">→</i></button>
+          </footer>
+
+          <div class="tslip tslip--genre" data-slipbox="genre" hidden>
+            ${F.genres.map(([k, n]) =>
+              `<button class="tslip__g${k === f.genre ? ' is-on' : ''}" data-g="${k}">${GICON[k]}${n}</button>`).join('')}
+          </div>
+          <div class="tslip tslip--look" data-slipbox="look" hidden>
+            <div class="tslip__grid">${F.styles.map(([k, n]) =>
+              `<button class="tslip__s${k === f.style ? ' is-on' : ''}" data-s="${k}"><img src="${thumb(p, k)}" alt=""><span>${n}</span></button>`).join('')}</div>
+            <div class="tslip__q tseg">${F.quality.map((q) =>
+              `<button class="topt${q === f.quality ? ' is-on' : ''}" data-q="${q}">${q}</button>`).join('')}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -794,7 +797,7 @@ function compH(p) {
   </div>`;
 }
 
-// a seeded random, so any given moment of the arc always looks the same
+// a seeded random, so any given moment always looks the same
 const rng = (seed) => {
   let x = (Math.abs(Math.floor(seed)) % 2147483646) + 1;
   return () => ((x = (x * 16807) % 2147483647) - 1) / 2147483646;
@@ -804,112 +807,103 @@ const easeOut = (v) => 1 - Math.pow(1 - v, 3);
 
 /* The whole charge is one function of elapsed time, so any moment of it
    can be drawn on its own.
-     0–420   the button fills
-   260–1100  a trail leaves every choice and runs to the edge of the glass
-   820–2100  the arc grows across the gap, flickers, and fades
-  1060–1700  sparks at the contacts; the card lights from that side
-  1450       the cartridge is loaded                                  */
+     0–380   the button fills
+   160–1000  a wave of light runs across the screen's dot grid, toward the edge
+   640–1220  a cone of light opens at the tablet's edge and reaches for the card,
+             narrowing to one line that lands in the contacts
+  1180–1760  a few sparks; the card lights from that side
+  1420       the cartridge is loaded; 1520–2040 the light fades              */
 function charge() {
-  const root = $('charge'), gl = $('gl'), go = $('glgo'), zap = $('zap');
-  const cart = $('cart'), pinsEl = cart.querySelector('.pins');
+  const root = $('charge'), scr = $('gl'), go = $('glgo'), zap = $('zap'), tab = $('tab');
+  const grid = scr.querySelector('.tb__grid');
+  const cart = $('cart'), pinsEl = cart.querySelector('.pins'), lab = $('cartlab');
   const box = root.getBoundingClientRect();
-  const mid = (el) => {
-    const r = el.getBoundingClientRect();
-    return { x: r.left - box.left + r.width / 2, y: r.top - box.top + r.height / 2 };
-  };
-  const glr = gl.getBoundingClientRect();
-  const target = mid(pinsEl);
-  const merge = {
-    x: glr.left - box.left - 4,
-    y: Math.max(glr.top - box.top + 40, Math.min(glr.bottom - box.top - 40, target.y)),
-  };
-  const sources = [...gl.querySelectorAll('.gl__page.is-on [data-po].is-on, .gl__page.is-on [data-later].is-on'), go].map(mid);
+  const pr = pinsEl.getBoundingClientRect(), tr = tab.getBoundingClientRect();
+  const target = { x: pr.left - box.left + pr.width * .5, y: pr.top - box.top + pr.height * .5 };
+  const y0 = target.y;
+  const x0 = tr.left - box.left + 1;
+  const xm = x0 - (x0 - target.x) * .58;
+  const H0 = Math.min(tr.height * .26, 180);
+  const chosen = [...scr.querySelectorAll('.tb__page.is-on [data-po].is-on, .tb__page.is-on [data-later].is-on')];
 
   zap.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
-  zap.innerHTML = `<defs><linearGradient id="zgrad" gradientUnits="userSpaceOnUse"
-      x1="${merge.x}" y1="0" x2="${target.x}" y2="0">
-      <stop offset="0" stop-color="#A58BFF"/><stop offset="1" stop-color="#8FF7FF"/></linearGradient></defs>
-    ${sources.map((q) => `<path class="ztrail" d="M${q.x} ${q.y} C${q.x - 90} ${q.y} ${merge.x + 70} ${merge.y} ${merge.x} ${merge.y}"/>`).join('')}
-    <path class="zarc zarc--outer"/><path class="zarc zarc--glow"/><path class="zarc zarc--core"/>
-    <path class="zfork"/><path class="zfork"/>
-    <g class="zsparks">${'<circle r="0"/>'.repeat(16)}</g>`;
-  const trails = [...zap.querySelectorAll('.ztrail')].map((el) => ({ el, len: el.getTotalLength() }));
-  trails.forEach(({ el, len }) => { el.style.strokeDasharray = len; el.style.strokeDashoffset = len; });
-  const arcs = [...zap.querySelectorAll('.zarc')];
-  const forks = [...zap.querySelectorAll('.zfork')];
+  zap.innerHTML = `<defs>
+      <linearGradient id="zfun" gradientUnits="userSpaceOnUse" x1="${x0}" y1="0" x2="${xm}" y2="0">
+        <stop offset="0" stop-color="#12205C" stop-opacity="0"/><stop offset=".4" stop-color="#1F4FD8" stop-opacity=".5"/>
+        <stop offset=".8" stop-color="#5CC8FF" stop-opacity=".92"/><stop offset="1" stop-color="#F2FDFF"/></linearGradient>
+      <linearGradient id="zrim" gradientUnits="userSpaceOnUse" x1="${x0}" y1="0" x2="${xm}" y2="0">
+        <stop offset="0" stop-color="#C58BFF" stop-opacity="0"/><stop offset=".7" stop-color="#C58BFF" stop-opacity=".55"/>
+        <stop offset="1" stop-color="#FFFFFF" stop-opacity=".9"/></linearGradient>
+      <linearGradient id="zline" gradientUnits="userSpaceOnUse" x1="${xm}" y1="0" x2="${target.x}" y2="0">
+        <stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#BDEBFF"/><stop offset="1" stop-color="#D59BFF"/></linearGradient>
+      <clipPath id="zclip"><rect id="zrect" x="${x0}" y="0" width="0" height="${box.height}"/></clipPath>
+    </defs>
+    <g clip-path="url(#zclip)" id="zbeam">
+      <path class="zfun zfun--glow"/><path class="zfun"/><path class="zrim"/>
+      <line class="zline zline--glow" x1="${xm}" y1="${y0}" x2="${target.x}" y2="${y0}"/>
+      <line class="zline zline--core" x1="${xm}" y1="${y0}" x2="${target.x}" y2="${y0}"/>
+    </g>
+    <g class="zsparks">${'<circle r="0"/>'.repeat(10)}</g>`;
+  const rect = zap.querySelector('#zrect'), beam = zap.querySelector('#zbeam');
+  const funs = [...zap.querySelectorAll('.zfun')], rim = zap.querySelector('.zrim');
+  const core = zap.querySelector('.zline--core');
   const sparks = [...zap.querySelectorAll('.zsparks circle')];
-  const sr = rng(11);
+  const sr = rng(5);
   const spray = sparks.map(() => {
-    const a = (sr() - .5) * Math.PI * .95, v = 90 + sr() * 210;
-    return { vx: Math.cos(a) * v, vy: Math.sin(a) * v - 50 };
+    const a = (sr() - .5) * Math.PI * .85, v = 60 + sr() * 160;
+    return { vx: Math.cos(a) * v, vy: Math.sin(a) * v - 30 };
   });
-
-  const dx = target.x - merge.x, dy = target.y - merge.y, L = Math.hypot(dx, dy) || 1;
-  const nx = -dy / L, ny = dx / L, N = 16;
-  const jag = (seed) => {
-    const r = rng(seed * 97 + 3), pts = [];
-    for (let i = 0; i <= N; i++) {
-      const u = i / N, o = (i === 0 || i === N) ? 0 : (r() - .5) * 38 * Math.sin(Math.PI * u);
-      pts.push([merge.x + dx * u + nx * o, merge.y + dy * u + ny * o]);
-    }
-    return pts;
-  };
-  const path = (pts) => 'M' + pts.map((q) => `${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join(' L');
-  const lab = $('cartlab');
+  const cx = xm + (x0 - xm) * .3;
+  const cone = (h) => `M${x0} ${y0 - h} Q${cx} ${y0 - 2.5} ${xm} ${y0 - 1} L${xm} ${y0 + 1} Q${cx} ${y0 + 2.5} ${x0} ${y0 + h} Z`;
+  const edges = (h) => `M${x0} ${y0 - h} Q${cx} ${y0 - 2.5} ${xm} ${y0 - 1} M${x0} ${y0 + h} Q${cx} ${y0 + 2.5} ${xm} ${y0 + 1}`;
 
   const frame = (t) => {
-    go.style.setProperty('--fill', clamp01(t / 420).toFixed(3));
-    trails.forEach(({ el, len }, i) => {
-      el.style.strokeDashoffset = (len * (1 - easeOut(clamp01((t - 260 - i * 70) / 460)))).toFixed(1);
-      el.style.opacity = t < 1050 ? 1 : clamp01(1 - (t - 1050) / 300);
-    });
-    const grow = easeOut(clamp01((t - 820) / 240));
-    const on = t >= 820 && t < 2100;
-    const fade = t < 1700 ? 1 : clamp01(1 - (t - 1700) / 400);
-    const seed = Math.floor(t / 50);
-    let pts = jag(seed);
-    if (grow < 1) {
-      const n = grow * N, k = Math.floor(n), fr = n - k;
-      const a = pts[k], b = pts[Math.min(k + 1, N)];
-      pts = pts.slice(0, k + 1).concat([[a[0] + (b[0] - a[0]) * fr, a[1] + (b[1] - a[1]) * fr]]);
-    }
-    arcs.forEach((el) => { el.setAttribute('d', on && grow > 0 ? path(pts) : ''); el.style.opacity = fade; });
-    forks.forEach((el, j) => {
-      if (!on || grow < 1 || t > 1650) { el.setAttribute('d', ''); return; }
-      const r = rng(seed * 31 + j * 7 + 1);
-      let [x, y] = pts[3 + Math.floor(r() * 10)];
-      const pp = [[x, y]];
-      for (let q = 0; q < 4; q++) { x += 10 + r() * 16; y += (r() - .5) * 36 + (j ? 12 : -12); pp.push([x, y]); }
-      el.setAttribute('d', path(pp));
-      el.style.opacity = fade * .85;
-    });
+    go.style.setProperty('--fill', clamp01(t / 380).toFixed(3));
+    chosen.forEach((el) => el.classList.toggle('is-sending', t < 760));
+    const w0 = clamp01((t - 160) / 760), w = w0 * w0 * (3 - 2 * w0);
+    grid.style.setProperty('--wave', `${(112 - w * 130).toFixed(1)}%`);
+    grid.style.setProperty('--waveOn', t > 160 && t < 1000 ? 1 : 0);
+
+    const open = easeOut(clamp01((t - 640) / 360));
+    const reach = easeOut(clamp01((t - 700) / 520));
+    const fade = t < 1520 ? 1 : clamp01(1 - (t - 1520) / 520);
+    const h = H0 * (.35 + .65 * open) * (1 + .03 * Math.sin(t / 45));
+    const left = x0 - reach * (x0 - target.x + 4);
+    rect.setAttribute('x', left.toFixed(1));
+    rect.setAttribute('width', Math.max(0, x0 + 30 - left).toFixed(1));
+    funs.forEach((el) => el.setAttribute('d', cone(h)));
+    rim.setAttribute('d', edges(h));
+    core.style.opacity = (.82 + .18 * Math.sin(t / 30)).toFixed(3);
+    beam.style.opacity = t < 640 ? 0 : fade;
+
     sparks.forEach((c, i) => {
-      const s = (t - 1060) / 1000;
-      if (s < 0 || s > .65) { c.setAttribute('r', 0); return; }
-      c.setAttribute('cx', (target.x + spray[i].vx * s).toFixed(1));
-      c.setAttribute('cy', (target.y + spray[i].vy * s + 300 * s * s).toFixed(1));
-      c.setAttribute('r', (2.3 * (1 - s / .65)).toFixed(2));
+      const s2 = (t - 1180) / 1000;
+      if (s2 < 0 || s2 > .58) { c.setAttribute('r', 0); return; }
+      c.setAttribute('cx', (target.x + spray[i].vx * s2).toFixed(1));
+      c.setAttribute('cy', (target.y + spray[i].vy * s2 + 260 * s2 * s2).toFixed(1));
+      c.setAttribute('r', (1.8 * (1 - s2 / .58)).toFixed(2));
     });
-    pinsEl.classList.toggle('is-hot', t >= 1060 && t < 2000);
-    if (t >= 1100) cart.classList.add('is-charging');
-    if (t >= 1450 && !cart.classList.contains('is-loaded')) {
+    pinsEl.classList.toggle('is-hot', t >= 1180 && t < 1950);
+    if (t >= 1200) cart.classList.add('is-charging');
+    if (t >= 1420 && !cart.classList.contains('is-loaded')) {
       cart.classList.add('is-loaded');
       lab.innerHTML = '<i></i>Loaded · building v1';
     }
-    if (t >= 1700) gl.classList.add('is-done');
+    if (t >= 1620) scr.classList.add('is-done');
   };
   window.__chargeFrame = frame;          // draw any moment by hand when checking it
 
-  gl.classList.add('is-charging');
-  go.querySelector('span').textContent = 'Charging…';
+  scr.classList.add('is-charging');
+  go.querySelector('span').textContent = 'Charging';
   if (window.__chargeHold) { frame(0); return; }
   const t0 = performance.now();
   const tick = (now) => {
     const t = now - t0;
     frame(t);
-    if (t < 2200) { requestAnimationFrame(tick); return; }
-    gl.classList.remove('is-charging');
-    go.querySelector('span').textContent = 'Approved ✓';
+    if (t < 2150) { requestAnimationFrame(tick); return; }
+    scr.classList.remove('is-charging');
+    chosen.forEach((el) => el.classList.remove('is-sending'));
+    go.querySelector('span').textContent = 'Approved';
     go.disabled = true;
     zap.innerHTML = '';
   };
@@ -917,28 +911,29 @@ function charge() {
 }
 
 function wireH(p) {
-  const gl = $('gl');
+  const scr = $('gl');
   const go = $('glgo');
-  const page1 = gl.querySelector('[data-page="1"]');
+  const page1 = scr.querySelector('[data-page="1"]');
   needWatch(page1);
   const step = (n) => {
     if (n === 2 && !formCheck(page1, go)) return;
-    gl.dataset.step = n;
-    gl.querySelectorAll('.gl__tab').forEach((t) => t.classList.toggle('is-on', +t.dataset.step === n));
-    gl.querySelectorAll('.gl__page').forEach((pg) => pg.classList.toggle('is-on', +pg.dataset.page === n));
-    if (!gl.classList.contains('is-done')) go.querySelector('span').textContent = n === 1 ? 'Next · Assets' : 'Approve';
+    scr.dataset.step = n;
+    scr.querySelectorAll('.tb__tab').forEach((t) => t.classList.toggle('is-on', +t.dataset.step === n));
+    scr.querySelectorAll('.tb__page').forEach((pg) => pg.classList.toggle('is-on', +pg.dataset.page === n));
+    scr.querySelector('[data-stepn]').textContent = `0${n} / 02`;
+    if (!scr.classList.contains('is-done')) go.querySelector('span').textContent = n === 1 ? 'Next · Assets' : 'Approve';
   };
-  gl.querySelectorAll('.gl__tab').forEach((t) => { t.onclick = () => step(+t.dataset.step); });
-  gl.querySelectorAll('[data-more]').forEach((b) => {
+  scr.querySelectorAll('.tb__tab').forEach((t) => { t.onclick = () => step(+t.dataset.step); });
+  scr.querySelectorAll('[data-more]').forEach((b) => {
     b.onclick = () => b.closest('[data-part]').classList.toggle('is-open');
   });
   go.onclick = () => {
-    if (gl.dataset.step === '1') { step(2); return; }
-    if (gl.classList.contains('is-done') || gl.classList.contains('is-charging')) return;
+    if (scr.dataset.step === '1') { step(2); return; }
+    if (scr.classList.contains('is-done') || scr.classList.contains('is-charging')) return;
     charge();
   };
-  wireAssets(gl);
-  wireForm(p, gl, (src) => { document.querySelector('.cart__win img').src = src; });
+  wireAssets(scr);
+  wireForm(p, scr, (src) => { document.querySelector('.cart__win img').src = src; });
 
   // the cartridge leans toward the pointer, as in G
   const col = $('cartcol'), cart = $('cart');

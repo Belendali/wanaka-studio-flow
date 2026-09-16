@@ -50,15 +50,16 @@ buttons and anything that marks a choice. Switching the cover top right
 changes the game and its copy, not the colours.
 
 - **H · Charge** — G's cartridge on the left, with a row of contacts on the
-  edge facing the plan. On the right the plan is dark liquid glass (violet,
-  teal, pink light drifting behind it so the glass has something to bend).
-  Step 1 is the plan; step 2 shows each part as a glass card holding the
-  Artist's three picks as image bubbles, plus "Artist makes it" and "All ›".
+  edge facing the plan. On the right the plan sits on an abstract dark tablet:
+  black glass with a faint dot grid, near-black cards that glow low from one
+  edge, dot-matrix numbers (Doto), light-grey selections, a lime dot where
+  something is chosen. Step 1 is the plan; step 2 shows each part as a card
+  with the Artist's three picks as image tiles, plus "Artist" and "All".
   Approving is one function of time (`charge()` in `plans.js`): the button
-  fills, a trail leaves every choice and gathers at the edge of the glass, a
-  flickering arc crosses the gap into the contacts, sparks fly, the card
-  lights and loads. Set `window.__chargeHold = true` before approving and
-  call `window.__chargeFrame(ms)` to draw any single moment.
+  fills, a wave runs across the dot grid toward the edge, a cone of light
+  opens at the tablet's edge and narrows to a single line that lands in the
+  contacts, and the card lights and loads. Set `window.__chargeHold = true`
+  before approving and call `window.__chargeFrame(ms)` to draw any moment.
 
 - **E · Handheld** — a clamshell console standing open on a desk in a
   lamp-lit room. It arrives shut (the lid's back shows), lands, and the lid
