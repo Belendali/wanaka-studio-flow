@@ -731,6 +731,74 @@ function wireHBg() {
     try { localStorage.setItem('h-bg', b.dataset.bg); } catch (e) {}
   }));
   mark();
+  roomLoop(c);
+}
+// the room's floor: a perspective grid drawn on canvas so lines stay crisp, with contact shadows under the card and tablet
+function roomLoop(c) {
+  const cv = c.querySelector('.hbg__cv'); if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const t0 = performance.now();
+  const draw = (now) => {
+    if (!cv.isConnected) return;
+    if (c.dataset.bg !== 'room') { requestAnimationFrame(draw); return; }
+    const dpr = Math.min(2, devicePixelRatio || 1), W = cv.clientWidth, H = cv.clientHeight;
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+    const hy = H * 0.64, cx = W * 0.56, f = H * 0.9, camH = 1.25, sp = 0.5;
+    const off = still ? 0 : ((now - t0) / 9000) % 1 * sp;
+
+    // floor: faint light near the horizon, dark toward us
+    const fl = ctx.createLinearGradient(0, hy, 0, H);
+    fl.addColorStop(0, 'rgba(196,235,0,.07)'); fl.addColorStop(.25, 'rgba(26,29,20,.9)'); fl.addColorStop(1, 'rgba(10,11,9,1)');
+    ctx.fillStyle = fl; ctx.fillRect(0, hy, W, H - hy);
+
+    // depth lines
+    for (let i = 0; i < 60; i++) {
+      const z = 0.9 + i * sp - off; if (z <= 0.5) continue;
+      const y = hy + f * camH / z; if (y > H + 2) continue;
+      const k = Math.min(1, (y - hy) / (H - hy));
+      ctx.strokeStyle = `rgba(214,240,120,${(0.025 + 0.28 * k * k).toFixed(3)})`;
+      ctx.lineWidth = 0.5 + 0.5 * k;
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+    // lines running to the vanishing point
+    for (let x = -40; x <= 40; x++) {
+      const wx = x * sp, bx = cx + f * wx / (f * camH / (H - hy));
+      const g = ctx.createLinearGradient(0, hy, 0, H);
+      const a = 0.24 * Math.max(0, 1 - Math.abs(x) / 30);
+      g.addColorStop(0, 'rgba(214,240,120,0)'); g.addColorStop(.35, `rgba(214,240,120,${(a * .35).toFixed(3)})`); g.addColorStop(1, `rgba(214,240,120,${a.toFixed(3)})`);
+      ctx.strokeStyle = g; ctx.lineWidth = 0.6;
+      ctx.beginPath(); ctx.moveTo(cx, hy); ctx.lineTo(bx, H); ctx.stroke();
+    }
+    // fog that swallows the far grid
+    const fog = ctx.createLinearGradient(0, hy - 2, 0, hy + H * 0.12);
+    fog.addColorStop(0, 'rgba(18,20,14,1)'); fog.addColorStop(1, 'rgba(18,20,14,0)');
+    ctx.fillStyle = fog; ctx.fillRect(0, hy - 2, W, H * 0.12 + 2);
+    // horizon: a hairline that fades at both ends
+    const hz = ctx.createLinearGradient(0, 0, W, 0);
+    hz.addColorStop(0, 'rgba(214,240,120,0)'); hz.addColorStop(.56, 'rgba(214,240,120,.35)'); hz.addColorStop(1, 'rgba(214,240,120,0)');
+    ctx.fillStyle = hz; ctx.fillRect(0, hy, W, 1);
+
+    // what stands in the room: a light pool, then a soft contact shadow
+    const cr = c.getBoundingClientRect();
+    [['.cart', 0.10], ['.tb', 0.2]].forEach(([sel, glow]) => {
+      const el = c.querySelector(sel); if (!el) return;
+      const r = el.getBoundingClientRect(); if (!r.width) return;
+      const ex = r.left - cr.left + r.width / 2, ey = Math.max(hy + 8, r.bottom - cr.top + H * 0.035);
+      const lit = c.querySelector('.cart.is-loaded') ? 1.6 : 1;
+      ctx.save(); ctx.translate(ex, ey); ctx.scale(1, 0.16);
+      let g = ctx.createRadialGradient(0, 0, 0, 0, 0, r.width * 0.75);
+      g.addColorStop(0, `rgba(196,235,0,${(glow * lit).toFixed(3)})`); g.addColorStop(1, 'rgba(196,235,0,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r.width * 0.75, 0, 7); ctx.fill();
+      g = ctx.createRadialGradient(0, 0, 0, 0, 0, r.width * 0.5);
+      g.addColorStop(0, 'rgba(0,0,0,.75)'); g.addColorStop(.6, 'rgba(0,0,0,.35)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r.width * 0.5, 0, 7); ctx.fill();
+      ctx.restore();
+    });
+    if (!still) requestAnimationFrame(draw);
+  };
+  requestAnimationFrame(draw);
 }
 function compH(p) {
   const f = p.form;
@@ -747,7 +815,7 @@ function compH(p) {
   <div class="charge" id="charge" data-bg="${hBg()}">
     <div class="hbg" aria-hidden="true">
       <i class="hbg__glow hbg__glow--a"></i><i class="hbg__glow hbg__glow--b"></i>
-      <div class="hbg__room"><i class="hbg__wall"></i><i class="hbg__floor"></i><i class="hbg__horizon"></i></div>
+      <div class="hbg__room"><i class="hbg__wall"></i><canvas class="hbg__cv"></canvas><i class="hbg__grain"></i></div>
     </div>
     ${cartridge(p, { pins: true, shape: '4:3' })}
 

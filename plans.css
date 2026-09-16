@@ -1239,3 +1239,19 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .charge[data-bg="glow"] .hbg__glow--a{width:90vw;height:90vh;right:-18vw;top:4vh;
   background:radial-gradient(closest-side,rgba(196,235,0,.3),rgba(196,235,0,.1) 50%,transparent)}
 .charge[data-bg="glow"] .hbg__glow--b{background:radial-gradient(closest-side,rgba(196,235,0,.12),transparent)}
+
+/* ── H · room, refined: canvas floor, quiet wall, grain ─────────── */
+.hbg__cv{position:absolute;inset:0;width:100%;height:100%}
+.hbg__wall{inset:0 0 36% 0;-webkit-mask:none;mask:none;background:
+  radial-gradient(38% 55% at 58% 100%,rgba(196,235,0,.10),transparent 70%),
+  radial-gradient(70% 90% at 56% 100%,rgba(80,86,64,.22),transparent 70%),
+  linear-gradient(180deg,#09090A 0%,#121410 100%)}
+.hbg__grain{position:absolute;inset:0;opacity:.08;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.charge[data-bg="room"]{background:#0A0B09}
+.charge[data-bg="room"] .hbg__glow--a{opacity:.45;top:18vh}
+.charge[data-bg="room"] .hbg__glow--b{opacity:.5}
+.charge[data-bg="room"] .tb{box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 0 0 1px rgba(255,255,255,.07),0 30px 50px -24px rgba(0,0,0,.9),0 0 120px -30px rgba(196,235,0,.14)}
+.hbg__grain{opacity:.06;mix-blend-mode:normal}
+.hbg__room::after{content:"";position:absolute;inset:0;background:radial-gradient(75% 80% at 55% 50%,transparent 55%,rgba(0,0,0,.5))}
+.hbg__grain{display:none}
