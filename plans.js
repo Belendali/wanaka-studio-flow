@@ -722,16 +722,92 @@ function wireE(p) {
    into the line, and the cartridge lights and loads. */
 const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
-function hBg() { try { return localStorage.getItem('h-bg') || 'room'; } catch (e) { return 'room'; } }
+function hBg() { try { return localStorage.getItem('h-bg2') || 'light'; } catch (e) { return 'light'; } }
 function wireHBg() {
   const c = document.getElementById('charge'); if (!c) return;
   const mark = () => document.querySelectorAll('.hbgsw [data-bg]').forEach((b) => b.classList.toggle('is-on', b.dataset.bg === c.dataset.bg));
   document.querySelectorAll('.hbgsw [data-bg]').forEach((b) => b.addEventListener('click', () => {
     c.dataset.bg = b.dataset.bg; mark();
-    try { localStorage.setItem('h-bg', b.dataset.bg); } catch (e) {}
+    try { localStorage.setItem('h-bg2', b.dataset.bg); } catch (e) {}
   }));
   mark();
   roomLoop(c);
+  dotsLoop(c);
+}
+// White dots: a pale sky, a warm sunrise on the horizon, and a floor made of small dots receding into it
+function dotsLoop(c) {
+  const cv = c.querySelector('.hbg__dots'); if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const t0 = performance.now();
+  let last = 0;
+  const draw = (now) => {
+    if (!cv.isConnected) return;
+    if (c.dataset.bg !== 'light' || now - last < 30) { requestAnimationFrame(draw); return; }
+    last = now;
+    const dpr = Math.min(2, devicePixelRatio || 1), W = cv.clientWidth, H = cv.clientHeight;
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const hy = H * 0.6, sx = W * 0.4, cx = W * 0.5, f = H * 1.1, camH = 1, sp = 0.16;
+    const lit = c.querySelector('.cart.is-loaded') ? 1 : 0;
+
+    // sky
+    let g = ctx.createLinearGradient(0, 0, 0, hy);
+    g.addColorStop(0, '#C3D0DA'); g.addColorStop(.55, '#E3E8EC'); g.addColorStop(.92, '#F5F1EA'); g.addColorStop(1, '#FBF3E6');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, hy);
+    // floor
+    g = ctx.createLinearGradient(0, hy, 0, H);
+    g.addColorStop(0, '#F8F3EC'); g.addColorStop(.35, '#EFEDEA'); g.addColorStop(1, '#E2E2E3');
+    ctx.fillStyle = g; ctx.fillRect(0, hy, W, H - hy);
+    // sunrise on the horizon
+    ctx.save(); ctx.translate(sx, hy); ctx.scale(1, 0.32);
+    g = ctx.createRadialGradient(0, 0, 0, 0, 0, W * 0.42);
+    g.addColorStop(0, `rgba(255,206,130,${.9 + .1 * lit})`); g.addColorStop(.25, 'rgba(255,226,180,.35)'); g.addColorStop(1, 'rgba(255,240,220,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, W * 0.42, 0, 7); ctx.fill(); ctx.restore();
+
+    // dots
+    const off = still ? 0 : ((now - t0) / 7000 % 1) * sp;
+    for (let i = 0; i < 90; i++) {
+      const z = 0.7 + i * sp - off; if (z <= 0.3) continue;
+      const y0 = hy + f * camH / z; if (y0 > H + 4) continue;
+      const k = Math.min(1, (y0 - hy) / (H - hy));           // 0 far → 1 near
+      const r = Math.max(0.35, 2.6 * k + 0.25);
+      const half = (W / 2 + 40) * z / f, n = Math.ceil(half / sp);
+      const stagger = (i + Math.round(off / sp)) % 2 ? sp / 2 : 0;
+      for (let j = -n; j <= n; j++) {
+        const wx = j * sp + stagger, x = cx + f * wx / z;
+        if (x < -4 || x > W + 4) continue;
+        // a gentle swell on the right, like the floor rising into a wall
+        const u = (x / W - 0.78) * 4.5, y = y0 - Math.max(0, u) ** 2 * 10 * k;
+        const warm = Math.max(0, 1 - Math.hypot((x - sx) / (W * .45), (y - hy) / (H * .25)));
+        ctx.fillStyle = `rgba(${Math.round(150 + 90 * warm)},${Math.round(150 + 50 * warm)},${Math.round(160 - 20 * warm)},${(0.2 + 0.45 * Math.sqrt(k)).toFixed(3)})`;
+        ctx.beginPath(); ctx.arc(x, y, r, 0, 6.3); ctx.fill();
+        if (r > 1.2) { ctx.fillStyle = `rgba(255,255,255,${(0.7 * k).toFixed(3)})`; ctx.beginPath(); ctx.arc(x - r * .3, y - r * .35, r * .45, 0, 6.3); ctx.fill(); }
+      }
+    }
+    // haze where the floor meets the sky
+    g = ctx.createLinearGradient(0, hy - H * .04, 0, hy + H * .09);
+    g.addColorStop(0, 'rgba(250,244,236,0)'); g.addColorStop(.35, 'rgba(250,244,236,.95)'); g.addColorStop(1, 'rgba(248,243,236,0)');
+    ctx.fillStyle = g; ctx.fillRect(0, hy - H * .04, W, H * .13);
+    ctx.save(); ctx.translate(sx, hy); ctx.scale(1, 0.22); ctx.globalCompositeOperation = 'multiply';
+    g = ctx.createRadialGradient(0, 0, 0, 0, 0, W * .3);
+    g.addColorStop(0, 'rgba(255,196,120,.55)'); g.addColorStop(.4, 'rgba(255,220,170,.25)'); g.addColorStop(1, 'rgba(255,240,220,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, W * .3, 0, 7); ctx.fill(); ctx.restore();
+
+    // soft shadows under the card and tablet
+    const cr = c.getBoundingClientRect();
+    ['.cart', '.tb'].forEach((sel) => {
+      const el = c.querySelector(sel); if (!el) return;
+      const rr = el.getBoundingClientRect(); if (!rr.width) return;
+      const ex = rr.left - cr.left + rr.width / 2, ey = Math.max(hy + 10, rr.bottom - cr.top + H * .04);
+      ctx.save(); ctx.translate(ex, ey); ctx.scale(1, .13);
+      const sg = ctx.createRadialGradient(0, 0, 0, 0, 0, rr.width * .55);
+      sg.addColorStop(0, 'rgba(60,62,70,.4)'); sg.addColorStop(.6, 'rgba(60,62,70,.14)'); sg.addColorStop(1, 'rgba(60,62,70,0)');
+      ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(0, 0, rr.width * .55, 0, 7); ctx.fill(); ctx.restore();
+    });
+    if (!still) requestAnimationFrame(draw);
+  };
+  requestAnimationFrame(draw);
 }
 // the room's floor: a perspective grid drawn on canvas so lines stay crisp, with contact shadows under the card and tablet
 function roomLoop(c) {
@@ -816,6 +892,7 @@ function compH(p) {
     <div class="hbg" aria-hidden="true">
       <i class="hbg__glow hbg__glow--a"></i><i class="hbg__glow hbg__glow--b"></i>
       <div class="hbg__room"><i class="hbg__wall"></i><canvas class="hbg__cv"></canvas><i class="hbg__grain"></i></div>
+      <canvas class="hbg__dots"></canvas>
     </div>
     ${cartridge(p, { pins: true, shape: '4:3' })}
 
@@ -910,7 +987,7 @@ function compH(p) {
 
     <svg class="zap" id="zap" aria-hidden="true"></svg>
     <button class="replay" id="replay">↻ Replay</button>
-    <span class="hbgsw" role="group" aria-label="Background"><em>Background</em><button data-bg="glow">Glow</button><button data-bg="room">3D room</button><button data-bg="none">Off</button></span>
+    <span class="hbgsw" role="group" aria-label="Background"><em>Background</em><button data-bg="light">White dots</button><button data-bg="glow">Glow</button><button data-bg="room">3D room</button><button data-bg="none">Off</button></span>
   </div>`;
 }
 
