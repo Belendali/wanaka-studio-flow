@@ -698,18 +698,22 @@ function wireE(p) {
 }
 
 // ── H · the charge ────────────────────────────────────────────────
-/* G's cartridge on the left; on the right, the plan on an abstract dark
-   tablet — black glass with a faint dot grid, cards that glow low from one
-   edge, dot-matrix numbers. Approving draws light out of the screen in a
-   wave, opens it into a cone at the tablet's edge, and narrows it to a
-   single line that lands in the cartridge's contacts. */
+/* G's cartridge on the left, a dark tablet on the right, and a fine line
+   that always joins them — a port on the tablet's edge, the cartridge's
+   contacts at the other end, a little current running along it. The plan
+   is iPad-sized and quiet: the story on one card, every other choice a tile
+   that shows only its current value. Approving floods the line: a wave
+   crosses the screen's dots, a cone of light opens at the port and narrows
+   into the line, and the cartridge lights and loads. */
 const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
 function compH(p) {
   const f = p.form;
-  const so = (label, v, on, title = '') =>
-    `<button class="topt${on ? ' is-on' : ''}" data-v="${v}"${title ? ` title="${title}"` : ''}>${label}</button>`;
-  const seg = (k, items) => `<span class="tseg" data-k="${k}">${items}</span>`;
+  const sc = F.scopes.find((x) => x[0] === f.scope) || F.scopes[1];
+  const tile = (k, label, value) => `<button class="tile" data-slip="${k}">
+      <span class="tc__k">${label}</span><span class="tile__v" data-val>${value}</span><i class="tile__c">⌄</i></button>`;
+  const choice = (label, v, on, sub = '') => `<button class="tco${on ? ' is-on' : ''}" data-v="${v}" data-label="${label}">
+      <b>${label}</b>${sub ? `<em>${sub}</em>` : ''}</button>`;
   const bub = (name, on) => `<button class="tbub${on ? ' is-on' : ''}" data-po>
       <span class="tbub__art">${p.partImg ? `<img src="${p.partImg(name)}" alt="">` : `<b>${name[0]}</b>`}</span>
       <span class="tbub__n">${name}</span></button>`;
@@ -717,8 +721,18 @@ function compH(p) {
   <div class="charge" id="charge">
     ${cartridge(p, { pins: true })}
 
+    <svg class="link" id="link" aria-hidden="true">
+      <defs><linearGradient id="lgrad" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset=".5" stop-color="#fff" stop-opacity=".16"/>
+        <stop offset="1" stop-color="#fff" stop-opacity=".55"/></linearGradient></defs>
+      <line class="link__glow"/><line class="link__base"/>
+      <line class="link__pulse"/><line class="link__pulse link__pulse--b"/>
+      <circle class="link__node" r="4.5"/><circle class="link__node link__node--end" r="2.5"/>
+    </svg>
+
     <div class="tabcol">
       <div class="tb" id="tab">
+        <span class="tb__port"></span>
         <div class="tb__screen" id="gl" data-step="1">
           <span class="tb__grid"></span>
           <header class="tb__top">
@@ -731,36 +745,29 @@ function compH(p) {
 
           <div class="tb__pages">
             <section class="tb__page is-on" data-page="1">
-              <div class="tc tc--game">
-                <div class="tc__row"><span class="tc__k">Game</span><span class="tc__tag">V1 DRAFT</span></div>
-                <input class="tb__name" data-need value="${p.title}" placeholder="Name your game" spellcheck="false">
-                <div class="tc__picks">
-                  <button class="tpick" data-slip="genre"><span data-val>${genreV(f.genre)}</span><i>⌄</i></button>
-                  <button class="tpick" data-slip="look"><span data-val>${lookV(p, f.style, f.quality)}</span><i>⌄</i></button>
+              <div class="tl">
+                <div class="tc tc--game tl__main">
+                  <span class="tc__k">Game</span>
+                  <input class="tb__name" data-need value="${p.title}" placeholder="Name your game" spellcheck="false">
+                  <label class="tf"><span class="tc__k">What you do</span>
+                    <textarea data-need spellcheck="false" placeholder="What does the player do?">${f.what || p.doing}</textarea></label>
+                  <label class="tf"><span class="tc__k">How it feels</span>
+                    <textarea spellcheck="false" placeholder="What should it feel like?">${f.feel || p.feel}</textarea></label>
                 </div>
-              </div>
-              <div class="tc tc--story">
-                <label class="tf"><span class="tc__k">What you do</span>
-                  <textarea data-need spellcheck="false" placeholder="What does the player do?">${f.what || p.doing}</textarea></label>
-                <label class="tf"><span class="tc__k">How it feels</span>
-                  <textarea spellcheck="false" placeholder="What should it feel like?">${f.feel || p.feel}</textarea></label>
-              </div>
-              <div class="tc tc--build">
-                <div class="tc__row"><span class="tc__k">Build</span><span class="dm" data-sum>${sumV(f.scope)}</span></div>
-                <div class="tr"><span class="tc__k">Scope</span>
-                  ${seg('scope', F.scopes.map(([k, n, w2, cr, t]) => so(n, k, k === f.scope, `${w2} · ${cr} · ${t}`)).join(''))}</div>
-                <div class="tr"><span class="tc__k">Plays on</span>
-                  <span class="ttog" data-multi>${[['Web', 'web'], ['Mobile', 'mobile']].map(([n, k]) =>
-                    `<button class="tsw${f.plat.includes(k) ? ' is-on' : ''}" data-v="${k}"><i></i>${n}</button>`).join('')}</span></div>
-                <div class="tr"><span class="tc__k">A run</span>
-                  ${seg('len', F.length.map((n, i) => so(n, i, i === f.len)).join(''))}</div>
-                <div class="tr"><span class="tc__k">Difficulty</span>
-                  ${seg('diff', F.difficulty.map((n, i) => so(n, i, i === f.diff)).join(''))}</div>
+                <div class="tiles">
+                  ${tile('genre', 'Genre', genreV(f.genre))}
+                  ${tile('look', 'Look', lookV(p, f.style, f.quality))}
+                  ${tile('scope', 'Scope', sc[1])}
+                  <div class="tile tile--flat"><span class="tc__k">Plays on</span>
+                    <span class="ttog" data-multi>${[['Web', 'web'], ['Mobile', 'mobile']].map(([n, k]) =>
+                      `<button class="tsw${f.plat.includes(k) ? ' is-on' : ''}" data-v="${k}"><i></i>${n}</button>`).join('')}</span></div>
+                  ${tile('len', 'A run', F.length[f.len])}
+                  ${tile('diff', 'Difficulty', F.difficulty[f.diff])}
+                </div>
               </div>
             </section>
 
             <section class="tb__page" data-page="2">
-              <p class="tb__hint">The Artist picked three for each part. Tick any, or leave it to the Artist.</p>
               <div class="tparts">
                 ${p.parts.map(([name, opts, pick]) => `
                   <div class="tc tpart" data-part>
@@ -774,19 +781,30 @@ function compH(p) {
           </div>
 
           <footer class="tb__foot">
-            <span class="tb__sum"><b data-stepn>01 / 02</b><em data-count></em></span>
+            <b class="tb__stepn" data-stepn>01 / 02</b>
+            <span class="tb__sum"><b data-sum>${sumV(f.scope)}</b><em data-count></em></span>
             <button class="tbtn" id="glgo"><span>Next · Assets</span><i class="tbtn__ic">→</i></button>
           </footer>
 
-          <div class="tslip tslip--genre" data-slipbox="genre" hidden>
+          <div class="tslip tslip--side" data-slipbox="genre" hidden>
             ${F.genres.map(([k, n]) =>
               `<button class="tslip__g${k === f.genre ? ' is-on' : ''}" data-g="${k}">${GICON[k]}${n}</button>`).join('')}
           </div>
-          <div class="tslip tslip--look" data-slipbox="look" hidden>
+          <div class="tslip tslip--wide" data-slipbox="look" hidden>
             <div class="tslip__grid">${F.styles.map(([k, n]) =>
               `<button class="tslip__s${k === f.style ? ' is-on' : ''}" data-s="${k}"><img src="${thumb(p, k)}" alt=""><span>${n}</span></button>`).join('')}</div>
             <div class="tslip__q tseg">${F.quality.map((q) =>
               `<button class="topt${q === f.quality ? ' is-on' : ''}" data-q="${q}">${q}</button>`).join('')}</div>
+          </div>
+          <div class="tslip tslip--side" data-slipbox="scope" hidden>
+            <span class="tlist" data-k="scope">${F.scopes.map(([k, n, w2, cr]) =>
+              choice(n, k, k === f.scope, `${w2.split(' · ')[0]} · ${cr}`)).join('')}</span>
+          </div>
+          <div class="tslip tslip--side" data-slipbox="len" hidden>
+            <span class="tlist" data-k="len">${F.length.map((n, i) => choice(n, i, i === f.len)).join('')}</span>
+          </div>
+          <div class="tslip tslip--side" data-slipbox="diff" hidden>
+            <span class="tlist" data-k="diff">${F.difficulty.map((n, i) => choice(n, i, i === f.diff)).join('')}</span>
           </div>
         </div>
       </div>
@@ -805,28 +823,64 @@ const rng = (seed) => {
 const clamp01 = (v) => Math.max(0, Math.min(1, v));
 const easeOut = (v) => 1 - Math.pow(1 - v, 3);
 
+// the two ends of the line: the tip of the tablet's port, and the cartridge's contacts
+const linkEnds = (root) => {
+  const box = root.getBoundingClientRect();
+  const pr = root.querySelector('.tb__port').getBoundingClientRect();
+  const qr = root.querySelector('#cart .pins').getBoundingClientRect();
+  return {
+    box,
+    ax: pr.left - box.left + 4, ay: pr.top - box.top + pr.height / 2,
+    bx: qr.left - box.left + qr.width / 2, by: qr.top - box.top + qr.height / 2,
+  };
+};
+
+// The line follows the cartridge as it floats and leans, every frame.
+function linkLoop() {
+  const root = $('charge'), svg = $('link');
+  const lines = [...svg.querySelectorAll('line')];
+  const [n1, n2] = svg.querySelectorAll('circle');
+  const grad = svg.querySelector('#lgrad');
+  const update = () => {
+    const e = linkEnds(root);
+    if (!e.box.width) return;
+    svg.setAttribute('viewBox', `0 0 ${e.box.width} ${e.box.height}`);
+    [...lines, grad].forEach((el) => {
+      el.setAttribute('x1', e.ax); el.setAttribute('y1', e.ay);
+      el.setAttribute('x2', e.bx); el.setAttribute('y2', e.by);
+    });
+    n1.setAttribute('cx', e.ax); n1.setAttribute('cy', e.ay);
+    n2.setAttribute('cx', e.bx); n2.setAttribute('cy', e.by);
+  };
+  window.__linkOnce = update;             // one update by hand when checking it
+  const step = () => {
+    if (!root.isConnected) return;
+    update();
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 /* The whole charge is one function of elapsed time, so any moment of it
-   can be drawn on its own.
-     0–380   the button fills
-   160–1000  a wave of light runs across the screen's dot grid, toward the edge
-   640–1220  a cone of light opens at the tablet's edge and reaches for the card,
-             narrowing to one line that lands in the contacts
-  1180–1760  a few sparks; the card lights from that side
-  1420       the cartridge is loaded; 1520–2040 the light fades              */
+   can be drawn on its own. It is drawn along the line, in the line's own
+   frame: the port at (0,0), the contacts at (-L,0).
+     0–380   the button fills; current on the line speeds up
+   160–920   a wave of light crosses the screen's dots toward the port
+   640–1220  a cone of light opens at the port and narrows into the line
+  1180–1760  a few sparks at the contacts; the card lights from that side
+  1420       the cartridge is loaded; 1520–2040 the cone fades               */
 function charge() {
-  const root = $('charge'), scr = $('gl'), go = $('glgo'), zap = $('zap'), tab = $('tab');
+  const root = $('charge'), scr = $('gl'), go = $('glgo'), zap = $('zap'), tab = $('tab'), link = $('link');
   const grid = scr.querySelector('.tb__grid');
   const cart = $('cart'), pinsEl = cart.querySelector('.pins'), lab = $('cartlab');
-  const box = root.getBoundingClientRect();
-  const pr = pinsEl.getBoundingClientRect(), tr = tab.getBoundingClientRect();
-  const target = { x: pr.left - box.left + pr.width * .5, y: pr.top - box.top + pr.height * .5 };
-  const y0 = target.y;
-  const x0 = tr.left - box.left + 1;
-  const xm = x0 - (x0 - target.x) * .58;
-  const H0 = Math.min(tr.height * .26, 180);
+  const e = linkEnds(root);
+  const L = Math.hypot(e.bx - e.ax, e.by - e.ay) || 1;
+  const ang = Math.atan2(e.by - e.ay, e.bx - e.ax) * 180 / Math.PI - 180;
+  const tr = tab.getBoundingClientRect();
+  const x0 = 0, tx = -L, xm = -L * .58, H0 = Math.min(tr.height * .22, 150);
   const chosen = [...scr.querySelectorAll('.tb__page.is-on [data-po].is-on, .tb__page.is-on [data-later].is-on')];
 
-  zap.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
+  zap.setAttribute('viewBox', `0 0 ${e.box.width} ${e.box.height}`);
   zap.innerHTML = `<defs>
       <linearGradient id="zfun" gradientUnits="userSpaceOnUse" x1="${x0}" y1="0" x2="${xm}" y2="0">
         <stop offset="0" stop-color="#12205C" stop-opacity="0"/><stop offset=".4" stop-color="#1F4FD8" stop-opacity=".5"/>
@@ -834,16 +888,18 @@ function charge() {
       <linearGradient id="zrim" gradientUnits="userSpaceOnUse" x1="${x0}" y1="0" x2="${xm}" y2="0">
         <stop offset="0" stop-color="#C58BFF" stop-opacity="0"/><stop offset=".7" stop-color="#C58BFF" stop-opacity=".55"/>
         <stop offset="1" stop-color="#FFFFFF" stop-opacity=".9"/></linearGradient>
-      <linearGradient id="zline" gradientUnits="userSpaceOnUse" x1="${xm}" y1="0" x2="${target.x}" y2="0">
+      <linearGradient id="zline" gradientUnits="userSpaceOnUse" x1="${xm}" y1="0" x2="${tx}" y2="0">
         <stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#BDEBFF"/><stop offset="1" stop-color="#D59BFF"/></linearGradient>
-      <clipPath id="zclip"><rect id="zrect" x="${x0}" y="0" width="0" height="${box.height}"/></clipPath>
+      <clipPath id="zclip"><rect id="zrect" x="0" y="${-(H0 + 60)}" width="0" height="${2 * (H0 + 60)}"/></clipPath>
     </defs>
-    <g clip-path="url(#zclip)" id="zbeam">
-      <path class="zfun zfun--glow"/><path class="zfun"/><path class="zrim"/>
-      <line class="zline zline--glow" x1="${xm}" y1="${y0}" x2="${target.x}" y2="${y0}"/>
-      <line class="zline zline--core" x1="${xm}" y1="${y0}" x2="${target.x}" y2="${y0}"/>
-    </g>
-    <g class="zsparks">${'<circle r="0"/>'.repeat(10)}</g>`;
+    <g transform="translate(${e.ax} ${e.ay}) rotate(${ang})">
+      <g clip-path="url(#zclip)" id="zbeam">
+        <path class="zfun zfun--glow"/><path class="zfun"/><path class="zrim"/>
+        <line class="zline zline--glow" x1="${xm}" y1="0" x2="${tx}" y2="0"/>
+        <line class="zline zline--core" x1="${xm}" y1="0" x2="${tx}" y2="0"/>
+      </g>
+      <g class="zsparks">${'<circle r="0"/>'.repeat(10)}</g>
+    </g>`;
   const rect = zap.querySelector('#zrect'), beam = zap.querySelector('#zbeam');
   const funs = [...zap.querySelectorAll('.zfun')], rim = zap.querySelector('.zrim');
   const core = zap.querySelector('.zline--core');
@@ -854,11 +910,12 @@ function charge() {
     return { vx: Math.cos(a) * v, vy: Math.sin(a) * v - 30 };
   });
   const cx = xm + (x0 - xm) * .3;
-  const cone = (h) => `M${x0} ${y0 - h} Q${cx} ${y0 - 2.5} ${xm} ${y0 - 1} L${xm} ${y0 + 1} Q${cx} ${y0 + 2.5} ${x0} ${y0 + h} Z`;
-  const edges = (h) => `M${x0} ${y0 - h} Q${cx} ${y0 - 2.5} ${xm} ${y0 - 1} M${x0} ${y0 + h} Q${cx} ${y0 + 2.5} ${xm} ${y0 + 1}`;
+  const cone = (h) => `M${x0} ${-h} Q${cx} -2.5 ${xm} -1 L${xm} 1 Q${cx} 2.5 ${x0} ${h} Z`;
+  const edges = (h) => `M${x0} ${-h} Q${cx} -2.5 ${xm} -1 M${x0} ${h} Q${cx} 2.5 ${xm} 1`;
 
   const frame = (t) => {
     go.style.setProperty('--fill', clamp01(t / 380).toFixed(3));
+    link.classList.toggle('is-charging', t < 1600);
     chosen.forEach((el) => el.classList.toggle('is-sending', t < 760));
     const w0 = clamp01((t - 160) / 760), w = w0 * w0 * (3 - 2 * w0);
     grid.style.setProperty('--wave', `${(112 - w * 130).toFixed(1)}%`);
@@ -868,9 +925,9 @@ function charge() {
     const reach = easeOut(clamp01((t - 700) / 520));
     const fade = t < 1520 ? 1 : clamp01(1 - (t - 1520) / 520);
     const h = H0 * (.35 + .65 * open) * (1 + .03 * Math.sin(t / 45));
-    const left = x0 - reach * (x0 - target.x + 4);
+    const left = -reach * (L + 4);
     rect.setAttribute('x', left.toFixed(1));
-    rect.setAttribute('width', Math.max(0, x0 + 30 - left).toFixed(1));
+    rect.setAttribute('width', Math.max(0, 30 - left).toFixed(1));
     funs.forEach((el) => el.setAttribute('d', cone(h)));
     rim.setAttribute('d', edges(h));
     core.style.opacity = (.82 + .18 * Math.sin(t / 30)).toFixed(3);
@@ -879,8 +936,8 @@ function charge() {
     sparks.forEach((c, i) => {
       const s2 = (t - 1180) / 1000;
       if (s2 < 0 || s2 > .58) { c.setAttribute('r', 0); return; }
-      c.setAttribute('cx', (target.x + spray[i].vx * s2).toFixed(1));
-      c.setAttribute('cy', (target.y + spray[i].vy * s2 + 260 * s2 * s2).toFixed(1));
+      c.setAttribute('cx', (tx + spray[i].vx * s2).toFixed(1));
+      c.setAttribute('cy', (spray[i].vy * s2 + 260 * s2 * s2).toFixed(1));
       c.setAttribute('r', (1.8 * (1 - s2 / .58)).toFixed(2));
     });
     pinsEl.classList.toggle('is-hot', t >= 1180 && t < 1950);
@@ -888,6 +945,7 @@ function charge() {
     if (t >= 1420 && !cart.classList.contains('is-loaded')) {
       cart.classList.add('is-loaded');
       lab.innerHTML = '<i></i>Loaded · building v1';
+      link.classList.add('is-live');
     }
     if (t >= 1620) scr.classList.add('is-done');
   };
@@ -934,13 +992,22 @@ function wireH(p) {
   };
   wireAssets(scr);
   wireForm(p, scr, (src) => { document.querySelector('.cart__win img').src = src; });
+  // a pick in a tile's slip writes back into the tile and closes the slip
+  scr.querySelectorAll('[data-slipbox] [data-k]').forEach((g) => {
+    g.querySelectorAll('[data-v]').forEach((o) => o.addEventListener('click', () => {
+      const v = scr.querySelector(`[data-slip="${g.dataset.k}"] [data-val]`);
+      if (v) v.textContent = o.dataset.label;
+      g.closest('[data-slipbox]').hidden = true;
+    }));
+  });
+  linkLoop();
 
-  // the cartridge leans toward the pointer, as in G
+  // the cartridge leans toward the pointer, as in G — and the line follows it
   const col = $('cartcol'), cart = $('cart');
-  col.onmousemove = (e) => {
+  col.onmousemove = (ev) => {
     const r = col.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - .5;
-    const y = (e.clientY - r.top) / r.height - .5;
+    const x = (ev.clientX - r.left) / r.width - .5;
+    const y = (ev.clientY - r.top) / r.height - .5;
     cart.style.setProperty('--ry', `${-10 + x * 20}deg`);
     cart.style.setProperty('--rx', `${7 - y * 14}deg`);
     cart.style.setProperty('--mx', `${50 - x * 90}%`);

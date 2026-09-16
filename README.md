@@ -49,17 +49,18 @@ The palette is fixed: neutral grey for the room, Wanaka lime (#C4EB00) for
 buttons and anything that marks a choice. Switching the cover top right
 changes the game and its copy, not the colours.
 
-- **H · Charge** — G's cartridge on the left, with a row of contacts on the
-  edge facing the plan. On the right the plan sits on an abstract dark tablet:
-  black glass with a faint dot grid, near-black cards that glow low from one
-  edge, dot-matrix numbers (Doto), light-grey selections, a lime dot where
-  something is chosen. Step 1 is the plan; step 2 shows each part as a card
-  with the Artist's three picks as image tiles, plus "Artist" and "All".
-  Approving is one function of time (`charge()` in `plans.js`): the button
-  fills, a wave runs across the dot grid toward the edge, a cone of light
-  opens at the tablet's edge and narrows to a single line that lands in the
-  contacts, and the card lights and loads. Set `window.__chargeHold = true`
-  before approving and call `window.__chargeFrame(ms)` to draw any moment.
+- **H · Charge** — G's cartridge on the left, an iPad-sized dark tablet on
+  the right, and a fine line that always joins them: a port on the tablet's
+  edge, the cartridge's contacts at the other end, and a little current
+  running along it (it follows the cartridge as it floats and leans). The
+  plan is quiet — the story on one card, every other choice a tile showing
+  only its current value, opening a slip to change it. Step 2 shows each
+  part as a card with the Artist's three picks plus "Artist" and "All".
+  Approving floods the line (`charge()` in `plans.js`, one function of time):
+  a wave crosses the screen's dots, a cone of light opens at the port and
+  narrows into the line, and the cartridge lights and loads. Set
+  `window.__chargeHold = true` before approving and call
+  `window.__chargeFrame(ms)` to draw any moment.
 
 - **E · Handheld** — a clamshell console standing open on a desk in a
   lamp-lit room. It arrives shut (the lid's back shows), lands, and the lid
