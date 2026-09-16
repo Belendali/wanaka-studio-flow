@@ -722,17 +722,18 @@ function wireE(p) {
    into the line, and the cartridge lights and loads. */
 const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
-function hBg() { try { return localStorage.getItem('h-bg3') || 'dots'; } catch (e) { return 'dots'; } }
+function hBg() { try { return localStorage.getItem('h-bg4') || 'wave'; } catch (e) { return 'wave'; } }
 function wireHBg() {
   const c = document.getElementById('charge'); if (!c) return;
   const mark = () => document.querySelectorAll('.hbgsw [data-bg]').forEach((b) => b.classList.toggle('is-on', b.dataset.bg === c.dataset.bg));
   document.querySelectorAll('.hbgsw [data-bg]').forEach((b) => b.addEventListener('click', () => {
     c.dataset.bg = b.dataset.bg; mark();
-    try { localStorage.setItem('h-bg3', b.dataset.bg); } catch (e) {}
+    try { localStorage.setItem('h-bg4', b.dataset.bg); } catch (e) {}
   }));
   mark();
   roomLoop(c);
   dotsLoop(c);
+  waveLoop(c);
 }
 // Dots: a flat dot grid on a dark gradient; each dot's opacity follows a slow drifting field, brighter near the link
 function dotsLoop(c) {
@@ -847,6 +848,84 @@ function roomLoop(c) {
   };
   requestAnimationFrame(draw);
 }
+// Particles: a grey studio backdrop lit from the top left, and a floor of particle lines that ripple toward a bright horizon
+function waveLoop(c) {
+  const cv = c.querySelector('.hbg__wave'); if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const t0 = performance.now();
+  let last = 0;
+  const draw = (now) => {
+    if (!cv.isConnected) return;
+    if (c.dataset.bg !== 'wave' || now - last < 33) { requestAnimationFrame(draw); return; }
+    last = now;
+    const dpr = Math.min(2, devicePixelRatio || 1), W = cv.clientWidth, H = cv.clientHeight;
+    if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const t = still ? 0 : (now - t0) / 1000;
+    const lit = c.querySelector('.cart.is-loaded') ? 1 : 0;
+    const hy = H * .76, cx = W * .42, f = H * .9, camH = .5;
+
+    // backdrop
+    let g = ctx.createLinearGradient(0, 0, 0, hy);
+    g.addColorStop(0, '#232427'); g.addColorStop(.7, '#18191B'); g.addColorStop(1, '#1D1E21');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    // a soft shaft of light from the top left
+    ctx.save(); ctx.translate(W * .2, H * .12); ctx.rotate(.5); ctx.scale(1, 2.2);
+    g = ctx.createRadialGradient(0, 0, 0, 0, 0, W * .32);
+    g.addColorStop(0, 'rgba(210,214,222,.16)'); g.addColorStop(.5, 'rgba(180,186,196,.05)'); g.addColorStop(1, 'rgba(180,186,196,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, W * .32, 0, 7); ctx.fill(); ctx.restore();
+    // flare line near the top
+    g = ctx.createLinearGradient(0, 0, W, 0);
+    g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(.2, 'rgba(255,255,255,.16)'); g.addColorStop(.5, 'rgba(255,255,255,.05)'); g.addColorStop(1, 'rgba(255,255,255,.1)');
+    ctx.fillStyle = g; ctx.fillRect(0, H * .13, W, 1);
+    // floor base
+    g = ctx.createLinearGradient(0, hy, 0, H);
+    g.addColorStop(0, '#1E1F22'); g.addColorStop(1, '#0B0B0D');
+    ctx.fillStyle = g; ctx.fillRect(0, hy, W, H - hy);
+
+    // particle lines: columns run toward the horizon; dots are bucketed by opacity so each bucket is one fill
+    const step = 6 / f, B = 12, buckets = Array.from({ length: B }, () => []);
+    for (let y = hy + 1.5; y < H + 20; y += 1.8 + (y - hy) * .012) {
+      const z = f * camH / (y - hy);
+      const k = Math.min(1, (y - hy) / (H - hy));
+      const stride = 2 ** Math.max(0, Math.ceil(Math.log2(z / 2.2)));
+      const j0 = Math.floor(-cx * z / (f * step) / stride) * stride, j1 = Math.ceil((W - cx) * z / (f * step));
+      const sz = .8 + .9 * k;
+      for (let jj = j0; jj <= j1; jj += stride) {
+        const wx = jj * step;
+        const h = .018 * Math.sin(wx * 2.2 + z * .8 - t * .7) + .012 * Math.sin(z * 1.9 - wx * .9 + t * .45) + .006 * Math.sin(wx * 7 - t);
+        const x = cx + f * wx / z, yy = hy + f * (camH - h) / z;
+        const hl = Math.max(0, 1 - Math.hypot((x - cx) / (W * .35), (yy - hy) / (H * .07)));
+        let a = (.16 + .3 * (1 - k) + .5 * hl * hl + 14 * Math.max(0, h) * k) * (1 - .45 * k * k) * (1 + .3 * lit);
+        if (a < .04) continue;
+        buckets[Math.min(B - 1, Math.floor(a * B))].push(x - sz / 2, yy - sz / 2, sz);
+      }
+    }
+    buckets.forEach((d, b) => {
+      if (!d.length) return;
+      ctx.fillStyle = `rgba(232,234,238,${((b + .5) / B).toFixed(3)})`;
+      ctx.beginPath();
+      for (let q = 0; q < d.length; q += 3) ctx.rect(d[q], d[q + 1], d[q + 2], d[q + 2]);
+      ctx.fill();
+    });
+    // the bright seam where floor meets backdrop
+    ctx.save(); ctx.translate(cx, hy); ctx.scale(1, .06);
+    g = ctx.createRadialGradient(0, 0, 0, 0, 0, W * .38);
+    g.addColorStop(0, `rgba(255,255,255,${.5 + .25 * lit})`); g.addColorStop(.35, 'rgba(255,255,255,.14)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, W * .38, 0, 7); ctx.fill(); ctx.restore();
+    ctx.save(); ctx.translate(cx, hy - 4); ctx.scale(1, .5);
+    g = ctx.createRadialGradient(0, 0, 0, 0, 0, W * .3);
+    g.addColorStop(0, 'rgba(230,234,240,.10)'); g.addColorStop(1, 'rgba(230,234,240,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, W * .3, 0, 7); ctx.fill(); ctx.restore();
+    // edges fall off
+    g = ctx.createRadialGradient(W * .5, H * .55, H * .3, W * .5, H * .55, W * .72);
+    g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.45)');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    requestAnimationFrame(draw);
+  };
+  requestAnimationFrame(draw);
+}
 function compH(p) {
   const f = p.form;
   const sc = F.scopes.find((x) => x[0] === f.scope) || F.scopes[1];
@@ -863,7 +942,7 @@ function compH(p) {
     <div class="hbg" aria-hidden="true">
       <i class="hbg__glow hbg__glow--a"></i><i class="hbg__glow hbg__glow--b"></i>
       <div class="hbg__room"><i class="hbg__wall"></i><canvas class="hbg__cv"></canvas><i class="hbg__grain"></i></div>
-      <canvas class="hbg__dots"></canvas>
+      <canvas class="hbg__dots"></canvas><canvas class="hbg__wave"></canvas>
     </div>
     ${cartridge(p, { pins: true, shape: '4:3' })}
 
@@ -958,7 +1037,7 @@ function compH(p) {
 
     <svg class="zap" id="zap" aria-hidden="true"></svg>
     <button class="replay" id="replay">↻ Replay</button>
-    <span class="hbgsw" role="group" aria-label="Background"><em>Background</em><button data-bg="dots">Dots</button><button data-bg="glow">Glow</button><button data-bg="room">3D room</button><button data-bg="none">Off</button></span>
+    <span class="hbgsw" role="group" aria-label="Background"><em>Background</em><button data-bg="wave">Particles</button><button data-bg="dots">Dots</button><button data-bg="glow">Glow</button><button data-bg="room">3D room</button><button data-bg="none">Off</button></span>
   </div>`;
 }
 

@@ -1264,3 +1264,10 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
   radial-gradient(120% 90% at 50% 50%,#15161A 0%,#0B0B0D 60%,#050506 100%)}
 .charge[data-bg="dots"] .hbg__dots{opacity:1}
 .charge[data-bg="dots"] .hbg__glow{opacity:0}
+
+/* ── H · Particles ─────────────────────────────────────────────── */
+.hbg__wave{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity .6s}
+.charge[data-bg="wave"]{background:#101113}
+.charge[data-bg="wave"] .hbg__wave{opacity:1}
+.charge[data-bg="wave"] .hbg__glow{opacity:0}
+.charge[data-bg="wave"] .tb{box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 0 0 1px rgba(255,255,255,.08),0 40px 70px -30px #000}
