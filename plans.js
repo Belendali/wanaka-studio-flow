@@ -264,6 +264,13 @@ const F = {
            ['ambitious', 'Ambitious', '7 rooms · 11 assets', '640–980 cr', '~25 min']],
   length: ['3–5 min', '8–12 min', '15–20 min'],
   difficulty: ['Gentle', 'Normal', 'Tough'],
+  genreSub: {
+    adventure: 'Explore a world and find your way', platformer: 'Jump, land and time your moves',
+    puzzle: 'Work it out, then pull it off', collect: 'Sweep a place clean of things worth having',
+    racing: 'Get there first, or beat the clock', action: 'React fast and stay alive',
+  },
+  lengthSub: ['Fast retries, quick payoff', 'Room for mastery and an arc', 'A longer run with varied beats'],
+  diffSub: ['Forgiving, few hazards', 'Fair, with room to fail', 'Tight timing, real pressure'],
 };
 const GICON = {
   adventure: ic('<path d="M3 18l5-11 5 8 3-5 5 8z"/>'),
@@ -718,9 +725,10 @@ const slug = (t) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 function compH(p) {
   const f = p.form;
   const sc = F.scopes.find((x) => x[0] === f.scope) || F.scopes[1];
-  const tile = (k, label, value) => `<button class="tile" data-slip="${k}">
-      <span class="tc__k">${label}</span><span class="tile__v" data-val>${value}</span><i class="tile__c">⌄</i></button>`;
-  const choice = (label, v, on, sub = '') => `<button class="tco${on ? ' is-on' : ''}" data-v="${v}" data-label="${label}">
+  const tile = (k, label, value, sub = null, cls = '') => `<button class="tile${cls}" data-slip="${k}">
+      <span class="tile__top"><span class="tc__k">${label}</span><span class="tile__edit">Edit<i>⌄</i></span></span>
+      <span class="tile__v" data-val>${value}</span>${sub === null ? '' : `<span class="tile__sub" data-sub>${sub}</span>`}</button>`;
+  const choice = (label, v, on, sub = '') => `<button class="tco${on ? ' is-on' : ''}" data-v="${v}" data-label="${label}" data-sub="${sub}">
       <b>${label}</b>${sub ? `<em>${sub}</em>` : ''}</button>`;
   const bub = (name, on) => `<button class="tbub${on ? ' is-on' : ''}" data-po>
       <span class="tbub__art">${p.partImg ? `<img src="${p.partImg(name)}" alt="">` : `<b>${name[0]}</b>`}</span>
@@ -744,7 +752,7 @@ function compH(p) {
         <div class="tb__screen" id="gl" data-step="1">
           <span class="tb__grid"></span>
           <header class="tb__top">
-            <span class="tb__brand">PLAN</span>
+            <span class="tb__lead"><span class="tb__brand">PLAN</span><span class="tb__hint">Tap any card to edit</span></span>
             <span class="tb__tabs">
               <button class="tb__tab is-on" data-step="1">Plan</button>
               <button class="tb__tab" data-step="2">Assets</button>
@@ -755,22 +763,22 @@ function compH(p) {
             <section class="tb__page is-on" data-page="1">
               <div class="tl">
                 <div class="tc tc--game tl__main">
-                  <span class="tc__k">Game</span>
-                  <input class="tb__name" data-need value="${p.title}" placeholder="Name your game" spellcheck="false">
-                  <label class="tf"><span class="tc__k">What you do</span>
+                  <label class="tfield"><span class="tc__k">Name <i class="ed">✎</i></span>
+                    <input class="tb__name" data-need value="${p.title}" placeholder="Name your game" spellcheck="false"></label>
+                  <label class="tf tf--grow"><span class="tc__k">What you do <i class="ed">✎</i></span>
                     <textarea data-need spellcheck="false" placeholder="What does the player do?">${f.what || p.doing}</textarea></label>
-                  <label class="tf"><span class="tc__k">How it feels</span>
+                  <label class="tf"><span class="tc__k">How it feels <i class="ed">✎</i></span>
                     <textarea spellcheck="false" placeholder="What should it feel like?">${f.feel || p.feel}</textarea></label>
                 </div>
                 <div class="tiles">
-                  ${tile('genre', 'Genre', genreV(f.genre))}
-                  ${tile('look', 'Look', lookV(p, f.style, f.quality))}
-                  ${tile('scope', 'Scope', sc[1])}
+                  ${tile('genre', 'Genre', genreV(f.genre), F.genreSub[f.genre])}
+                  ${tile('look', 'Look', lookV(p, f.style, f.quality), null, ' tile--look')}
+                  ${tile('scope', 'Scope', sc[1], `${sc[2]} · ${sc[3]}`)}
                   <div class="tile tile--flat"><span class="tc__k">Plays on</span>
                     <span class="ttog" data-multi>${[['Web', 'web'], ['Mobile', 'mobile']].map(([n, k]) =>
                       `<button class="tsw${f.plat.includes(k) ? ' is-on' : ''}" data-v="${k}"><i></i>${n}</button>`).join('')}</span></div>
-                  ${tile('len', 'A run', F.length[f.len])}
-                  ${tile('diff', 'Difficulty', F.difficulty[f.diff])}
+                  ${tile('len', 'A run', F.length[f.len], F.lengthSub[f.len])}
+                  ${tile('diff', 'Difficulty', F.difficulty[f.diff], F.diffSub[f.diff])}
                 </div>
               </div>
             </section>
@@ -806,13 +814,13 @@ function compH(p) {
           </div>
           <div class="tslip tslip--side" data-slipbox="scope" hidden>
             <span class="tlist" data-k="scope">${F.scopes.map(([k, n, w2, cr]) =>
-              choice(n, k, k === f.scope, `${w2.split(' · ')[0]} · ${cr}`)).join('')}</span>
+              choice(n, k, k === f.scope, `${w2} · ${cr}`)).join('')}</span>
           </div>
           <div class="tslip tslip--side" data-slipbox="len" hidden>
-            <span class="tlist" data-k="len">${F.length.map((n, i) => choice(n, i, i === f.len)).join('')}</span>
+            <span class="tlist" data-k="len">${F.length.map((n, i) => choice(n, i, i === f.len, F.lengthSub[i])).join('')}</span>
           </div>
           <div class="tslip tslip--side" data-slipbox="diff" hidden>
-            <span class="tlist" data-k="diff">${F.difficulty.map((n, i) => choice(n, i, i === f.diff)).join('')}</span>
+            <span class="tlist" data-k="diff">${F.difficulty.map((n, i) => choice(n, i, i === f.diff, F.diffSub[i])).join('')}</span>
           </div>
         </div>
       </div>
@@ -1004,10 +1012,16 @@ function wireH(p) {
   scr.querySelectorAll('[data-slipbox] [data-k]').forEach((g) => {
     g.querySelectorAll('[data-v]').forEach((o) => o.addEventListener('click', () => {
       const v = scr.querySelector(`[data-slip="${g.dataset.k}"] [data-val]`);
+      const sub = scr.querySelector(`[data-slip="${g.dataset.k}"] [data-sub]`);
       if (v) v.textContent = o.dataset.label;
+      if (sub) sub.textContent = o.dataset.sub;
       g.closest('[data-slipbox]').hidden = true;
     }));
   });
+  scr.querySelectorAll('[data-slipbox="genre"] [data-g]').forEach((b) => b.addEventListener('click', () => {
+    const sub = scr.querySelector('[data-slip="genre"] [data-sub]');
+    if (sub) sub.textContent = F.genreSub[b.dataset.g];
+  }));
   linkLoop();
 
   // the cartridge faces you straight on, and leans only under the pointer — the line follows it

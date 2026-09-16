@@ -1125,3 +1125,58 @@ input.n__title:hover,.ta:hover{
 .tbtn{height:2.7em;padding:0 .3em 0 1.25em;font-size:.9em}
 .tbtn__ic{width:2.15em;height:2.15em}
 .tslip{border-radius:1em}
+
+/* ── H · lighter, and plainly editable ─────────────────────────── */
+.charge{background:
+  radial-gradient(900px 620px at 70% 50%,rgba(72,74,90,.35),transparent 70%),
+  radial-gradient(circle,rgba(255,255,255,.04) 1px,transparent 1.4px) 0 0/18px 18px,
+  #0D0D11}
+.tb{background:linear-gradient(160deg,#4B4D56,#2E2F36 42%,#25262C 74%,#3A3C43)}
+.tb__screen{background:linear-gradient(180deg,#1A1A1F,#141418)}
+.tb__grid{background:radial-gradient(circle,rgba(255,255,255,.055) .8px,transparent 1.2px) 0 0/12px 12px}
+.tb__top,.tb__pages,.tb__foot,.tslip{font-size:clamp(12px,1.9cqw,20px)}
+.tb__lead{display:flex;align-items:baseline;gap:.9em;min-width:0}
+.tb__hint{font-size:.8em;color:rgba(236,236,241,.5);white-space:nowrap}
+.tb__tabs{background:#232329}
+.tc,.tile{background:#202026;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 0 0 1px rgba(255,255,255,.07)}
+.tc__k{display:inline-flex;align-items:center;gap:.45em;font-size:.78em;color:rgba(236,236,241,.62)}
+
+/* text you can edit looks like a field, with a pencil by its label */
+.tfield,.tf{display:flex;flex-direction:column;gap:.4em;margin:0;padding:0;border:0}
+.tf{margin-top:.8em}
+.tf--grow{flex:1;min-height:0}
+.tb__name,.tf textarea{border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.045);border-radius:.7em;
+  transition:border-color .15s,background .15s,box-shadow .15s}
+.tb__name{height:auto;margin:0;padding:.25em .45em;font-size:1.65em}
+.tf textarea{height:3.7em;padding:.55em .7em;font-size:1em}
+.tf--grow textarea{flex:1;min-height:4.8em;height:auto}
+.tb__name:hover,.tf textarea:hover{border-color:rgba(255,255,255,.24);background:rgba(255,255,255,.065)}
+.tb__name:focus,.tf textarea:focus{border-color:#ECECF1;background:rgba(255,255,255,.075);box-shadow:0 0 0 3px rgba(236,236,241,.12)}
+.ed{font-style:normal;font-size:.95em;opacity:.55;transition:opacity .15s}
+label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
+.tb .is-missing{border-color:#FF6B81;box-shadow:0 0 0 3px rgba(255,107,129,.2)}
+
+/* tiles: a label, an Edit button, the value, and one line of context */
+.tile{justify-content:flex-start;gap:.35em;transition:background .15s,box-shadow .15s,transform .15s}
+.tile:hover{background:#28282F;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);transform:translateY(-1px)}
+.tile--flat:hover{background:#202026;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),inset 0 0 0 1px rgba(255,255,255,.07);transform:none}
+.tile__top{display:flex;align-items:center;justify-content:space-between;gap:.5em;width:100%}
+.tile__edit{display:inline-flex;align-items:center;gap:.3em;height:1.8em;padding:0 .65em;border-radius:.9em;
+  background:rgba(255,255,255,.1);color:rgba(236,236,241,.85);font-size:.72em;font-weight:600;transition:background .15s,color .15s}
+.tile__edit i{font-style:normal;line-height:1}
+.tile:hover .tile__edit{background:#ECECF1;color:#0B0B0E}
+.tile__v{margin-top:.3em;font-size:1.25em}
+.tile__sub{font-size:.78em;line-height:1.4;color:rgba(236,236,241,.52)}
+.tile--look .tile__v{flex:1;min-height:0;display:flex;flex-direction:column;align-items:stretch;gap:.45em;width:100%;font-size:1.05em}
+.tile--look .tile__v img{flex:1;min-height:0;width:100%;height:auto;object-fit:cover;border-radius:.6em}
+.tsw i{background:rgba(255,255,255,.12)}
+.tsw.is-on i{background:rgba(255,255,255,.32)}
+.tbub__art{background:#26262D}
+.tmore{background:rgba(255,255,255,.1)}
+.tslip{background:#26262D}
+.tbtn{background:#2B2B32}
+.tbtn:hover{background:#34343C}
+.tc--game{display:flex;flex-direction:column;overflow:hidden}
+.tfield,.tf:not(.tf--grow){flex-shrink:0}
+.tf--grow textarea{min-height:3em}
+.tf:not(.tf--grow) textarea{height:4.4em}
