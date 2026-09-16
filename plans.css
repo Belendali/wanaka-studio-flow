@@ -855,7 +855,7 @@ input.n__title:hover,.ta:hover{
 
 /* the cartridge: a little flatter so its contacts face the tablet */
 .stage--h .cart__rise{width:94%}
-.stage--h .cart{transform:rotateX(var(--rx,7deg)) rotateY(var(--ry,-10deg)) rotateZ(-1deg)}
+.stage--h .cart{transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
 .pins rect{fill:#B5964F;transition:fill .15s}
 .pins.is-hot rect{fill:#EAF8FF}
 .pins.is-hot{filter:drop-shadow(0 0 4px #5CC8FF) drop-shadow(0 0 10px #C58BFF)}
@@ -1068,3 +1068,10 @@ input.n__title:hover,.ta:hover{
   color:rgba(236,236,241,.5);font-family:var(--sans);font-size:.88em;white-space:nowrap;transition:color .15s,background .15s}
 .topt:hover{color:#fff}
 .topt.is-on{background:#ECECF1;color:#0B0B0E;font-weight:700}
+
+/* the 4:3 cartridge */
+.cart.cart--43{aspect-ratio:4/3}
+.cart--43 .cart__win{left:5.5%;top:14%;width:88%;height:80%}
+.cart--43 .cart__sweep,.cart--43 .cart__zap{
+  clip-path:polygon(0 6.7%,1.5% 2%,5% 0,92% 0,100% 10.7%,100% 93.3%,98.5% 98%,95% 100%,5% 100%,1.5% 98%,0 93.3%);
+}

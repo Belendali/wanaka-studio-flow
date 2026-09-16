@@ -296,29 +296,37 @@ const RIM = 'M19 6H295L318 29V181Q318 194 305 194H19Q6 194 6 181V19Q6 6 19 6Z';
 const CLIP = 'M12 30V86a9 9 0 0 0 18 0V16a13 13 0 0 0 -26 0V92a17 17 0 0 0 34 0V28';
 
 // The cartridge G and H share. H asks for the contacts its current arcs into.
-const PINS = `<g class="pins">${Array.from({ length: 9 }, (_, i) =>
-  `<rect x="310" y="${60 + i * 12}" width="8" height="8" rx="1.6"/>`).join('')}</g>`;
-function cartridge(p, { pins = false } = {}) {
+const SHAPES = {
+  wide: { vb: '0 0 324 200', cart: CART, rim: RIM, grip: 'M258 11h18M258 15.5h18M258 20h18',
+          pinX: 310, pinY: 60, pinStep: 12, pins: 9, cls: '' },
+  '4:3': { vb: '0 0 300 225', cart: 'M15 0H276L300 24V210Q300 225 285 225H15Q0 225 0 210V15Q0 0 15 0Z',
+           rim: 'M18 6H273L294 27V207Q294 219 282 219H18Q6 219 6 207V18Q6 6 18 6Z',
+           grip: 'M236 11h18M236 15.5h18M236 20h18', pinX: 286, pinY: 62, pinStep: 13, pins: 10, cls: ' cart--43' },
+};
+const pinRow = (g) => `<g class="pins">${Array.from({ length: g.pins }, (_, i) =>
+  `<rect x="${g.pinX}" y="${g.pinY + i * g.pinStep}" width="8" height="8" rx="1.6"/>`).join('')}</g>`;
+function cartridge(p, { pins = false, shape = 'wide' } = {}) {
+  const g = SHAPES[shape];
   const layers = [9, 8, 7, 6, 5, 4, 3, 2, 1].map((n) =>
     `<svg class="cart__layer" style="--z:${-n * 2.9}px;fill:hsl(230 6% ${4 + (9 - n) * 1.6}%)"
-      viewBox="0 0 324 200"><path d="${CART}"/></svg>`).join('');
+      viewBox="${g.vb}"><path d="${g.cart}"/></svg>`).join('');
   return `
     <!-- left · the cartridge -->
     <div class="cartcol" id="cartcol">
       <div class="cart__rise">
         <div class="cart__float">
-          <div class="cart" id="cart">
+          <div class="cart${g.cls}" id="cart">
             ${layers}
             <div class="cart__face">
-              <svg class="cart__svg" viewBox="0 0 324 200" aria-hidden="true">
+              <svg class="cart__svg" viewBox="${g.vb}" aria-hidden="true">
                 <defs><linearGradient id="cartg" x1="0" y1="0" x2="1" y2="1">
                   <stop offset="0" stop-color="#46474D"/><stop offset=".55" stop-color="#2B2C31"/>
                   <stop offset="1" stop-color="#1C1D21"/></linearGradient></defs>
-                <path d="${CART}" fill="url(#cartg)"/>
-                <path d="${RIM}" fill="none" stroke="rgba(255,255,255,.17)" stroke-width="1.2"/>
-                <path d="M258 11h18M258 15.5h18M258 20h18" stroke="rgba(255,255,255,.24)"
+                <path d="${g.cart}" fill="url(#cartg)"/>
+                <path d="${g.rim}" fill="none" stroke="rgba(255,255,255,.17)" stroke-width="1.2"/>
+                <path d="${g.grip}" stroke="rgba(255,255,255,.24)"
                       stroke-width="1.6" stroke-linecap="round"/>
-                ${pins ? PINS : ''}
+                ${pins ? pinRow(g) : ''}
               </svg>
               <span class="cart__lab" id="cartlab"><i></i>Game Cartridge</span>
               <div class="cart__win">
@@ -719,7 +727,7 @@ function compH(p) {
       <span class="tbub__n">${name}</span></button>`;
   return `
   <div class="charge" id="charge">
-    ${cartridge(p, { pins: true })}
+    ${cartridge(p, { pins: true, shape: '4:3' })}
 
     <svg class="link" id="link" aria-hidden="true">
       <defs><linearGradient id="lgrad" gradientUnits="userSpaceOnUse">
@@ -1002,14 +1010,14 @@ function wireH(p) {
   });
   linkLoop();
 
-  // the cartridge leans toward the pointer, as in G — and the line follows it
+  // the cartridge faces you straight on, and leans only under the pointer — the line follows it
   const col = $('cartcol'), cart = $('cart');
   col.onmousemove = (ev) => {
     const r = col.getBoundingClientRect();
     const x = (ev.clientX - r.left) / r.width - .5;
     const y = (ev.clientY - r.top) / r.height - .5;
-    cart.style.setProperty('--ry', `${-10 + x * 20}deg`);
-    cart.style.setProperty('--rx', `${7 - y * 14}deg`);
+    cart.style.setProperty('--ry', `${x * 22}deg`);
+    cart.style.setProperty('--rx', `${-y * 16}deg`);
     cart.style.setProperty('--mx', `${50 - x * 90}%`);
   };
   col.onmouseleave = () => ['--ry', '--rx', '--mx'].forEach((v) => cart.style.removeProperty(v));
