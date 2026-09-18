@@ -203,6 +203,34 @@ const piece = (c, k) => art(`
   <circle cx="0" cy="2" r="30" fill="${c}" opacity=".14"/>
   <g transform="translate(0 2)">${PIECE[k](c)}</g>`);
 
+// The Artist puts four forward; the library holds more of the same kind.
+// Browsing and searching happen inside the slot, so picking never leaves the plan.
+const MORE = {
+  house: [['Attic annex', 214], ['Tower wing', 26], ['Garden shed', 96], ['Doll flat', 320],
+          ['Playhouse', 44], ['Barn kit', 8], ['Cottage', 150], ['Bunk cabin', 260],
+          ['Beach hut', 186], ['Tree house', 118], ['Fold-out house', 340], ['Puppet stage', 286]],
+  furniture: [['Bunk corner', 206], ['Reading nook', 32], ['Toy chest', 100], ['Dresser set', 330],
+              ['Play mat', 52], ['Shelf wall', 14], ['Desk corner', 160], ['Step stool', 250],
+              ['Crate stack', 190], ['Wardrobe', 124], ['Curtain set', 346], ['Window seat', 278]],
+  pieces: [['Paper cranes', 200, 'star'], ['Tin badges', 40, 'marble'], ['Chalk nubs', 96, 'spool'],
+           ['Bottle caps', 320, 'marble'], ['Seashells', 24, 'star'], ['Wooden beads', 12, 'marble'],
+           ['Ribbon scraps', 150, 'spool'], ['Lost buttons', 265, 'marble'], ['Toy coins', 46, 'star'],
+           ['Jigsaw bits', 110, 'spool'], ['Glass gems', 336, 'marble'], ['Brass cogs', 30, 'key']],
+  girl: [['Rag Doll', 210], ['Clay Kid', 30], ['Felt Scout', 98], ['Ribbon Girl', 322],
+         ['Cork Kid', 48], ['Straw Doll', 10], ['Moss Explorer', 152], ['Ink Sketch', 262],
+         ['Sea Scout', 188], ['Leaf Kid', 120], ['Lantern Girl', 344], ['Patchwork Doll', 282]],
+};
+const hsl = (h, s, l) => `hsl(${h} ${s}% ${l}%)`;
+// one hue per model, three shades of it, so a library page reads as variety
+const shades = (h) => [hsl(h, 34, 62), hsl(h, 40, 42), hsl(h, 38, 28)];
+function library(key, picks) {
+  const draw = { house, furniture: chair, girl: kid }[key];
+  return picks.concat(MORE[key].map(([n, h, kind]) => {
+    if (key === 'pieces') return [n, '', piece(hsl(h, 55, 62), kind)];
+    return [n, '', draw(...shades(h))];
+  }));
+}
+
 const SLOTS = [
   ['house', 'The toy house', 'Walls, roof, and how the rooms connect', [
     ['Dollhouse shell', 'Fits this slot', house('#C79A62', '#A8563F', '#6B4327'), true],
@@ -228,7 +256,7 @@ const SLOTS = [
     ['Wind-up Kid', '', kid('#E8D7B4', '#B98A3C', '#6B4E22')],
     ['Button Doll', '', kid('#F4DCD6', '#A85C86', '#5A3350')],
   ]],
-];
+].map(([k, name, note, picks]) => [k, name, note, picks, library(k, picks)]);
 
 // ── Shell ─────────────────────────────────────────────────────────
 function mount() {
@@ -265,7 +293,7 @@ function mount() {
     if (document.querySelector('.ws.is-planb') && step === 0) return goStep(1);
     window.__approve && window.__approve();
   };
-  const close = document.querySelector('.b--sec');
+  const close = document.querySelector('.ws__acts .b--sec');
   if (close) close.onclick = () => window.__closePanel && window.__closePanel();
   goStep(0);                          // sets the footer button for the step we open on
 }
@@ -279,9 +307,9 @@ function paintSum() {
   let assets = '';
   if (document.querySelector('.ws.is-planb') && step === 1) {
     const slots = [...document.querySelectorAll('.slot')];
-    const n = document.querySelectorAll('.ass:not(.ass--later).is-on').length;
+    const n = document.querySelectorAll('.slot__grid .ass:not(.ass--later).is-on').length;
     const later = slots.length
-      - slots.filter((x) => x.querySelector('.ass:not(.ass--later).is-on')).length;
+      - slots.filter((x) => x.querySelector('.slot__grid .ass:not(.ass--later).is-on')).length;
     assets = ` · <b>${n} from the library</b>${later ? `, ${later} the Artist makes` : ''}`;
   }
   el2.innerHTML =
@@ -307,28 +335,62 @@ function goStep(n) {
 // Every slot may take several models, or none at all — skipping one is a
 // real answer, not a thing the plan refuses to move past.
 function stAssets() {
+  const card = (n, tag, svg, on) => `
+    <button class="ass${on ? ' is-on' : ''}" data-n="${n}">
+      <span class="ass__art">${svg}<i class="ass__box"></i></span>
+      <b>${n}</b><em>${tag || ''}</em>
+    </button>`;
+  const later = `
+    <button class="ass ass--later">
+      <span class="ass__art ass__art--later">✦</span>
+      <b>Generate later</b><em>The Artist makes it</em>
+    </button>`;
   return `<div class="wide2">
     <header class="wide2__h">
       <b>Game assets</b>
       <p>Optional. Pick as many as you like for each part — anything you leave
         alone, the Artist makes during the build.</p>
     </header>
-      ${SLOTS.map(([k, name, note, opts]) => `
+      ${SLOTS.map(([k, name, note, picks, all]) => `
         <div class="slot" data-k="${k}">
           <header class="slot__h">
             <span><b>${name}</b><em>${note}</em></span>
             <i class="slot__state">The Artist will make it</i>
+            <button class="slot__more">Browse all ${all.length + 8} <i>›</i></button>
           </header>
           <div class="slot__grid">
-            ${opts.map(([n, tag, svg, on], i) => `
-              <button class="ass${on ? ' is-on' : ''}" data-n="${n}" data-i="${i}">
-                <span class="ass__art">${svg}<i class="ass__box"></i></span>
-                <b>${n}</b>${tag ? `<em>${tag}</em>` : ''}
-              </button>`).join('')}
-            <button class="ass ass--later">
-              <span class="ass__art ass__art--later">✦</span>
-              <b>Generate later</b><em>The Artist makes it</em>
-            </button>
+            ${picks.map(([n, tag, svg, on]) => card(n, tag || 'Artist’s pick', svg, on)).join('')}
+            ${later}
+          </div>
+          <div class="browse">
+            <div class="browse__tools">
+              <label class="sbox">
+                <i class="sbox__ic">⌕</i>
+                <input class="sbox__in" type="text" spellcheck="false"
+                  placeholder="Search the ${name.replace(/^The /, '').toLowerCase()} library…">
+                <button class="sbox__x" type="button" title="Clear search">✕</button>
+              </label>
+              <em class="browse__hint">Artist’s picks first</em>
+              <span class="browse__sort">Sorted by fit</span>
+            </div>
+            <div class="browse__grid">
+              ${all.map(([n, tag, svg, on], i) =>
+                card(n, i < 4 ? (tag || 'Artist’s pick') : '', svg, on)).join('')}
+              ${later}
+            </div>
+            <div class="browse__none" hidden>
+              <i>✦</i>
+              <b>Nothing in the library matches <span class="browse__q"></span></b>
+              <p>Clear the search to go back to the Artist’s picks, or let the Artist
+                model it for this slot.</p>
+              <span class="browse__acts">
+                <button class="b b--sec browse__clear">Clear search</button>
+                <button class="b b--go browse__ask">✦ Have the Artist make it</button>
+              </span>
+              <em class="browse__kept"></em>
+            </div>
+            <p class="browse__note">Scroll for the rest of the library ·
+              Esc clears the search, Esc again closes the slot</p>
           </div>
         </div>`).join('')}
   </div>`;
@@ -505,23 +567,95 @@ function wire() {
     b.onclick = () => goStep(+b.dataset.s));
   document.querySelectorAll('.slot').forEach((slot) => {
     const state = slot.querySelector('.slot__state');
-    const later = slot.querySelector('.ass--later');
+    const more = slot.querySelector('.slot__more');
+    const box = slot.querySelector('.sbox__in');
+    const none = slot.querySelector('.browse__none');
+    const grid = slot.querySelector('.browse__grid');
+    const picked = new Set(
+      [...slot.querySelectorAll('.slot__grid .ass.is-on')].map((b) => b.dataset.n));
+
+    // one list of models, drawn twice — the four up front and the whole library
     const paint = () => {
-      const n = slot.querySelectorAll('.ass:not(.ass--later).is-on').length;
-      later.classList.toggle('is-on', n === 0);
+      slot.querySelectorAll('.ass[data-n]').forEach((b) =>
+        b.classList.toggle('is-on', picked.has(b.dataset.n)));
+      slot.querySelectorAll('.ass--later').forEach((b) =>
+        b.classList.toggle('is-on', picked.size === 0));
+      slot.querySelectorAll('.ass[data-n].is-on em').forEach((e) => { e.textContent = 'Picked'; });
+      const n = picked.size;
       state.textContent = n === 0 ? 'The Artist will make it'
         : n === 1 ? '1 model from the library'
         : `${n} models from the library`;
+      if (slot.classList.contains('is-open')) {
+        const q = box.value.trim();
+        const shown = [...grid.querySelectorAll('.ass[data-n]')].filter((b) => !b.hidden).length;
+        state.textContent = q
+          ? `${shown || 'No'} match${shown === 1 ? '' : 'es'}${n ? ` · ${n} picked` : ''}`
+          : `${grid.querySelectorAll('.ass[data-n]').length} of ${grid.querySelectorAll('.ass[data-n]').length + 8} models${n ? ` · ${n} picked` : ''}`;
+      }
       paintSum();
     };
-    slot.querySelectorAll('.ass:not(.ass--later)').forEach((b) => {
-      b.onclick = () => { b.classList.toggle('is-on'); paint(); };
+
+    slot.querySelectorAll('.ass[data-n]').forEach((b) => {
+      b.onclick = () => {
+        if (picked.has(b.dataset.n)) picked.delete(b.dataset.n);
+        else picked.add(b.dataset.n);
+        paint();
+      };
     });
     // choosing "later" is the same as clearing the slot — never a dead end
-    later.onclick = () => {
-      slot.querySelectorAll('.ass.is-on').forEach((o) => o.classList.remove('is-on'));
+    slot.querySelectorAll('.ass--later').forEach((b) => {
+      b.onclick = () => { picked.clear(); paint(); };
+    });
+
+    // ── browse: one slot open at a time, the library scrolls inside it ──
+    const open = (on) => {
+      if (on) document.querySelectorAll('.slot.is-open').forEach((o) => {
+        if (o !== slot) { o.classList.remove('is-open'); o.dispatchEvent(new Event('shut')); }
+      });
+      slot.classList.toggle('is-open', on);
+      // while one slot is open the others fold to a line, so the plan stays readable
+      const page = slot.closest('.wide2');
+      if (page) page.classList.toggle('has-open', !!document.querySelector('.slot.is-open'));
+      more.innerHTML = on ? 'Show less <i>⌃</i>' : `Browse all ${grid.querySelectorAll('.ass[data-n]').length + 8} <i>›</i>`;
+      if (on) box.focus(); else clear();
       paint();
     };
+    const clear = () => {
+      box.value = '';
+      slot.classList.remove('is-searching');
+      grid.querySelectorAll('.ass[data-n]').forEach((b) => { b.hidden = false; });
+      none.hidden = true;
+      paint();
+    };
+    const search = () => {
+      const q = box.value.trim().toLowerCase();
+      slot.classList.toggle('is-searching', !!q);
+      let hits = 0;
+      grid.querySelectorAll('.ass[data-n]').forEach((b) => {
+        const hit = !q || b.dataset.n.toLowerCase().includes(q);
+        b.hidden = !hit;
+        if (hit) hits++;
+      });
+      const empty = !!q && hits === 0;
+      none.hidden = !empty;
+      grid.hidden = empty;
+      slot.querySelector('.browse__q').textContent = `“${box.value.trim()}”`;
+      slot.querySelector('.browse__kept').textContent = picked.size
+        ? `Your ${picked.size} pick${picked.size === 1 ? '' : 's'} ${picked.size === 1 ? 'stays' : 'stay'} in this slot` : '';
+      paint();
+    };
+    more.onclick = () => open(!slot.classList.contains('is-open'));
+    slot.addEventListener('shut', clear);
+    box.oninput = search;
+    box.onkeydown = (e) => {
+      if (e.key !== 'Escape') return;
+      e.stopPropagation();
+      if (box.value) clear(); else open(false);
+    };
+    slot.querySelector('.sbox__x').onclick = clear;
+    slot.querySelector('.browse__clear').onclick = () => { clear(); box.focus(); };
+    // a search that finds nothing is the moment to hand the slot over
+    slot.querySelector('.browse__ask').onclick = () => { picked.clear(); open(false); };
     paint();
   });
   document.querySelectorAll('.pickcard').forEach((b) => {

@@ -502,3 +502,55 @@ body{
 .wide2 .ass__art{height:118px}
 .wide2 .ass b{font-size:12.5px}
 .wide2 .slot__h b{font-size:13.5px}
+
+/* ── Browsing a slot's library, in place ──────────────────────────── */
+.slot__more{
+  all:unset;cursor:pointer;flex:none;display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:8px;background:rgba(255,255,255,.07);
+  font-size:11.5px;color:var(--ink-2);
+}
+.slot__more:hover{background:rgba(255,255,255,.13);color:#fff}
+.slot__more i{font-style:normal;opacity:.7}
+.browse{display:none;margin-top:10px}
+.slot.is-open .browse{display:block}
+.slot.is-open .slot__grid{display:none}          /* the four picks live inside the library now */
+.browse__tools{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.sbox{
+  flex:none;display:flex;align-items:center;gap:8px;width:340px;height:32px;padding:0 10px;
+  border-radius:10px;background:rgba(255,255,255,.06);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+}
+.slot.is-searching .sbox{box-shadow:inset 0 0 0 1.5px var(--mint)}
+.sbox__ic{font-style:normal;font-size:13px;color:var(--ink-3)}
+.sbox__in{
+  all:unset;flex:1;min-width:0;font:inherit;font-size:12.5px;color:#fff;
+}
+.sbox__in::placeholder{color:var(--ink-3)}
+.sbox__x{
+  all:unset;cursor:pointer;display:none;width:18px;height:18px;border-radius:9px;
+  text-align:center;line-height:18px;font-size:10px;color:var(--ink-2);
+  background:rgba(255,255,255,.1);
+}
+.slot.is-searching .sbox__x{display:block}
+.sbox__x:hover{background:rgba(255,255,255,.2);color:#fff}
+.browse__hint{font-style:normal;font-size:11.5px;color:var(--mint)}
+.browse__sort{margin-left:auto;font-size:11.5px;color:var(--ink-3)}
+.browse__grid{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;
+  max-height:340px;overflow:auto;padding-right:4px;
+}
+.browse__note{margin:8px 0 0;font-size:11px;color:var(--ink-3)}
+.browse__none{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:34px 24px;border-radius:12px;
+  background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.16);text-align:center;
+}
+.browse__none i{font-style:normal;font-size:20px;color:var(--ink-2)}
+.browse__none b{font-size:14.5px;font-weight:600}
+.browse__none p{margin:0;max-width:420px;font-size:12px;line-height:1.55;color:var(--ink-3)}
+.browse__acts{display:flex;gap:10px;margin-top:6px}
+.browse__kept{font-style:normal;font-size:11px;color:var(--ink-3)}
+/* while a library is open, the other slots fold to a single line */
+.wide2.has-open .slot:not(.is-open) .slot__grid{display:none}
+.wide2.has-open .slot:not(.is-open){padding-top:11px}
+.wide2.has-open .slot:not(.is-open) .slot__h{margin-bottom:0}
