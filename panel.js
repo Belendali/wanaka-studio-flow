@@ -356,12 +356,17 @@ function stAssets() {
           <header class="slot__h">
             <span><b>${name}</b><em>${note}</em></span>
             <i class="slot__state">The Artist will make it</i>
+            <button class="slot__seek" title="Search this library">⌕ Search</button>
             <button class="slot__more">Browse all ${all.length + 8} <i>›</i></button>
           </header>
           <div class="slot__grid">
             ${picks.map(([n, tag, svg, on]) => card(n, tag || 'Artist’s pick', svg, on)).join('')}
             ${later}
           </div>
+          <div class="slot__peek">
+            ${all.slice(4, 9).map(([n, , svg]) => card(n, '', svg, false)).join('')}
+          </div>
+          <button class="slot__all">Browse all ${all.length + 8} models <i>›</i></button>
           <div class="browse">
             <div class="browse__tools">
               <label class="sbox">
@@ -645,6 +650,8 @@ function wire() {
       paint();
     };
     more.onclick = () => open(!slot.classList.contains('is-open'));
+    slot.querySelector('.slot__all').onclick = () => open(true);
+    slot.querySelector('.slot__seek').onclick = () => open(true);
     slot.addEventListener('shut', clear);
     box.oninput = search;
     box.onkeydown = (e) => {
