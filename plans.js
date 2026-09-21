@@ -122,11 +122,15 @@ function compE(p) {
   const seg = (k, items) => `<span class="eseg" data-k="${k}">${items}</span>`;
   const dots = Array.from({ length: 12 }, () => '<i></i>').join('');
   return `
-  <div class="room">
-    <span class="room__lamp"></span>
-    <span class="room__desk"></span>
+  <div class="room room--studio">
+    <!-- no room of its own: the console arrives over the Studio, behind a scrim -->
+    <img class="room__studio" src="assets/studio-bg.jpg" alt="">
+    <span class="room__scrim"></span>
 
+    <!-- behind the console: the light that spills out as it opens -->
+    <span class="con__light" aria-hidden="true"><i class="con__rays"></i></span>
     <div class="con" id="con">
+      <img class="con__paw" src="assets/paw.png" alt="" aria-hidden="true">
       <div class="con__body">
         <!-- the half that stays on the desk: the plan, and the buttons -->
         <section class="con__half con__base">
@@ -227,7 +231,12 @@ function compE(p) {
               <span class="con__sweep"></span>
             </div>
           </div>
-          <div class="con__back"><span>WANAKA</span></div>
+          <div class="con__back">
+            <!-- the Wanaka badge stands proud of the lid; the name is cut into it -->
+            <span class="lid__badge"><img src="assets/wanaka-icon.png" alt=""></span>
+            <span class="lid__word" aria-label="Wanaka"></span>
+            <span class="lid__screw lid__screw--a"></span><span class="lid__screw lid__screw--b"></span>
+          </div>
         </section>
       </div>
       <span class="con__shadow"></span>
@@ -1251,7 +1260,7 @@ function wireH(p) {
 
 // ── Wiring ────────────────────────────────────────────────────────
 const COMPS = { h: compH, e: compE, g: compG };
-let which = 'h', plan = 'toy';
+let which = new URLSearchParams(location.search).get('c') || 'h', plan = 'toy';
 
 function paint() {
   const p = PLANS[plan];
