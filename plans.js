@@ -145,7 +145,7 @@ function compE(p) {
                 <section class="ts__page is-on" data-page="1">
                   <input class="ts__name" data-need value="${p.title}" placeholder="Name your game" spellcheck="false">
                   <div class="tr"><span class="tr__k">Genre</span>
-                    <button class="ep" data-slip="genre"><span class="ep__v" data-val>${genreV(f.genre)}</span><i class="ep__c">▾</i></button>
+                    <button class="ep" data-slip="genre"><span class="ep__v" data-val>${genreV(f.genre)}</span><i class="ep__c"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M30 15L20 25L10 15"/></svg></i></button>
                   </div>
                   <label class="tf"><span class="tr__k">What you do</span>
                     <textarea data-need rows="2" spellcheck="false" placeholder="What does the player do?">${f.what || p.doing}</textarea>
@@ -154,7 +154,7 @@ function compE(p) {
                     <textarea rows="2" spellcheck="false" placeholder="What should it feel like?">${f.feel || p.feel}</textarea>
                   </label>
                   <div class="tr"><span class="tr__k">Look</span>
-                    <button class="ep ep--look" data-slip="look"><span class="ep__v" data-val>${lookV(p, f.style, f.quality)}</span><i class="ep__c">▾</i></button>
+                    <button class="ep ep--look" data-slip="look"><span class="ep__v" data-val>${lookV(p, f.style, f.quality)}</span><i class="ep__c"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M30 15L20 25L10 15"/></svg></i></button>
                   </div>
                   <!-- the look opens as a drop-down in place, pushing the rest down -->
                   <div class="elook" data-slipbox="look" hidden>
@@ -165,7 +165,8 @@ function compE(p) {
                       `<button class="eo${q === f.quality ? ' is-on' : ''}" data-q="${q}">${q}</button>`).join('')}</div>
                   </div>
                   <div class="tr"><span class="tr__k">Scope</span>
-                    ${seg('scope', F.scopes.map(([k, n, w, cr, t]) => so(n, k, k === f.scope, `${w} · ${cr} · ${t}`)).join(''))}
+                    <span class="eseg eseg--scope" data-k="scope">${F.scopes.map(([k, n, w, cr, t]) =>
+                      `<button class="eo eo--scope${k === f.scope ? ' is-on' : ''}" data-v="${k}"><b>${n}</b><small>${w}</small><small>${cr} · ${t}</small></button>`).join('')}</span>
                   </div>
                   <div class="tr"><span class="tr__k">Plays on</span>
                     <span class="emulti" data-multi>${[['Web', 'web'], ['Mobile', 'mobile']].map(([n, k]) =>

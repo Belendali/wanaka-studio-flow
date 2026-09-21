@@ -1617,3 +1617,22 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .ts[data-step="2"] .ts__go .kb{background:rgba(255,255,255,.18);color:var(--ink)}
 .ts[data-step="2"] .ts__go.is-done{color:var(--brandHi);box-shadow:inset 0 0 0 1.5px rgba(196,235,0,.4)}
 .elib--parts .eslot:not(.is-seen):not(.is-sel) .eslot__t em{color:rgba(255,255,255,.35);font-style:italic}
+
+/* ═══ E, roomier form; Scope says what it means; the kit's arrow ═══ */
+.room--studio .ts__page[data-page="1"]{gap:1em;padding-top:.5em}
+.room--studio .tf textarea{height:4em}
+/* the Look drop-down takes the full width of the screen */
+.elook{margin:-.35em 0 .1em;padding:1em}
+.elook .eslip__grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:.7em .6em}
+.elook .eslip__s{font-size:.9em}
+.elook .eslip__s img{aspect-ratio:16/10}
+/* UI Kit · Icon/Common/ArrowDown */
+.ep__c{width:1.35em;height:1.35em;background:none;color:var(--ink);font-size:1em}
+.ep__c svg{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.ep:hover .ep__c,.ep.is-open .ep__c{color:var(--brand)}
+/* Scope: each option shows its rooms, credits and time */
+.eseg--scope{padding:.22em}
+.eo--scope{height:auto;padding:.55em .5em .6em;display:flex;flex-direction:column;align-items:center;gap:.12em;line-height:1.25}
+.eo--scope b{font-size:1em;font-weight:600}
+.eo--scope small{font-size:.76em;font-weight:400;opacity:.72;white-space:nowrap}
+.eo--scope.is-on small{opacity:.8}
