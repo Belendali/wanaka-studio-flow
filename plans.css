@@ -1666,3 +1666,11 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .room--studio .eck.is-on{border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.08)}
 .room--studio .eck.is-on i{background:#fff;border-color:#fff}
 .room--studio .eck.is-on i::after{border-color:#141517}
+/* selected states in white; lime is kept for the main button */
+.room--studio .ts__tab.is-on{background:#fff;color:#141517;font-weight:500}
+.room--studio .ts__tab.is-on b{background:rgba(0,0,0,.1)}
+.room--studio .ts__tab{font-weight:500}
+.room--studio .eo.is-on{background:#fff;color:#141517;font-weight:600;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.room--studio .eo--scope.is-on b{font-weight:600}
+.room--studio .eo--scope.is-on small{opacity:.62}
+.room--studio .eo--scope b{font-weight:500}
