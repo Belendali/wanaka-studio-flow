@@ -154,7 +154,7 @@ function compE(p) {
                     <textarea rows="2" spellcheck="false" placeholder="What should it feel like?">${f.feel || p.feel}</textarea>
                   </label>
                   <div class="tr"><span class="tr__k">Look</span>
-                    <button class="ep" data-slip="look"><span class="ep__v" data-val>${lookV(p, f.style, f.quality)}</span><i class="ep__c">▾</i></button>
+                    <button class="ep ep--look" data-slip="look"><span class="ep__v" data-val>${lookV(p, f.style, f.quality)}</span><i class="ep__c">▾</i></button>
                   </div>
                   <div class="tr"><span class="tr__k">Scope</span>
                     ${seg('scope', F.scopes.map(([k, n, w, cr, t]) => so(n, k, k === f.scope, `${w} · ${cr} · ${t}`)).join(''))}
@@ -171,15 +171,7 @@ function compE(p) {
                   </div>
                 </section>
                 <section class="ts__page ts__page--parts" data-page="2">
-                  <p class="ts__hint">Pick a part — its models open on the top screen. Pick as many as you like; leave a part alone and the Artist makes it.</p>
-                  <div class="eslots">
-                    ${p.parts.map(([name], i) => `
-                      <button class="eslot${i === 0 ? ' is-sel' : ''}" data-slot="${i}">
-                        <span class="eslot__t"><b>${name}</b><em data-st></em></span>
-                        <span class="eslot__picks" data-picks></span>
-                        <i class="eslot__go"></i>
-                      </button>`).join('')}
-                  </div>
+                  <div class="elib elib--ts" id="elibTs"></div>
                 </section>
               </div>
               <footer class="ts__foot">
@@ -229,7 +221,18 @@ function compE(p) {
           <div class="con__face">
             <div class="con__glass con__glass--game">
               <img id="congame" src="${p.cover}" alt="">
-              <div class="elib" id="elib"></div>
+              <!-- step 2: the parts on this screen, their models on the touch screen -->
+              <div class="elib elib--parts" id="elib">
+                <header class="eparts__h"><b>Assets</b><em>Pick a part, then its models on the right. Leave a part alone and the Artist makes it.</em></header>
+                <div class="eslots">
+                  ${p.parts.map(([name], i) => `
+                    <button class="eslot${i === 0 ? ' is-sel' : ''}" data-slot="${i}">
+                      <span class="eslot__t"><b>${name}</b><em data-st></em></span>
+                      <span class="eslot__picks" data-picks></span>
+                      <i class="eslot__go"></i>
+                    </button>`).join('')}
+                </div>
+              </div>
               <!-- the loading screen: once as the lid opens, again when the plan is approved -->
               <div class="cload" aria-hidden="true">
                 <span class="cload__icon"><img src="assets/wanaka-icon.png" alt=""><i></i></span>
@@ -768,8 +771,8 @@ const SHELF = {
     [['Hiker kid', 'backpacker'], ['Camp kid', 'backpacker'], ['Map reader', 'backpacker'], ['Trail scout', 'backpacker'], ['Tiny backpacker', 'backpacker']]],
 };
 function wireLibrary(p, ts, con) {
-  const lib = $('elib');
-  const slots = [...ts.querySelectorAll('.eslot')];
+  const lib = $('elibTs');
+  const slots = [...con.querySelectorAll('.eslot')];
   const picked = p.parts.map(([, opts, pick]) => new Set(pick >= 0 ? [opts[pick]] : []));
   let sel = 0;
   const img = (n, key) => (!p.partImg ? '' : key ? `assets/boy-part-${key}.jpg` : p.partImg(n));

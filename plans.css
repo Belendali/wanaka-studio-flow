@@ -1546,3 +1546,29 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .con.is-loading .con__led{background:#F4FFC2;box-shadow:0 0 12px var(--brand);animation:led 1s ease-in-out infinite}
 @keyframes cloadShow2{0%{opacity:0;visibility:visible}8%,86%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
 @keyframes cloadPop2{0%{transform:scale(.4) translateY(3cqh);opacity:0}100%{transform:none;opacity:1}}
+
+/* ═══ E, parts on the lid screen, models on the touch screen; a bigger Look ═══ */
+/* the lid: the list of parts */
+.elib--parts{padding:6cqh 6cqh 5cqh;gap:3.2cqh;justify-content:flex-start}
+.elib--parts > *{font-size:clamp(12px,2.9cqh,19px)}
+.eparts__h{flex:none;display:flex;flex-direction:column;gap:.35em}
+.eparts__h b{font-size:1.45em;font-weight:600;letter-spacing:-.01em}
+.eparts__h em{font-style:normal;font-size:.85em;line-height:1.45;color:var(--ink2)}
+.elib--parts .eslots{flex:1;min-height:0;display:flex;flex-direction:column;gap:.7em}
+.elib--parts .eslot{flex:1;max-height:6em;padding:.7em 1em .7em 1.2em}
+.elib--parts .eslot__t b{font-size:1.1em}
+.elib--parts .eslot__picks img,.elib--parts .eslot__picks > i,.elib--parts .eslot__picks b{width:3.3em;height:3.3em;min-width:3.3em}
+.elib--parts .eslot.is-sel .eslot__go{transform:rotate(45deg) translateX(.2em);color:var(--brand)}
+.elib--parts .eslot.is-sel{box-shadow:inset 0 0 0 1.5px var(--brand),0 0 2.4em rgba(196,235,0,.12)}
+
+/* the touch screen: the models for the part */
+.ts__page--parts{padding:0}
+.elib--ts{position:static;inset:auto;flex:1;min-height:0;opacity:1;visibility:visible;background:none;container-type:normal}
+.elib--ts > *{font-size:1em}
+.elib--ts .elib__h{padding:.2em 1em .7em}
+.elib--ts .elib__grid{grid-template-columns:repeat(4,minmax(0,1fr));padding:.1em 1em 1em}
+
+/* Look: the picker shows the look, not a stamp of it */
+.ep--look{height:auto;padding:.35em .55em .35em .35em;border-radius:.9em;gap:.8em}
+.ep--look .ep__v{gap:.8em;font-size:1.02em}
+.ep--look .ep__v img{width:7.4em;height:4.2em;border-radius:.55em;box-shadow:0 0 0 1px rgba(255,255,255,.16),0 .3em .8em rgba(0,0,0,.4)}
