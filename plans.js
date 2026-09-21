@@ -170,14 +170,16 @@ function compE(p) {
                     ${seg('diff', F.difficulty.map((n, i) => so(n, i, i === f.diff)).join(''))}
                   </div>
                 </section>
-                <section class="ts__page" data-page="2">
-                  <p class="ts__hint">Tick as many as you like. Leave a row alone and the Artist makes it.</p>
-                  ${p.parts.map(([name, opts, pick]) => `
-                    <div class="ta2" data-part><span class="tr__k">${name}</span>
-                      <span class="ta2__o">${opts.map((o, i) =>
-                        `<button class="echip${i === pick ? ' is-on' : ''}" data-po>${o}</button>`).join('')}<button
-                        class="echip echip--later${pick < 0 ? ' is-on' : ''}" data-later>✦ Artist</button></span>
-                    </div>`).join('')}
+                <section class="ts__page ts__page--parts" data-page="2">
+                  <p class="ts__hint">Pick a part — its models open on the top screen. Pick as many as you like; leave a part alone and the Artist makes it.</p>
+                  <div class="eslots">
+                    ${p.parts.map(([name], i) => `
+                      <button class="eslot${i === 0 ? ' is-sel' : ''}" data-slot="${i}">
+                        <span class="eslot__t"><b>${name}</b><em data-st></em></span>
+                        <span class="eslot__picks" data-picks></span>
+                        <i class="eslot__go"></i>
+                      </button>`).join('')}
+                  </div>
                 </section>
               </div>
               <footer class="ts__foot">
@@ -227,6 +229,7 @@ function compE(p) {
           <div class="con__face">
             <div class="con__glass con__glass--game">
               <img id="congame" src="${p.cover}" alt="">
+              <div class="elib" id="elib"></div>
               <span class="con__scan"></span>
               <span class="con__sweep"></span>
             </div>
@@ -638,6 +641,7 @@ function wireE(p) {
     ts.dataset.step = n;
     ts.querySelectorAll('.ts__tab').forEach((t) => t.classList.toggle('is-on', +t.dataset.step === n));
     ts.querySelectorAll('.ts__page').forEach((pg) => pg.classList.toggle('is-on', +pg.dataset.page === n));
+    con.classList.toggle('is-lib', n === 2);
     if (!con.classList.contains('is-approved')) {
       go.innerHTML = n === 1 ? 'Next · Assets<i class="kb">A</i>' : 'Approve<i class="kb">A</i>';
     }
@@ -683,8 +687,8 @@ function wireE(p) {
   const dir = {
     left: () => step(1),
     right: () => step(2),
-    up: () => page().scrollBy({ top: -70, behavior: 'smooth' }),
-    down: () => page().scrollBy({ top: 70, behavior: 'smooth' }),
+    up: () => (ts.dataset.step === '2' ? con.__slot(-1) : page().scrollBy({ top: -70, behavior: 'smooth' })),
+    down: () => (ts.dataset.step === '2' ? con.__slot(1) : page().scrollBy({ top: 70, behavior: 'smooth' })),
   };
   pad.querySelectorAll('[data-pad]').forEach((b) => {
     b.onclick = () => { tip(b.dataset.pad); dir[b.dataset.pad](); };
@@ -716,9 +720,128 @@ function wireE(p) {
   };
   room.onmouseleave = () => ['--ry', '--rx'].forEach((v) => body.style.removeProperty(v));
 
-  wireAssets(ts);
+  wireLibrary(p, ts, con);
   wireForm(p, ts, (src) => { $('congame').src = src; });
   $('replay').onclick = paint;
+}
+
+// ── E's library: the top screen shows the models for the part picked below ──
+/* Four the Artist puts forward, the rest of the shelf behind them, and a few
+   that only a search turns up. Picking is multi-select; a part with nothing
+   picked is left to the Artist — that is an answer, not a gap. */
+/* Each model names the render it shows, so a thumbnail never lies about its name. */
+const SHELF = {
+  'The bedroom': [
+    [['Block castle', 'toy-blocks'], ['Reading nook', 'book-stacks'], ['Toy chest', 'dresser'], ['Hoop corner', 'basketball'],
+      ['Toy garage', 'truck'], ['Plush pile', 'teddy'], ['Star mobile', 'stars'], ['Pencil desk', 'pencils'],
+      ['Robot shelf', 'robot-pal'], ['Dino rug', 'dino-suit'], ['Ball bin', 'baseballs']],
+    [['Alphabet blocks', 'toy-blocks'], ['Block tower', 'toy-blocks'], ['Bookcase', 'book-stacks'], ['Storybook pile', 'book-stacks'], ['Tall dresser', 'dresser']]],
+  'Big toys': [
+    [['Beach ball', 'basketball'], ['Fire truck', 'truck'], ['Stuffed bear', 'teddy'], ['Toy robot', 'robot-pal'],
+      ['Toy dino', 'dino-suit'], ['Block tower', 'toy-blocks'], ['Giant crayons', 'pencils'], ['Bouncy ball', 'baseballs'],
+      ['Pop-up book', 'book-stacks'], ['Toy cabinet', 'dresser'], ['Star pillow', 'stars']],
+    [['Dump truck', 'truck'], ['Toy crane', 'truck'], ['Plush bunny', 'teddy'], ['Wind-up bear', 'teddy'], ['Kickball', 'basketball']]],
+  'To collect': [
+    [['Gold coins', 'stars'], ['Crayons', 'pencils'], ['Marbles', 'baseballs'], ['Mini blocks', 'toy-blocks'],
+      ['Tiny books', 'book-stacks'], ['Mini trucks', 'truck'], ['Gummy bears', 'teddy'], ['Robot bolts', 'robot-pal'],
+      ['Dino eggs', 'dino-suit'], ['Hoop tokens', 'basketball'], ['Drawer keys', 'dresser']],
+    [['Gold stars', 'stars'], ['Glitter stars', 'stars'], ['Star badges', 'stars'], ['Paper stars', 'stars'], ['Star beads', 'stars']]],
+  'The kid': [
+    [['Robot suit', 'robot-pal'], ['Dino hoodie', 'dino-suit'], ['Hoop star', 'basketball'], ['Little trucker', 'truck'],
+      ['Bear onesie', 'teddy'], ['Bookworm', 'book-stacks'], ['Little artist', 'pencils'], ['Star captain', 'stars'],
+      ['Block builder', 'toy-blocks'], ['Slugger', 'baseballs'], ['Sleepwalker', 'dresser']],
+    [['Hiker kid', 'backpacker'], ['Camp kid', 'backpacker'], ['Map reader', 'backpacker'], ['Trail scout', 'backpacker'], ['Tiny backpacker', 'backpacker']]],
+};
+function wireLibrary(p, ts, con) {
+  const lib = $('elib');
+  const slots = [...ts.querySelectorAll('.eslot')];
+  const picked = p.parts.map(([, opts, pick]) => new Set(pick >= 0 ? [opts[pick]] : []));
+  let sel = 0;
+  const img = (n, key) => (!p.partImg ? '' : key ? `assets/boy-part-${key}.jpg` : p.partImg(n));
+  const models = (i) => {
+    const [name, opts] = p.parts[i];
+    const [more, deep] = SHELF[name] || [[], []];
+    return [...opts.map((n) => [n, '', 'pick']), ...more.map(([n, k]) => [n, k, '']), ...deep.map(([n, k]) => [n, k, 'deep'])]
+      .map(([n, key, kind]) => ({ n, kind, src: img(n, key) }));
+  };
+  const card = (m) => `
+    <button class="lcard" data-n="${m.n}"${m.kind === 'deep' ? ' data-deep hidden' : ''}>
+      <span class="lcard__art">${m.src ? `<img src="${m.src}" alt="">` : `<b>${m.n[0]}</b>`}<i class="lcard__box"></i></span>
+      <span class="lcard__n">${m.n}</span>${m.kind === 'pick' ? '<em>Artist’s pick</em>' : ''}
+    </button>`;
+  const paintRows = () => {
+    slots.forEach((b, i) => {
+      const set = picked[i];
+      b.classList.toggle('is-sel', i === sel);
+      b.querySelector('[data-st]').textContent = set.size ? `${set.size} from the library` : 'Left to the Artist';
+      const shown = [...set].slice(0, 3);
+      b.querySelector('[data-picks]').innerHTML = set.size
+        ? shown.map((n) => { const m = models(i).find((x) => x.n === n); return m && m.src ? `<img src="${m.src}" alt="">` : '<i></i>'; }).join('')
+          + (set.size > 3 ? `<b>+${set.size - 3}</b>` : '')
+        : '<span class="eslot__ai">✦ Artist</span>';
+    });
+    const total = picked.reduce((a, s2) => a + s2.size, 0);
+    const left = picked.filter((s2) => !s2.size).length;
+    const c = ts.querySelector('[data-count]');
+    if (c) c.textContent = `${total} picked · ${left} left to the Artist`;
+  };
+  const paintLib = () => {
+    const [name] = p.parts[sel];
+    const all = models(sel);
+    const set = picked[sel];
+    const shelf = all.filter((m) => m.kind !== 'deep').length;
+    lib.innerHTML = `
+      <header class="elib__h">
+        <span class="elib__t"><b>${name}</b><em>${shelf} of ${all.length} models${set.size ? ` · ${set.size} picked` : ''}</em></span>
+        <label class="elib__s"><i>⌕</i><input type="text" spellcheck="false" placeholder="Search ${name.replace(/^The /, '').toLowerCase()}…"><button type="button" class="elib__x" hidden>✕</button></label>
+      </header>
+      <div class="elib__grid">
+        <button class="lcard lcard--ai${set.size ? '' : ' is-on'}" data-ai>
+          <span class="lcard__art"><img src="assets/crew-artist.webp" alt=""></span>
+          <span class="lcard__n">Artist makes it</span><em>✦ New</em>
+        </button>
+        ${all.map(card).join('')}
+      </div>
+      <div class="elib__none" hidden><b>Nothing here matches <span data-q></span></b>
+        <button class="elib__ai">✦ Leave it to the Artist</button></div>`;
+    const grid = lib.querySelector('.elib__grid');
+    const box = lib.querySelector('input');
+    const x = lib.querySelector('.elib__x');
+    const mark = () => {
+      grid.querySelectorAll('.lcard[data-n]').forEach((c) => c.classList.toggle('is-on', set.has(c.dataset.n)));
+      grid.querySelector('[data-ai]').classList.toggle('is-on', !set.size);
+      lib.querySelector('.elib__t em').textContent = `${shelf} of ${all.length} models${set.size ? ` · ${set.size} picked` : ''}`;
+      paintRows();
+    };
+    grid.querySelectorAll('.lcard[data-n]').forEach((c) => {
+      c.onclick = () => { if (set.has(c.dataset.n)) set.delete(c.dataset.n); else set.add(c.dataset.n); mark(); };
+    });
+    const toArtist = () => { set.clear(); mark(); };
+    grid.querySelector('[data-ai]').onclick = toArtist;
+    lib.querySelector('.elib__ai').onclick = () => { box.value = ''; search(); toArtist(); };
+    const search = () => {
+      const q = box.value.trim().toLowerCase();
+      x.hidden = !q;
+      let hits = 0;
+      grid.querySelectorAll('.lcard[data-n]').forEach((c) => {
+        const hit = q ? c.dataset.n.toLowerCase().includes(q) : !c.hasAttribute('data-deep');
+        c.hidden = !hit; if (hit) hits++;
+      });
+      grid.querySelector('[data-ai]').hidden = !!q;
+      lib.querySelector('.elib__none').hidden = !(q && !hits);
+      grid.hidden = !!(q && !hits);
+      lib.querySelector('[data-q]').textContent = `“${box.value.trim()}”`;
+      lib.querySelector('.elib__t em').textContent = q ? `${hits} found in ${all.length} models` : `${shelf} of ${all.length} models${set.size ? ` · ${set.size} picked` : ''}`;
+    };
+    box.oninput = search;
+    box.onkeydown = (e) => { e.stopPropagation(); if (e.key === 'Escape') { if (box.value) { box.value = ''; search(); } else box.blur(); } };
+    x.onclick = () => { box.value = ''; search(); box.focus(); };
+    mark();
+  };
+  const pick = (i) => { sel = (i + slots.length) % slots.length; paintLib(); paintRows(); };
+  slots.forEach((b, i) => { b.onclick = () => pick(i); });
+  con.__slot = (d) => pick(sel + d);
+  pick(0);
 }
 
 // ── H · the charge ────────────────────────────────────────────────
