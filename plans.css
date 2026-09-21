@@ -1662,3 +1662,7 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .room--studio .con__abxy > *{font-size:12px}
 .room--studio .con__legend{font-size:12px;line-height:1.4;letter-spacing:.06em}
 .replay{font-size:13px}
+/* Plays on: white ticks instead of lime */
+.room--studio .eck.is-on{border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.08)}
+.room--studio .eck.is-on i{background:#fff;border-color:#fff}
+.room--studio .eck.is-on i::after{border-color:#141517}
