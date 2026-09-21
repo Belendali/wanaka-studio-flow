@@ -234,6 +234,11 @@ function compE(p) {
                       <i class="eslot__go"></i>
                     </button>`).join('')}
                 </div>
+                <!-- approving sits under the overview, away from where you pick -->
+                <footer class="eparts__f">
+                  <span class="eparts__sum"><b data-ptotal></b><em data-pnote></em></span>
+                  <button class="eparts__go" id="eapprove">Approve plan<i class="kb">▶</i></button>
+                </footer>
               </div>
               <!-- the loading screen: once as the lid opens, again when the plan is approved -->
               <div class="cload" aria-hidden="true">
@@ -663,37 +668,46 @@ function wireE(p) {
     ts.querySelectorAll('.ts__page').forEach((pg) => pg.classList.toggle('is-on', +pg.dataset.page === n));
     con.classList.toggle('is-lib', n === 2 && !con.classList.contains('is-approved') && !con.classList.contains('is-loading'));
     if (!con.classList.contains('is-approved')) {
-      go.innerHTML = n === 1 ? 'Next · Assets<i class="kb">A</i>' : 'Approve<i class="kb">A</i>';
+      if (n === 1) go.innerHTML = 'Next · Assets<i class="kb">A</i>';
+      else con.__enter?.();
     }
   };
   ts.querySelectorAll('.ts__tab').forEach((t) => { t.onclick = () => step(+t.dataset.step); });
 
   const cat = $('pcat');
   const hop = () => { cat.classList.remove('is-hop'); void cat.offsetWidth; cat.classList.add('is-hop'); };
+  // on Assets the right-hand button only walks the parts; approving is on the lid screen
   go.onclick = () => {
     press(key('a'));
     if (ts.dataset.step === '1') { step(2); return; }
-    if (con.classList.contains('is-approved')) return;
+    if (con.classList.contains('is-approved') || con.classList.contains('is-loading')) return;
+    con.__next();
+  };
+  const approve = $('eapprove');
+  con.__approve = () => {
+    if (con.classList.contains('is-approved') || con.classList.contains('is-loading')) return;
+    press(key('start'));
     // approving loads the build on the top screen, then the game comes up
-    go.disabled = true;
-    go.innerHTML = 'Loading…';
+    go.disabled = approve.disabled = true;
+    go.innerHTML = approve.innerHTML = 'Loading…';
     con.querySelector('[data-cap]').textContent = 'Loading v1';
-    con.classList.remove('is-lib');
+    con.classList.remove('is-lib', 'is-review');
     con.classList.add('is-loading');
     setTimeout(() => {
       con.classList.remove('is-loading');
       con.classList.add('is-approved');
-      go.innerHTML = 'Approved ✓';
+      go.innerHTML = approve.innerHTML = 'Approved ✓';
       hop();
     }, 2500);
   };
+  approve.onclick = con.__approve;
   cat.onclick = hop;
 
   // the console's own buttons drive the screen
   const openSlip = () => ts.querySelector('[data-slipbox]:not([hidden])');
   const act = {
     a: () => go.click(),
-    start: () => go.click(),
+    start: () => (ts.dataset.step === '2' ? con.__approve() : go.click()),
     b: () => {
       const s = openSlip();
       if (s) { s.hidden = true; return; }
@@ -784,6 +798,7 @@ function wireLibrary(p, ts, con) {
   const lib = $('elibTs');
   const slots = [...con.querySelectorAll('.eslot')];
   const picked = p.parts.map(([, opts, pick]) => new Set(pick >= 0 ? [opts[pick]] : []));
+  const seen = new Set();
   let sel = 0;
   const img = (n, key) => (!p.partImg ? '' : key ? `assets/boy-part-${key}.jpg` : p.partImg(n));
   const models = (i) => {
@@ -801,7 +816,9 @@ function wireLibrary(p, ts, con) {
     slots.forEach((b, i) => {
       const set = picked[i];
       b.classList.toggle('is-sel', i === sel);
-      b.querySelector('[data-st]').textContent = set.size ? `${set.size} from the library` : 'Left to the Artist';
+      b.classList.toggle('is-seen', seen.has(i));
+      b.querySelector('[data-st]').textContent = set.size ? `${set.size} from the library`
+        : seen.has(i) ? 'Left to the Artist' : 'Not opened yet';
       const shown = [...set].slice(0, 3);
       b.querySelector('[data-picks]').innerHTML = set.size
         ? shown.map((n) => { const m = models(i).find((x) => x.n === n); return m && m.src ? `<img src="${m.src}" alt="">` : '<i></i>'; }).join('')
@@ -810,8 +827,38 @@ function wireLibrary(p, ts, con) {
     });
     const total = picked.reduce((a, s2) => a + s2.size, 0);
     const left = picked.filter((s2) => !s2.size).length;
+    const unseen = p.parts.length - seen.size;
+    con.querySelector('[data-ptotal]').textContent = `${total} picked · ${left} left to the Artist`;
+    con.querySelector('[data-pnote]').textContent = unseen
+      ? `${unseen} part${unseen > 1 ? 's' : ''} not opened — the Artist will make ${unseen > 1 ? 'them' : 'it'}`
+      : 'Every part checked';
+    con.classList.toggle('is-review', !unseen);
+    foot();
+  };
+  // the right-hand footer: where you are, and the way to the next part
+  const nextUnseen = () => {
+    const next = slots.findIndex((_, i) => i > sel && !seen.has(i));
+    return next >= 0 ? next : slots.findIndex((_, i) => !seen.has(i));
+  };
+  const foot = () => {
+    const go = $('tsgo');
+    if (ts.dataset.step !== '2' || con.classList.contains('is-approved') || con.classList.contains('is-loading')) return;
+    const n = picked[sel].size;
     const c = ts.querySelector('[data-count]');
-    if (c) c.textContent = `${total} picked · ${left} left to the Artist`;
+    if (c) c.textContent = `Part ${sel + 1} of ${slots.length} · ${n ? `${n} picked here` : 'the Artist makes this'}`;
+    const after = nextUnseen();
+    go.classList.toggle('is-done', after < 0);
+    go.innerHTML = after < 0 ? 'All parts checked<i class="kb">✓</i>'
+      : `Next · ${p.parts[after][0].replace(/^The /, '')}<i class="kb">A</i>`;
+  };
+  con.__foot = foot;
+  con.__enter = () => { seen.add(sel); paintRows(); };
+  con.__next = () => {
+    const after = nextUnseen();
+    if (after >= 0) { pick(after); return; }
+    // nothing left to open: point at Approve on the lid screen
+    const ap = $('eapprove');
+    ap.classList.remove('is-nudge'); void ap.offsetWidth; ap.classList.add('is-nudge');
   };
   const paintLib = () => {
     const [name] = p.parts[sel];
@@ -866,7 +913,7 @@ function wireLibrary(p, ts, con) {
     x.onclick = () => { box.value = ''; search(); box.focus(); };
     mark();
   };
-  const pick = (i) => { sel = (i + slots.length) % slots.length; paintLib(); paintRows(); };
+  const pick = (i) => { sel = (i + slots.length) % slots.length; if (ts.dataset.step === '2') seen.add(sel); paintLib(); paintRows(); };
   slots.forEach((b, i) => { b.onclick = () => pick(i); });
   con.__slot = (d) => pick(sel + d);
   pick(0);

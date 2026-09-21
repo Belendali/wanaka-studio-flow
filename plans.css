@@ -1589,3 +1589,31 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 
 /* the paw sits on the console's lower edge, in front of it, and pushes it up */
 .room--studio .con__paw{top:73%;width:11.5%;transform-style:flat}
+
+/* ═══ E, Wanaka's type; Approve lives under the parts overview ═══ */
+.room--studio,.sw{--sans:'Poppins',-apple-system,system-ui,sans-serif;--mono:'Bitcount Grid Single',ui-monospace,monospace;--serif:'Poppins',-apple-system,sans-serif}
+.room--studio .ts__name{font-weight:600;letter-spacing:-.02em;font-size:1.45em}
+.room--studio .tr__k,.room--studio .cload__cap,.room--studio .con__legend{letter-spacing:.08em}
+.room--studio .tr__k{font-size:.82em}
+
+.elib--parts .eslots{flex:1 1 auto}
+.eparts__f{flex:none;display:flex;align-items:center;gap:1em;margin-top:.4em;padding:1em 1.1em;border-radius:1em;
+  background:rgba(255,255,255,.04);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+.eparts__sum{flex:1;min-width:0;display:flex;flex-direction:column;gap:.15em}
+.eparts__sum b{font-weight:600;font-size:.98em}
+.eparts__sum em{font-style:normal;font-size:.8em;color:var(--ink2)}
+.con.is-review .eparts__sum em{color:var(--brandHi)}
+.eparts__go{flex:none;display:inline-flex;align-items:center;height:2.6em;padding:0 .6em 0 1.2em;border:0;border-radius:1.3em;cursor:pointer;
+  background:rgba(196,235,0,.16);color:var(--brandHi);box-shadow:inset 0 0 0 1.5px rgba(196,235,0,.5);
+  font-family:var(--sans);font-size:1em;font-weight:600;transition:background .2s,color .2s,box-shadow .2s}
+.eparts__go .kb{background:rgba(196,235,0,.25);color:var(--brandHi);font-size:.62em}
+.eparts__go:hover,.con.is-review .eparts__go{background:var(--brand);color:var(--onBrand);box-shadow:0 .25em 0 var(--brandDeep),0 0 1.8em rgba(196,235,0,.35)}
+.eparts__go:hover .kb,.con.is-review .eparts__go .kb{background:var(--onBrand);color:var(--brand)}
+.eparts__go:disabled{cursor:default}
+.eparts__go.is-nudge{animation:nudge .7s cubic-bezier(.3,1.6,.5,1)}
+@keyframes nudge{30%{transform:scale(1.08) translateY(-2px)}60%{transform:scale(.97)}}
+/* the right-hand button walks the parts; it reads quieter than Approve */
+.ts[data-step="2"] .ts__go{background:rgba(255,255,255,.1);color:var(--ink);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18)}
+.ts[data-step="2"] .ts__go .kb{background:rgba(255,255,255,.18);color:var(--ink)}
+.ts[data-step="2"] .ts__go.is-done{color:var(--brandHi);box-shadow:inset 0 0 0 1.5px rgba(196,235,0,.4)}
+.elib--parts .eslot:not(.is-seen):not(.is-sel) .eslot__t em{color:rgba(255,255,255,.35);font-style:italic}
