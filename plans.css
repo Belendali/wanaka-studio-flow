@@ -1641,3 +1641,24 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .ts[data-step="2"] .ts__go.is-done .kb{background:var(--onBrand);color:var(--brand)}
 /* once approved the loader is done; don't let the boot run replay over the game */
 .con.is-approved .cload{animation:none;opacity:0;visibility:hidden}
+
+/* ═══ E, type sizes: body 14–16, nothing under 12 ═══ */
+.room--studio .ts__top,.room--studio .ts__pages,.room--studio .ts__foot{font-size:clamp(14px,2.75cqh,17px)}
+.room--studio .eslip{font-size:clamp(14px,2.75cqh,17px)}
+.room--studio .ts__tab b{font-size:max(12px,.8em)}
+.room--studio .tr__k{font-size:max(12px,.76em)}
+.room--studio .eo--scope small{font-size:max(12px,.74em)}
+.room--studio .kb{font-size:max(12px,.72em)}
+.room--studio .elook__done{font-size:max(14px,.85em)}
+.room--studio .eslip__s,.room--studio .elook .eslip__s{font-size:max(13px,.85em)}
+.room--studio .elib--parts > *{font-size:clamp(14px,3.1cqh,18px)}
+.room--studio .elib--parts .eslot__t em,.room--studio .eslot__ai{font-size:max(12px,.8em)}
+.room--studio .eparts__h em{font-size:max(13px,.85em)}
+.room--studio .elib__t em{font-size:max(12px,.8em)}
+.room--studio .lcard__n{font-size:max(13px,.82em)}
+.room--studio .lcard em{font-size:max(12px,.62em);padding:.15em .5em}
+.room--studio .ts__sum em{font-size:max(12px,.82em)}
+.room--studio .cload__cap{font-size:max(13px,2.6cqh)}
+.room--studio .con__abxy > *{font-size:12px}
+.room--studio .con__legend{font-size:12px;line-height:1.4;letter-spacing:.06em}
+.replay{font-size:13px}
