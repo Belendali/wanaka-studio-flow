@@ -230,6 +230,13 @@ function compE(p) {
             <div class="con__glass con__glass--game">
               <img id="congame" src="${p.cover}" alt="">
               <div class="elib" id="elib"></div>
+              <!-- the loading screen: once as the lid opens, again when the plan is approved -->
+              <div class="cload" aria-hidden="true">
+                <span class="cload__icon"><img src="assets/wanaka-icon.png" alt=""><i></i></span>
+                <span class="cload__word"></span>
+                <span class="cload__bar">${Array.from({ length: 14 }, (_, i) => `<i style="--i:${i}"></i>`).join('')}</span>
+                <span class="cload__cap"><b data-cap>Opening your plan</b><em class="cload__pct"></em></span>
+              </div>
               <span class="con__scan"></span>
               <span class="con__sweep"></span>
             </div>
@@ -641,7 +648,7 @@ function wireE(p) {
     ts.dataset.step = n;
     ts.querySelectorAll('.ts__tab').forEach((t) => t.classList.toggle('is-on', +t.dataset.step === n));
     ts.querySelectorAll('.ts__page').forEach((pg) => pg.classList.toggle('is-on', +pg.dataset.page === n));
-    con.classList.toggle('is-lib', n === 2);
+    con.classList.toggle('is-lib', n === 2 && !con.classList.contains('is-approved') && !con.classList.contains('is-loading'));
     if (!con.classList.contains('is-approved')) {
       go.innerHTML = n === 1 ? 'Next · Assets<i class="kb">A</i>' : 'Approve<i class="kb">A</i>';
     }
@@ -654,10 +661,18 @@ function wireE(p) {
     press(key('a'));
     if (ts.dataset.step === '1') { step(2); return; }
     if (con.classList.contains('is-approved')) return;
-    con.classList.add('is-approved');
-    go.innerHTML = 'Approved ✓';
+    // approving loads the build on the top screen, then the game comes up
     go.disabled = true;
-    hop();
+    go.innerHTML = 'Loading…';
+    con.querySelector('[data-cap]').textContent = 'Loading v1';
+    con.classList.remove('is-lib');
+    con.classList.add('is-loading');
+    setTimeout(() => {
+      con.classList.remove('is-loading');
+      con.classList.add('is-approved');
+      go.innerHTML = 'Approved ✓';
+      hop();
+    }, 2500);
   };
   cat.onclick = hop;
 
