@@ -130,7 +130,7 @@ function compE(p) {
     <!-- behind the console: the light that spills out as it opens -->
     <span class="con__light" aria-hidden="true"><i class="con__rays"></i></span>
     <div class="con" id="con">
-      <img class="con__paw" src="assets/paw.png" alt="" aria-hidden="true">
+      <img class="con__paw con__paw--l" src="assets/paw-up.png" alt="" aria-hidden="true"><img class="con__paw con__paw--r" src="assets/paw-up.png" alt="" aria-hidden="true">
       <div class="con__body">
         <!-- the half that stays on the desk: the plan, and the buttons -->
         <section class="con__half con__base">
