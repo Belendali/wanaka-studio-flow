@@ -1470,16 +1470,16 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 }
 .con__paw{transform-origin:50% 92%}
 @keyframes paw{
-  0%{transform:translate(-50%,72vh) rotate(-4deg) scale(1)}
-  26%{transform:translate(-50%,3%) rotate(-2deg) scale(1)}
-  31%{transform:translate(-50%,-2.5%) rotate(0deg) scale(1)}
-  34%{transform:translate(-50%,1%) rotate(0deg) scale(1.04,.95)}
-  38%{transform:translate(-50%,0) rotate(-6deg) scale(1);animation-timing-function:cubic-bezier(.5,0,.3,1.5)}
-  43%{transform:translate(-50%,-2%) rotate(9deg) scale(1)}
-  47%{transform:translate(-50%,0) rotate(2deg) scale(1)}
-  50%{transform:translate(-50%,1.5%) rotate(-5deg) scale(1)}
-  53%{transform:translate(-50%,0) rotate(4deg) scale(1)}
-  66%,100%{transform:translate(-50%,120vh) rotate(0deg) scale(1)}
+  0%{transform:translate3d(-50%,72vh,140px) rotate(-4deg) scale(1)}
+  26%{transform:translate3d(-50%,3%,140px) rotate(-2deg) scale(1)}
+  31%{transform:translate3d(-50%,-2.5%,140px) rotate(0deg) scale(1)}
+  34%{transform:translate3d(-50%,1%,140px) rotate(0deg) scale(1.04,.95)}
+  38%{transform:translate3d(-50%,0,140px) rotate(-6deg) scale(1);animation-timing-function:cubic-bezier(.5,0,.3,1.5)}
+  43%{transform:translate3d(-50%,-2%,140px) rotate(9deg) scale(1)}
+  47%{transform:translate3d(-50%,0,140px) rotate(2deg) scale(1)}
+  50%{transform:translate3d(-50%,1.5%,140px) rotate(-5deg) scale(1)}
+  53%{transform:translate3d(-50%,0,140px) rotate(4deg) scale(1)}
+  66%,100%{transform:translate3d(-50%,120vh,140px) rotate(0deg) scale(1)}
 }
 
 /* the loading screen */
@@ -1572,3 +1572,20 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .ep--look{height:auto;padding:.35em .55em .35em .35em;border-radius:.9em;gap:.8em}
 .ep--look .ep__v{gap:.8em;font-size:1.02em}
 .ep--look .ep__v img{width:7.4em;height:4.2em;border-radius:.55em;box-shadow:0 0 0 1px rgba(255,255,255,.16),0 .3em .8em rgba(0,0,0,.4)}
+
+/* ═══ E, Look as an in-place drop-down; the paw on the console ═══ */
+.elook{flex:none;margin:-.1em 0 .3em 6.6em;padding:.8em;border-radius:.9em;background:rgba(0,0,0,.3);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);animation:elookIn .22s ease}
+.elook[hidden]{display:none}
+@keyframes elookIn{from{opacity:0;transform:translateY(-6px)}}
+.elook__h{display:flex;align-items:center;justify-content:space-between;margin:0 .1em .6em}
+.elook__h b{font-size:.9em;font-weight:600;color:var(--ink2)}
+.elook__done{height:1.9em;padding:0 .9em;border:0;border-radius:1em;cursor:pointer;
+  background:var(--brand);color:var(--onBrand);font-family:var(--sans);font-size:.85em;font-weight:600}
+.elook .eslip__grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.ep .ep__c{transition:transform .2s}
+.ep.is-open{border-color:var(--brand)}
+.ep.is-open .ep__c{transform:rotate(180deg)}
+
+/* the paw sits on the console's lower edge, in front of it, and pushes it up */
+.room--studio .con__paw{top:73%;width:11.5%;transform-style:flat}

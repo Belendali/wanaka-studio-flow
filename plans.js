@@ -156,6 +156,14 @@ function compE(p) {
                   <div class="tr"><span class="tr__k">Look</span>
                     <button class="ep ep--look" data-slip="look"><span class="ep__v" data-val>${lookV(p, f.style, f.quality)}</span><i class="ep__c">▾</i></button>
                   </div>
+                  <!-- the look opens as a drop-down in place, pushing the rest down -->
+                  <div class="elook" data-slipbox="look" hidden>
+                    <header class="elook__h"><b>Pick a look</b><button class="elook__done" data-slipdone>Done</button></header>
+                    <div class="eslip__grid">${F.styles.map(([k, n]) =>
+                      `<button class="eslip__s${k === f.style ? ' is-on' : ''}" data-s="${k}"><img src="${thumb(p, k)}" alt=""><span>${n}</span></button>`).join('')}</div>
+                    <div class="eslip__q">${F.quality.map((q) =>
+                      `<button class="eo${q === f.quality ? ' is-on' : ''}" data-q="${q}">${q}</button>`).join('')}</div>
+                  </div>
                   <div class="tr"><span class="tr__k">Scope</span>
                     ${seg('scope', F.scopes.map(([k, n, w, cr, t]) => so(n, k, k === f.scope, `${w} · ${cr} · ${t}`)).join(''))}
                   </div>
@@ -182,12 +190,6 @@ function compE(p) {
               <div class="eslip eslip--genre" data-slipbox="genre" hidden>
                 ${F.genres.map(([k, n]) =>
                   `<button class="eslip__g${k === f.genre ? ' is-on' : ''}" data-g="${k}">${GICON[k]}${n}</button>`).join('')}
-              </div>
-              <div class="eslip eslip--look" data-slipbox="look" hidden>
-                <div class="eslip__grid">${F.styles.map(([k, n]) =>
-                  `<button class="eslip__s${k === f.style ? ' is-on' : ''}" data-s="${k}"><img src="${thumb(p, k)}" alt=""><span>${n}</span></button>`).join('')}</div>
-                <div class="eslip__q">${F.quality.map((q) =>
-                  `<button class="eo${q === f.quality ? ' is-on' : ''}" data-q="${q}">${q}</button>`).join('')}</div>
               </div>
             </div>
           </div>
@@ -482,7 +484,10 @@ function wireForm(p, root, onLook) {
   const f = { ...p.form };
   const box = (k) => root.querySelector(`[data-slipbox="${k}"]`);
   const val = (k) => root.querySelector(`[data-slip="${k}"] [data-val]`);
-  const close = () => root.querySelectorAll('[data-slipbox]').forEach((x) => { x.hidden = true; });
+  const close = () => {
+    root.querySelectorAll('[data-slipbox]').forEach((x) => { x.hidden = true; });
+    root.querySelectorAll('[data-slip]').forEach((x) => x.classList.remove('is-open'));
+  };
 
   root.querySelectorAll('[data-slip]').forEach((b) => {
     b.onclick = (e) => {
@@ -491,8 +496,13 @@ function wireForm(p, root, onLook) {
       const wasShut = slip.hidden;
       close();
       slip.hidden = !wasShut;
+      b.classList.toggle('is-open', wasShut);
+      if (wasShut && slip.classList.contains('elook')) {
+        setTimeout(() => slip.scrollIntoView({ block: 'nearest', behavior: 'smooth' }), 30);
+      }
     };
   });
+  root.querySelectorAll('[data-slipdone]').forEach((d) => { d.onclick = (e) => { e.stopPropagation(); close(); }; });
   root.addEventListener('click', (e) => {
     if (!e.target.closest('[data-slipbox]') && !e.target.closest('[data-slip]')) close();
   });
