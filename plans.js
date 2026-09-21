@@ -226,7 +226,7 @@ function compE(p) {
               <img id="congame" src="${p.cover}" alt="">
               <!-- step 2: the parts on this screen, their models on the touch screen -->
               <div class="elib elib--parts" id="elib">
-                <header class="eparts__h"><b>Assets</b><em>Pick a part, then its models on the right. Leave a part alone and the Artist makes it.</em></header>
+                <header class="eparts__h"><b>Assets</b><em>Pick models for each part on the right. Leave a part alone and the Artist makes it.</em></header>
                 <div class="eslots">
                   ${p.parts.map(([name], i) => `
                     <button class="eslot${i === 0 ? ' is-sel' : ''}" data-slot="${i}">
@@ -235,11 +235,6 @@ function compE(p) {
                       <i class="eslot__go"></i>
                     </button>`).join('')}
                 </div>
-                <!-- approving sits under the overview, away from where you pick -->
-                <footer class="eparts__f">
-                  <span class="eparts__sum"><b data-ptotal></b><em data-pnote></em></span>
-                  <button class="eparts__go" id="eapprove">Approve plan<i class="kb">▶</i></button>
-                </footer>
               </div>
               <!-- the loading screen: once as the lid opens, again when the plan is approved -->
               <div class="cload" aria-hidden="true">
@@ -677,38 +672,36 @@ function wireE(p) {
 
   const cat = $('pcat');
   const hop = () => { cat.classList.remove('is-hop'); void cat.offsetWidth; cat.classList.add('is-hop'); };
-  // on Assets the right-hand button only walks the parts; approving is on the lid screen
+  // on Assets the button walks the parts one by one; after the last it approves
   go.onclick = () => {
     press(key('a'));
     if (ts.dataset.step === '1') { step(2); return; }
     if (con.classList.contains('is-approved') || con.classList.contains('is-loading')) return;
-    con.__next();
+    if (!con.__next()) con.__approve();
   };
-  const approve = $('eapprove');
   con.__approve = () => {
     if (con.classList.contains('is-approved') || con.classList.contains('is-loading')) return;
     press(key('start'));
     // approving loads the build on the top screen, then the game comes up
-    go.disabled = approve.disabled = true;
-    go.innerHTML = approve.innerHTML = 'Loading…';
+    go.disabled = true;
+    go.innerHTML = 'Loading…';
     con.querySelector('[data-cap]').textContent = 'Loading v1';
-    con.classList.remove('is-lib', 'is-review');
+    con.classList.remove('is-lib');
     con.classList.add('is-loading');
     setTimeout(() => {
       con.classList.remove('is-loading');
       con.classList.add('is-approved');
-      go.innerHTML = approve.innerHTML = 'Approved ✓';
+      go.innerHTML = 'Approved ✓';
       hop();
     }, 2500);
   };
-  approve.onclick = con.__approve;
   cat.onclick = hop;
 
   // the console's own buttons drive the screen
   const openSlip = () => ts.querySelector('[data-slipbox]:not([hidden])');
   const act = {
     a: () => go.click(),
-    start: () => (ts.dataset.step === '2' ? con.__approve() : go.click()),
+    start: () => go.click(),
     b: () => {
       const s = openSlip();
       if (s) { s.hidden = true; return; }
@@ -828,12 +821,6 @@ function wireLibrary(p, ts, con) {
     });
     const total = picked.reduce((a, s2) => a + s2.size, 0);
     const left = picked.filter((s2) => !s2.size).length;
-    const unseen = p.parts.length - seen.size;
-    con.querySelector('[data-ptotal]').textContent = `${total} picked · ${left} left to the Artist`;
-    con.querySelector('[data-pnote]').textContent = unseen
-      ? `${unseen} part${unseen > 1 ? 's' : ''} not opened — the Artist will make ${unseen > 1 ? 'them' : 'it'}`
-      : 'Every part checked';
-    con.classList.toggle('is-review', !unseen);
     foot();
   };
   // the right-hand footer: where you are, and the way to the next part
@@ -849,17 +836,16 @@ function wireLibrary(p, ts, con) {
     if (c) c.textContent = `Part ${sel + 1} of ${slots.length} · ${n ? `${n} picked here` : 'the Artist makes this'}`;
     const after = nextUnseen();
     go.classList.toggle('is-done', after < 0);
-    go.innerHTML = after < 0 ? 'All parts checked<i class="kb">✓</i>'
+    go.innerHTML = after < 0 ? 'Approve<i class="kb">A</i>'
       : `Next · ${p.parts[after][0].replace(/^The /, '')}<i class="kb">A</i>`;
   };
   con.__foot = foot;
   con.__enter = () => { seen.add(sel); paintRows(); };
   con.__next = () => {
     const after = nextUnseen();
-    if (after >= 0) { pick(after); return; }
-    // nothing left to open: point at Approve on the lid screen
-    const ap = $('eapprove');
-    ap.classList.remove('is-nudge'); void ap.offsetWidth; ap.classList.add('is-nudge');
+    if (after < 0) return false;
+    pick(after);
+    return true;
   };
   const paintLib = () => {
     const [name] = p.parts[sel];

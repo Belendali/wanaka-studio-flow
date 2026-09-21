@@ -1636,3 +1636,8 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .eo--scope b{font-size:1em;font-weight:600}
 .eo--scope small{font-size:.76em;font-weight:400;opacity:.72;white-space:nowrap}
 .eo--scope.is-on small{opacity:.8}
+/* the last Next becomes Approve */
+.ts[data-step="2"] .ts__go.is-done{background:var(--brand);color:var(--onBrand);box-shadow:0 .25em 0 var(--brandDeep),0 0 1.6em rgba(196,235,0,.3)}
+.ts[data-step="2"] .ts__go.is-done .kb{background:var(--onBrand);color:var(--brand)}
+/* once approved the loader is done; don't let the boot run replay over the game */
+.con.is-approved .cload{animation:none;opacity:0;visibility:hidden}
