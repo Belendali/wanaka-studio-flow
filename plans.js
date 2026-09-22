@@ -234,9 +234,7 @@ function compE(p) {
           <div class="con__face">
             <div class="con__glass con__glass--game">
               <img id="congame" src="${p.cover}" alt="">
-              <button class="regen" id="regen" title="Regenerate cover" aria-label="Regenerate cover">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 15 9"/><path d="m13.5 7.5 3 3"/><path d="M17 3v3M15.5 4.5h3M20 8v2M19 9h2M9 3.5v2M8 4.5h2"/></svg>
-              </button>
+              <button class="regen" id="regen">Regenerate cover</button>
               <!-- step 2: the parts on this screen, their models on the touch screen -->
               <div class="elib elib--parts" id="elib">
                 <header class="eparts__h"><b>Assets</b><em>Pick models for each part on the right. Leave a part alone and the Artist makes it.</em></header>
@@ -262,6 +260,7 @@ function compE(p) {
           </div>
           <div class="con__back">
             <!-- the Wanaka badge stands proud of the lid; the name is cut into it -->
+            <span class="lid__paws" aria-hidden="true"></span>
             <span class="lid__badge"><img src="assets/wanaka-icon.png" alt=""></span>
             <span class="lid__word" aria-label="Wanaka"></span>
             <span class="lid__screw lid__screw--a"></span><span class="lid__screw lid__screw--b"></span>
@@ -794,7 +793,18 @@ function wireE(p) {
 /* Point 0 is pinned to the eyelet every frame, so whatever the console does —
    pushed in by the paw, swung open, tilted by the pointer — the chain follows
    and swings. A tap throws the charm up; a drag carries it. */
+// six tags; each hangs from its own hole (x, y as fractions of the art, and its aspect)
+const CHARMS = [['charm-cat', .502, .103, .981], ['charm-cat2', .527, .112, .998], ['charm-cat3', .484, .118, .975],
+  ['charm-cat4', .489, .115, .994], ['charm-cat5', .475, .112, .977], ['charm-cat6', .49, .114, 1.004]];
+window.__charm ??= CHARMS[Math.floor(Math.random() * CHARMS.length)];
 function wireKeychain(room) {
+  {
+    const [f, hx, hy, ar] = window.__charm, c = $('kcCharm');
+    if (c) {
+      c.querySelector('img').src = `assets/${f}.png`;
+      c.style.setProperty('--hx', hx); c.style.setProperty('--hy', hy); c.style.setProperty('--ar', ar);
+    }
+  }
   cancelAnimationFrame(window.__kcRaf);
   const kc = $('kc'), svg = $('kcChain'), charm = $('kcCharm'), eye = $('eyelet');
   if (!kc || !eye) return;

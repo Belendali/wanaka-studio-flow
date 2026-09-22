@@ -1815,3 +1815,28 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 @keyframes regenImg{35%,45%{filter:blur(10px) brightness(1.25) saturate(.7)}100%{filter:none}}
 .con.is-regen .con__sweep{display:block}
 .con.is-regen .con__sweep::before{animation:sweep 1s cubic-bezier(.4,0,.2,1) .15s}
+
+/* ═══ E, regenerate as words; tags that hang from their own holes; a finer shell ═══ */
+.regen{width:auto;height:30px;padding:0 13px;border-radius:15px;font-family:var(--sans);font-size:13px;font-weight:500;letter-spacing:.01em;white-space:nowrap}
+.regen:hover{transform:translateY(-1px)}
+.con.is-regen .regen{opacity:.6}
+
+.kc__charm{--W:clamp(70px,5.8vw,98px);width:var(--W);margin-left:calc(var(--W) * var(--hx,.5) * -1);
+  margin-top:calc(var(--W) * var(--hy,.1) / var(--ar,1) * -1);
+  transform-origin:calc(var(--hx,.5) * 100%) calc(var(--hy,.1) * 100%)}
+.kc__charm::before{left:calc(var(--hx,.5) * 100%);top:calc(var(--hy,.1) * 100% - 3%)}
+
+/* matte plastic: a fine grain over every shell surface, and a crisper chamfer */
+.room--studio .con__half,.room--studio .con__face,.room--studio .con__back{
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(120% 90% at 20% 0%,rgba(255,255,255,.10),transparent 55%),
+    linear-gradient(160deg,var(--shellHi),var(--shell) 42%,var(--shellLo));
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.3),inset 1px 0 0 rgba(255,255,255,.06),inset 0 -2px 0 rgba(0,0,0,.3),
+    inset 0 0 0 1px rgba(255,255,255,.07),inset 0 0 0 3px rgba(0,0,0,.08),inset 0 0 24px rgba(0,0,0,.18)}
+/* the back plate: faint paw prints pressed into the plastic */
+.lid__paws{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+  background:url(assets/paw-tile.svg) 8% 6% / 44% auto repeat;opacity:.85;
+  -webkit-mask:radial-gradient(120% 100% at 50% 45%,#000 55%,rgba(0,0,0,.35));mask:radial-gradient(120% 100% at 50% 45%,#000 55%,rgba(0,0,0,.35))}
+.room--studio .lid__badge,.room--studio .lid__word,.room--studio .lid__screw{z-index:1}
+.room--studio .lid__word{position:relative}
