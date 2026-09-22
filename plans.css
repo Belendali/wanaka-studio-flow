@@ -1844,3 +1844,5 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .lid__paws{background:url(assets/paw-one.svg?v=2) no-repeat;background-size:46% auto;background-position:118% 128%;
   -webkit-mask:none;mask:none;opacity:1}
 .lid__paws{background-size:30% auto;background-position:9% 9%}
+/* the kitten paw: bottom-right of the plate, clear of the name and the screw */
+.lid__paws{background-image:url(assets/paw-one.svg?v=3);background-size:20% auto;background-position:87% 91%}

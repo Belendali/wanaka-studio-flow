@@ -133,7 +133,7 @@ function compE(p) {
     <div class="kc" id="kc" aria-hidden="true">
       <svg class="kc__chain" id="kcChain"></svg>
       <button class="kc__charm" id="kcCharm" tabindex="-1">
-        <img class="kc__img" src="assets/charm-cat.png" alt="">
+        <img class="kc__img" src="assets/tag-v2-1.png" alt="">
       </button>
     </div>
     <div class="con" id="con">
@@ -793,9 +793,9 @@ function wireE(p) {
 /* Point 0 is pinned to the eyelet every frame, so whatever the console does —
    pushed in by the paw, swung open, tilted by the pointer — the chain follows
    and swings. A tap throws the charm up; a drag carries it. */
-// six tags; each hangs from its own hole (x, y as fractions of the art, and its aspect)
-const CHARMS = [['charm-cat', .502, .103, .981], ['charm-cat2', .527, .112, .998], ['charm-cat3', .484, .118, .975],
-  ['charm-cat4', .489, .115, .994], ['charm-cat5', .475, .112, .977], ['charm-cat6', .49, .114, 1.004]];
+// five tags (v2 set); each hangs from its own hole (x, y as fractions of the art, and its aspect)
+const CHARMS = [['tag-v2-1', .524, .115, .998], ['tag-v2-2', .482, .119, .973], ['tag-v2-3', .488, .118, .996],
+  ['tag-v2-4', .473, .113, .981], ['tag-v2-5', .489, .116, 1.002]];
 window.__charm ??= CHARMS[Math.floor(Math.random() * CHARMS.length)];
 function wireKeychain(room) {
   {
