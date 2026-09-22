@@ -1643,15 +1643,15 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .con.is-approved .cload{animation:none;opacity:0;visibility:hidden}
 
 /* ═══ E, type sizes: body 14–16, nothing under 12 ═══ */
-.room--studio .ts__top,.room--studio .ts__pages,.room--studio .ts__foot{font-size:clamp(14px,2.75cqh,17px)}
-.room--studio .eslip{font-size:clamp(14px,2.75cqh,17px)}
+.room--studio .ts__top,.room--studio .ts__pages,.room--studio .ts__foot{font-size:clamp(13.5px,2.55cqh,16px)}
+.room--studio .eslip{font-size:clamp(13.5px,2.55cqh,16px)}
 .room--studio .ts__tab b{font-size:max(12px,.8em)}
 .room--studio .tr__k{font-size:max(12px,.76em)}
 .room--studio .eo--scope small{font-size:max(12px,.74em)}
 .room--studio .kb{font-size:max(12px,.72em)}
 .room--studio .elook__done{font-size:max(14px,.85em)}
 .room--studio .eslip__s,.room--studio .elook .eslip__s{font-size:max(13px,.85em)}
-.room--studio .elib--parts > *{font-size:clamp(14px,3.1cqh,18px)}
+.room--studio .elib--parts > *{font-size:clamp(13.5px,2.9cqh,17px)}
 .room--studio .elib--parts .eslot__t em,.room--studio .eslot__ai{font-size:max(12px,.8em)}
 .room--studio .eparts__h em{font-size:max(13px,.85em)}
 .room--studio .elib__t em{font-size:max(12px,.8em)}
