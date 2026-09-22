@@ -234,6 +234,9 @@ function compE(p) {
           <div class="con__face">
             <div class="con__glass con__glass--game">
               <img id="congame" src="${p.cover}" alt="">
+              <button class="regen" id="regen" title="Regenerate cover" aria-label="Regenerate cover">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 15 9"/><path d="m13.5 7.5 3 3"/><path d="M17 3v3M15.5 4.5h3M20 8v2M19 9h2M9 3.5v2M8 4.5h2"/></svg>
+              </button>
               <!-- step 2: the parts on this screen, their models on the touch screen -->
               <div class="elib elib--parts" id="elib">
                 <header class="eparts__h"><b>Assets</b><em>Pick models for each part on the right. Leave a part alone and the Artist makes it.</em></header>
@@ -769,6 +772,21 @@ function wireE(p) {
   wireLibrary(p, ts, con);
   wireForm(p, ts, (src) => { $('congame').src = src; });
   wireKeychain(room);
+  // regenerate the cover: the screen shimmers and comes back as a new take
+  const regen = $('regen'), game = $('congame');
+  let take = 0;
+  const TAKES = [['50% 50%', 1], ['30% 55%', 1.12], ['68% 45%', 1.1], ['50% 70%', 1.08]];
+  regen.onclick = (e) => {
+    e.stopPropagation();
+    if (con.classList.contains('is-regen')) return;
+    con.classList.add('is-regen');
+    setTimeout(() => {
+      take = (take + 1) % TAKES.length;
+      game.style.objectPosition = TAKES[take][0];
+      game.style.transform = `scale(${TAKES[take][1]})`;
+    }, 520);
+    setTimeout(() => con.classList.remove('is-regen'), 1250);
+  };
   $('replay').onclick = paint;
 }
 
