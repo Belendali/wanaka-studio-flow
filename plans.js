@@ -133,7 +133,7 @@ function compE(p) {
     <div class="kc" id="kc" aria-hidden="true">
       <svg class="kc__chain" id="kcChain"></svg>
       <button class="kc__charm" id="kcCharm" tabindex="-1">
-        <span class="kc__acrylic"><img src="assets/wanaka-icon.png" alt=""><i class="kc__shine"></i></span>
+        <img class="kc__img" src="assets/charm-joystick.png" alt="">
       </button>
     </div>
     <div class="con" id="con">
@@ -782,7 +782,7 @@ function wireKeychain(room) {
   const N = 7;                                   // ring + links + the charm's jump ring
   const P = Array.from({ length: N }, () => ({ x: 0, y: 0, px: 0, py: 0 }));
   let seg = 9, ready = false, held = null, spin = 0, spinV = 0, last = performance.now();
-  const W = [0, 1, 1, 1, 1, 1, 5];               // the charm is heavier than a link
+  const W = [0, 1, 1, 1, 1, 1, 9];               // the charm is heavier than a link
   const anchor = () => {
     const r = eye.getBoundingClientRect(), k = kc.getBoundingClientRect();
     return { x: r.left + r.width / 2 - k.left, y: r.top + r.height / 2 - k.top, w: r.width };
@@ -796,7 +796,7 @@ function wireKeychain(room) {
     const g = 2400 * dt * dt;
     P.forEach((q, i) => {
       if (i === 0 || q === held) return;
-      const vx = (q.x - q.px) * .988, vy = (q.y - q.py) * .988;
+      const vx = (q.x - q.px) * .955, vy = (q.y - q.py) * .955;
       q.px = q.x; q.py = q.y;
       q.x += vx; q.y += vy + g;
     });
@@ -870,9 +870,9 @@ function wireKeychain(room) {
   const toss = () => {
     const E = P[N - 1];
     const side = Math.random() < .5 ? -1 : 1;
-    E.py = E.y + seg * 3.4; E.px = E.x - side * seg * 1.1;     // an upward kick
-    P[N - 2].py = P[N - 2].y + seg * 1.6;
-    spinV = 1400 * side;
+    E.py = E.y + seg * .42; E.px = E.x - side * seg * .14;     // an upward kick
+    P[N - 2].py = P[N - 2].y + seg * .2;
+    spinV = 720 * side;
     kc.classList.remove('is-hit'); void kc.offsetWidth; kc.classList.add('is-hit');
     const burst = document.createElement('span');
     burst.className = 'kc__burst';

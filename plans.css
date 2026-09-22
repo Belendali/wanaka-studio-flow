@@ -1721,3 +1721,11 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
   background:linear-gradient(180deg,var(--shellHi),var(--shellLo));
   box-shadow:inset -1px 1px 0 rgba(255,255,255,.14),0 3px 6px rgba(0,0,0,.4)}
 .con__lug .con__eyelet{right:auto;left:58%;top:50%;width:38%;transform:translate(-50%,-50%)}
+/* the joystick charm: its own acrylic, hung from the top of its outline */
+.kc__charm{width:clamp(76px,6.4vw,108px);margin-left:calc(clamp(76px,6.4vw,108px) * -.53);transform-origin:53% 0}
+.kc__charm::before{left:53%;top:-4px;width:9px;height:9px;margin-left:-4.5px}
+.kc__img{display:block;width:100%;pointer-events:none;-webkit-user-drag:none;
+  filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}
+.kc__charm:hover .kc__img{filter:drop-shadow(0 8px 10px rgba(0,0,0,.45)) drop-shadow(0 0 10px rgba(222,248,108,.5))}
+.kc.is-hit .kc__img{animation:kcHit2 .7s ease-out}
+@keyframes kcHit2{0%{filter:drop-shadow(0 0 16px rgba(230,255,122,1)) brightness(1.25)}100%{filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}}
