@@ -713,7 +713,7 @@ function wireE(p) {
     con.classList.remove('is-lib');
     body.style.removeProperty('--rx'); body.style.removeProperty('--ry');
     room.classList.add('is-leaving');
-    setTimeout(() => room.classList.add('is-gone'), 3900);
+    setTimeout(() => { room.classList.add('is-gone'); document.dispatchEvent(new CustomEvent('e-approved')); }, 3900);
   };
   cat.onclick = hop;
 
@@ -1621,6 +1621,7 @@ function paint() {
   document.querySelectorAll('.sw__p').forEach((b) =>
     b.classList.toggle('is-on', b.dataset.p === plan));
   document.querySelectorAll('.sw__s').forEach((b) => b.classList.toggle('is-on', b.dataset.s === shape));
+  if (window.__hold) return;
   const q = new URLSearchParams(location.search);
   q.set('c', which); if (which === 'e' && shape === 'wide') q.set('shape', shape); else q.delete('shape');
   history.replaceState(null, '', '?' + q.toString());
@@ -1633,4 +1634,4 @@ document.querySelectorAll('.sw__p').forEach((b) =>
   b.onclick = () => { plan = b.dataset.p; paint(); });
 document.querySelectorAll('.sw__s').forEach((b) =>
   b.onclick = () => { shape = b.dataset.s; paint(); });
-paint();
+if (!window.__hold) paint();

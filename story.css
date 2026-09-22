@@ -1,0 +1,79 @@
+/* ═══ The handheld, end to end: asking, the team working, the plan opening ═══ */
+.story{margin:0;background:#0B0809;color:var(--ink)}
+.sw--story .sw__t{white-space:nowrap}
+.chapter{display:inline-flex;align-items:center;gap:.6em;margin-left:14px;padding:4px 12px 4px 5px;border-radius:14px;
+  background:rgba(255,255,255,.07);font-family:var(--sans);font-size:12px}
+.chapter b{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--brand);color:#141A00;font-size:11px}
+.chapter em{font-style:normal;color:var(--ink2)}
+.sw__replay{margin-left:14px;height:26px;padding:0 12px;border:0;border-radius:13px;cursor:pointer;
+  background:rgba(255,255,255,.1);color:var(--ink);font-family:var(--sans);font-size:12px}
+.sw__replay:hover{background:rgba(255,255,255,.18)}
+
+/* the scene sits over the stage: the Studio screenshot, with a live chat column on top of it */
+.sc{position:fixed;left:0;right:0;top:48px;bottom:0;z-index:5;pointer-events:none;transition:opacity .45s ease}
+.sc.is-out{opacity:0}
+.sc__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* the chat column, measured off the screenshot */
+.sc__chat{position:absolute;left:79.3%;right:0;top:9.5%;bottom:13%;padding:0 1.1% 0 1.6%;overflow:hidden;
+  background:#1B1112;font-family:var(--sans);font-size:clamp(11px,.79vw,13px);line-height:1.5;
+  background-image:radial-gradient(rgba(255,255,255,.045) 1px,transparent 1px);background-size:21px 21px}
+.sc__chat > *{opacity:0;transform:translateY(8px);animation:msgIn .45s cubic-bezier(.3,.9,.3,1) forwards}
+@keyframes msgIn{to{opacity:1;transform:none}}
+.sc__chip{display:flex;align-items:center;gap:.5em;justify-content:center;margin:1.1em 0 1em;color:var(--brand);font-size:.95em}
+.sc__chip i{width:.5em;height:.5em;border-radius:50%;background:var(--brand);box-shadow:0 0 8px var(--brand)}
+.sc__you{margin:0 0 1.1em auto;max-width:88%;padding:.85em 1em;border-radius:1em;background:#fff;color:#16171A;
+  font-size:1.02em;line-height:1.45}
+.sc__wana{display:grid;grid-template-columns:2.6em minmax(0,1fr);gap:.7em;margin-bottom:1em}
+.sc__wana img{width:2.6em;height:2.6em;border-radius:.6em;object-fit:cover}
+.sc__wana b{display:block;font-weight:600;margin-bottom:.2em}
+.sc__wana p{margin:0;color:rgba(255,255,255,.86)}
+.sc__steps{margin:0 0 1.1em 3.3em;display:flex;flex-direction:column;gap:.55em}
+.sc__step{display:flex;align-items:center;gap:.7em;color:var(--ink2)}
+.sc__step i{position:relative;width:1.1em;height:1.1em;flex:none}
+.sc__step i::before{content:'';position:absolute;inset:0;border-radius:50%;border:1.6px solid rgba(255,255,255,.25);
+  border-top-color:var(--brand);animation:spin .8s linear infinite}
+.sc__step.is-done{color:rgba(255,255,255,.9)}
+.sc__step.is-done i::before{animation:none;border:0;left:14%;top:-4%;width:38%;height:68%;border-radius:0;
+  border-right:1.8px solid var(--brand);border-bottom:1.8px solid var(--brand);transform:rotate(42deg)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sc__card{display:grid;grid-template-columns:38% minmax(0,1fr);gap:.9em;padding:.7em;border-radius:.9em;
+  background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.09);margin-left:.2em}
+.sc__card img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:.55em}
+.sc__card em{font-style:normal;font-family:var(--mono);font-size:.85em;letter-spacing:.1em;color:var(--brand)}
+.sc__card b{display:block;margin:.25em 0 .6em;font-weight:600;font-size:1.05em;line-height:1.3}
+.sc__card button{height:2.2em;padding:0 .9em;border:0;border-radius:1.1em;cursor:pointer;background:rgba(255,255,255,.12);
+  color:var(--ink);font-family:var(--sans);font-size:.95em;font-weight:500}
+.sc__card.is-hot button{background:var(--brand);color:#141A00;box-shadow:0 0 0 0 rgba(196,235,0,.5);animation:hot 1s ease-out}
+@keyframes hot{0%{box-shadow:0 0 0 0 rgba(196,235,0,.55)}100%{box-shadow:0 0 0 14px rgba(196,235,0,0)}}
+/* what is being typed, over the real composer */
+.sc__type{position:absolute;left:80.2%;right:2%;top:87.4%;height:4.4%;display:flex;align-items:center;
+  font-family:var(--sans);font-size:clamp(11px,.79vw,13px);color:var(--ink)}
+.sc__type i{display:inline-block;width:1.5px;height:1.15em;margin-left:2px;background:var(--brand);animation:caret 1s steps(2) infinite}
+@keyframes caret{50%{opacity:0}}
+.sc__plan{position:absolute;left:93.4%;width:3.1%;top:95.1%;height:2.6%;border-radius:11px}
+.sc__plan.is-hot{box-shadow:0 0 0 3px rgba(196,235,0,.55);animation:hot 1s ease-out}
+.sc__cursor{position:absolute;left:50%;top:60%;width:15px;height:22px;z-index:3;
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.6));transition:transform .55s cubic-bezier(.3,.8,.3,1)}
+.sc__cursor svg{width:100%;height:100%;fill:#fff;stroke:#111;stroke-width:1.2}
+.sc__cursor.is-click{animation:clk .25s ease}
+@keyframes clk{50%{transform:scale(.82)}}
+/* after approving: the team says it is building */
+.sc__epi{position:absolute;left:79.3%;right:0;top:64%;padding:1em 1.6% 1em 2.2%;background:#1B1112;
+  background-image:radial-gradient(rgba(255,255,255,.045) 1px,transparent 1px);background-size:21px 21px;
+  font-family:var(--sans);font-size:clamp(11px,.79vw,13px)}
+.sc__bar{height:6px;margin:.8em 0 .5em 3.3em;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden}
+.sc__bar i{display:block;height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--brandLo),var(--brandHi));
+  animation:fill 6s cubic-bezier(.4,0,.3,1) forwards}
+@keyframes fill{to{width:78%}}
+.sc__note{margin-left:3.3em;color:var(--ink2);font-family:var(--mono);font-size:.9em;letter-spacing:.08em;text-transform:uppercase}
+/* skip */
+.sc__skip{position:absolute;right:1.5%;bottom:3%;z-index:4;pointer-events:auto;height:30px;padding:0 14px;border:0;border-radius:15px;
+  cursor:pointer;background:rgba(20,21,23,.72);color:#fff;backdrop-filter:blur(8px);font-family:var(--sans);font-size:12px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.sc__skip:hover{background:rgba(20,21,23,.9)}
+/* the typed line sits in the composer box, covering its placeholder */
+.sc__type{left:79.8%;right:1.4%;top:86.6%;height:6.4%;align-items:flex-start;padding:.55em .8em;border-radius:.6em;
+  background:#312D2E;line-height:1.45;overflow:hidden}
+.sc__cursor{transition:transform .55s cubic-bezier(.3,.8,.3,1),opacity .3s}
+.sc__epi{top:67.5%;bottom:13%;animation:msgIn .5s cubic-bezier(.3,.9,.3,1) both}
+.sc__bar{display:block}
