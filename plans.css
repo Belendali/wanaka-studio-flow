@@ -1840,3 +1840,7 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
   -webkit-mask:radial-gradient(120% 100% at 50% 45%,#000 55%,rgba(0,0,0,.35));mask:radial-gradient(120% 100% at 50% 45%,#000 55%,rgba(0,0,0,.35))}
 .room--studio .lid__badge,.room--studio .lid__word,.room--studio .lid__screw{z-index:1}
 .room--studio .lid__word{position:relative}
+/* just one big paw print, low on the plate and running off its corner */
+.lid__paws{background:url(assets/paw-one.svg?v=2) no-repeat;background-size:46% auto;background-position:118% 128%;
+  -webkit-mask:none;mask:none;opacity:1}
+.lid__paws{background-size:30% auto;background-position:9% 9%}
