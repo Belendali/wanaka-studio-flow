@@ -129,11 +129,20 @@ function compE(p) {
 
     <!-- behind the console: the light that spills out as it opens -->
     <span class="con__light" aria-hidden="true"><i class="con__rays"></i></span>
+    <!-- the keychain: drawn flat over the room, hung from the eyelet, pulled by gravity -->
+    <div class="kc" id="kc" aria-hidden="true">
+      <svg class="kc__chain" id="kcChain"></svg>
+      <button class="kc__charm" id="kcCharm" tabindex="-1">
+        <span class="kc__acrylic"><img src="assets/wanaka-icon.png" alt=""><i class="kc__shine"></i></span>
+      </button>
+    </div>
     <div class="con" id="con">
       <img class="con__paw" src="assets/paw.png" alt="" aria-hidden="true">
       <div class="con__body">
         <!-- the half that stays on the desk: the plan, and the buttons -->
         <section class="con__half con__base">
+          <!-- the strap hole the keychain hangs from -->
+          <span class="con__lug"><span class="con__eyelet" id="eyelet"></span></span>
           <div class="con__glass">
             <div class="ts" id="ts" data-step="1">
               <header class="ts__top">
@@ -758,7 +767,120 @@ function wireE(p) {
 
   wireLibrary(p, ts, con);
   wireForm(p, ts, (src) => { $('congame').src = src; });
+  wireKeychain(room);
   $('replay').onclick = paint;
+}
+
+// ── E's keychain: a short chain and a charm, simulated with verlet ──
+/* Point 0 is pinned to the eyelet every frame, so whatever the console does —
+   pushed in by the paw, swung open, tilted by the pointer — the chain follows
+   and swings. A tap throws the charm up; a drag carries it. */
+function wireKeychain(room) {
+  cancelAnimationFrame(window.__kcRaf);
+  const kc = $('kc'), svg = $('kcChain'), charm = $('kcCharm'), eye = $('eyelet');
+  if (!kc || !eye) return;
+  const N = 7;                                   // ring + links + the charm's jump ring
+  const P = Array.from({ length: N }, () => ({ x: 0, y: 0, px: 0, py: 0 }));
+  let seg = 9, ready = false, held = null, spin = 0, spinV = 0, last = performance.now();
+  const W = [0, 1, 1, 1, 1, 1, 5];               // the charm is heavier than a link
+  const anchor = () => {
+    const r = eye.getBoundingClientRect(), k = kc.getBoundingClientRect();
+    return { x: r.left + r.width / 2 - k.left, y: r.top + r.height / 2 - k.top, w: r.width };
+  };
+  const place = (a) => P.forEach((q, i) => { q.x = q.px = a.x; q.y = q.py = a.y + i * seg; });
+  const step = (dt) => {
+    const a = anchor();
+    if (!a.w) return;
+    seg = Math.max(6, a.w * .62);
+    if (!ready) { place(a); ready = true; }
+    const g = 2400 * dt * dt;
+    P.forEach((q, i) => {
+      if (i === 0 || q === held) return;
+      const vx = (q.x - q.px) * .988, vy = (q.y - q.py) * .988;
+      q.px = q.x; q.py = q.y;
+      q.x += vx; q.y += vy + g;
+    });
+    P[0].x = a.x; P[0].y = a.y;
+    for (let it = 0; it < 10; it++) {
+      for (let i = 0; i < N - 1; i++) {
+        const A = P[i], B = P[i + 1];
+        const dx = B.x - A.x, dy = B.y - A.y, d = Math.hypot(dx, dy) || .001;
+        const diff = (d - seg) / d;
+        const wa = i === 0 || A === held ? 0 : 1 / (W[i] || 1);
+        const wb = B === held ? 0 : 1 / W[i + 1];
+        const sum = wa + wb || 1;
+        A.x += dx * diff * wa / sum; A.y += dy * diff * wa / sum;
+        B.x -= dx * diff * wb / sum; B.y -= dy * diff * wb / sum;
+      }
+    }
+  };
+  const draw = () => {
+    // links alternate face-on and edge-on, like a real curb chain
+    let h = '';
+    for (let i = 0; i < N - 1; i++) {
+      const A = P[i], B = P[i + 1];
+      const cx = (A.x + B.x) / 2, cy = (A.y + B.y) / 2;
+      const ang = Math.atan2(B.y - A.y, B.x - A.x) * 180 / Math.PI;
+      const L = seg * 1.18;
+      h += i % 2
+        ? `<rect x="${-L / 2}" y="-1.3" width="${L}" height="2.6" rx="1.3" transform="translate(${cx} ${cy}) rotate(${ang})" class="kc__edge"/>`
+        : `<ellipse rx="${L / 2}" ry="${seg * .36}" transform="translate(${cx} ${cy}) rotate(${ang})" class="kc__link"/>`;
+    }
+    const a = P[0];
+    h = `<circle cx="${a.x}" cy="${a.y}" r="${seg * .72}" class="kc__ring"/>` + h;
+    svg.innerHTML = h;
+    const E = P[N - 1], D = P[N - 2];
+    const ang = Math.atan2(E.y - D.y, E.x - D.x) * 180 / Math.PI - 90;
+    charm.style.transform = `translate(${E.x}px, ${E.y}px) rotate(${ang}deg) rotateY(${spin}deg)`;
+  };
+  const tick = (now) => {
+    const dt = Math.min(.033, (now - last) / 1000); last = now;
+    const n = 2;
+    for (let i = 0; i < n; i++) step(dt / n);
+    if (spinV) { spin += spinV * dt; spinV *= .96; if (Math.abs(spinV) < 20) { spinV = 0; spin = Math.round(spin / 360) * 360; } }
+    if (ready) draw();
+    window.__kcRaf = requestAnimationFrame(tick);
+  };
+  window.__kcRaf = requestAnimationFrame(tick);
+
+  // tap: the charm is recognised — it lights, jumps and spins; drag: carry it
+  let down = null;
+  const local = (e) => { const k = kc.getBoundingClientRect(); return { x: e.clientX - k.left, y: e.clientY - k.top }; };
+  charm.onpointerdown = (e) => {
+    e.preventDefault();
+    charm.setPointerCapture(e.pointerId);
+    down = { ...local(e), t: performance.now(), moved: false };
+  };
+  charm.onpointermove = (e) => {
+    if (!down) return;
+    const q = local(e);
+    if (!down.moved && Math.hypot(q.x - down.x, q.y - down.y) > 5) { down.moved = true; held = P[N - 1]; kc.classList.add('is-held'); }
+    if (held) {
+      // the chain can't stretch: keep the charm within reach of the eyelet
+      const A = P[0], max = (N - 1) * seg, d = Math.hypot(q.x - A.x, q.y - A.y);
+      if (d > max) { q.x = A.x + (q.x - A.x) * max / d; q.y = A.y + (q.y - A.y) * max / d; }
+      held.px = held.x; held.py = held.y; held.x = q.x; held.y = q.y;
+    }
+  };
+  charm.onpointerup = () => {
+    if (!down) return;
+    if (!down.moved) toss();
+    held = null; down = null; kc.classList.remove('is-held');
+  };
+  const toss = () => {
+    const E = P[N - 1];
+    const side = Math.random() < .5 ? -1 : 1;
+    E.py = E.y + seg * 3.4; E.px = E.x - side * seg * 1.1;     // an upward kick
+    P[N - 2].py = P[N - 2].y + seg * 1.6;
+    spinV = 1400 * side;
+    kc.classList.remove('is-hit'); void kc.offsetWidth; kc.classList.add('is-hit');
+    const burst = document.createElement('span');
+    burst.className = 'kc__burst';
+    burst.style.left = `${E.x}px`; burst.style.top = `${E.y + seg * 2.6}px`;
+    burst.innerHTML = Array.from({ length: 7 }, (_, i) => `<i style="--a:${i * 360 / 7 + Math.random() * 20}deg;--d:${.8 + Math.random() * .6}"></i>`).join('');
+    kc.appendChild(burst);
+    setTimeout(() => burst.remove(), 900);
+  };
 }
 
 // ── E's library: the top screen shows the models for the part picked below ──

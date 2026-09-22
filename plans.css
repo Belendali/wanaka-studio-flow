@@ -1676,3 +1676,48 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .room--studio .eo--scope b{font-weight:500}
 /* a touch smaller */
 .room--studio .con{width:min(89%,calc((100vh - 150px) * 2.02))}
+
+/* ═══ E, the keychain ═══ */
+/* a metal eyelet set into the base's outer corner */
+.con__eyelet{position:absolute;right:-1.1%;top:81%;width:1.25%;aspect-ratio:1;border-radius:50%;z-index:3;
+  background:radial-gradient(circle at 50% 50%,#0B0C0E 0 34%,transparent 36%),
+    conic-gradient(from 200deg,#8E9297,#E9ECEF,#9A9EA3,#5E6166,#C9CDD1,#8E9297);
+  box-shadow:0 0 0 1px rgba(0,0,0,.55),0 2px 3px rgba(0,0,0,.5)}
+.kc{position:absolute;inset:0;z-index:4;pointer-events:none}
+.kc__chain{position:absolute;inset:0;width:100%;height:100%;overflow:visible;
+  filter:drop-shadow(0 3px 2px rgba(0,0,0,.45))}
+.kc__link{fill:none;stroke:#D5D9DD;stroke-width:1.9}
+.kc__edge{fill:#AEB3B8;stroke:#6E7378;stroke-width:.6}
+.kc__ring{fill:none;stroke:#E4E7EA;stroke-width:1.8}
+.kc__charm{position:absolute;left:0;top:0;width:clamp(48px,4.4vw,72px);margin-left:calc(clamp(48px,4.4vw,72px) / -2);
+  padding:0;border:0;background:none;cursor:grab;pointer-events:auto;transform-origin:50% 0;
+  -webkit-tap-highlight-color:transparent;touch-action:none}
+.kc.is-held .kc__charm{cursor:grabbing}
+/* the jump ring on top of the charm */
+.kc__charm::before{content:'';position:absolute;left:50%;top:-5px;width:10px;height:10px;margin-left:-5px;border-radius:50%;
+  border:1.8px solid #E4E7EA;box-sizing:border-box}
+/* clear acrylic: a thick see-through rim around the print, with a gloss */
+.kc__acrylic{position:relative;display:block;margin-top:4px;aspect-ratio:1;border-radius:30%;padding:9%;
+  background:linear-gradient(145deg,rgba(255,255,255,.55),rgba(255,255,255,.14) 40%,rgba(255,255,255,.32));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),inset 0 -2px 4px rgba(0,0,0,.18),0 8px 14px rgba(0,0,0,.45);
+  backdrop-filter:blur(2px)}
+.kc__acrylic img{display:block;width:100%;height:100%;border-radius:24%;object-fit:cover;pointer-events:none}
+.kc__acrylic::after{content:'';position:absolute;left:50%;top:5%;width:12%;aspect-ratio:1;margin-left:-6%;border-radius:50%;
+  background:rgba(20,21,23,.55);box-shadow:inset 0 1px 1px rgba(0,0,0,.5)}
+.kc__shine{position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(120deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,0) 32%,rgba(255,255,255,0) 70%,rgba(255,255,255,.25) 100%)}
+.kc__charm:hover .kc__acrylic{box-shadow:inset 0 0 0 1px rgba(255,255,255,.9),inset 0 -2px 4px rgba(0,0,0,.18),0 8px 14px rgba(0,0,0,.45),0 0 18px rgba(222,248,108,.45)}
+/* recognised: a lime glow, then sparks */
+.kc.is-hit .kc__acrylic{animation:kcHit .7s ease-out}
+@keyframes kcHit{0%{box-shadow:inset 0 0 0 2px #F4FFC2,0 0 0 0 rgba(196,235,0,.9),0 0 30px rgba(222,248,108,.9)}
+  100%{box-shadow:inset 0 0 0 1px rgba(255,255,255,.7),0 0 0 14px rgba(196,235,0,0),0 8px 14px rgba(0,0,0,.45)}}
+.kc__burst{position:absolute;width:0;height:0;pointer-events:none}
+.kc__burst i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;background:#E6FF7A;
+  clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);
+  animation:kcSpark .85s cubic-bezier(.2,.7,.3,1) forwards;transform:rotate(var(--a)) translateY(0) scale(.4)}
+@keyframes kcSpark{60%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(-46px * var(--d))) scale(1)}}
+/* the lug: a small tab of shell that sticks out of the corner, so the charm hangs clear of the console */
+.con__lug{position:absolute;right:-2.6%;top:76%;width:3.6%;aspect-ratio:1.25;z-index:-1;border-radius:0 40% 40% 0;
+  background:linear-gradient(180deg,var(--shellHi),var(--shellLo));
+  box-shadow:inset -1px 1px 0 rgba(255,255,255,.14),0 3px 6px rgba(0,0,0,.4)}
+.con__lug .con__eyelet{right:auto;left:58%;top:50%;width:38%;transform:translate(-50%,-50%)}
