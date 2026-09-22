@@ -1981,3 +1981,7 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .room--square .deco__id{bottom:8%}
 .room--square .deco__word{width:9em}
 .room--square .deco__stk--cat{height:80%;bottom:2%}
+/* one small epoxy sticker, picked at random each load; a tap nudges it down and back */
+.room--square .deco__stk--cat{--r:-8deg;height:62%;right:4%;bottom:6%;transform:rotate(var(--r));pointer-events:auto;cursor:pointer}
+.deco__stk.is-tap{animation:stkTap .32s cubic-bezier(.3,1.5,.5,1)}
+@keyframes stkTap{35%{transform:rotate(var(--r)) translateY(6%) scale(.97)}100%{transform:rotate(var(--r))}}

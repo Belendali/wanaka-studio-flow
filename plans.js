@@ -266,7 +266,7 @@ function compE(p) {
             <!-- square console only: the shell below the 16:9 screen, dressed up -->
             <div class="lid__deco" aria-hidden="true">
               <span class="deco__id"><i class="deco__word"></i><span class="deco__stripes"><i></i><i></i><i></i></span></span>
-              <img class="deco__stk deco__stk--cat" src="assets/stk-cat.png" alt="">
+              <img class="deco__stk deco__stk--cat" id="decoStk" src="assets/stk-epoxy-${1 + Math.floor(Math.random() * 6)}.png" alt="">
             </div>
           </div>
           <div class="con__back">
@@ -777,6 +777,9 @@ function wireE(p) {
   wireLibrary(p, ts, con);
   wireForm(p, ts, (src) => { $('congame').src = src; });
   wireKeychain(room);
+  // the sticker: a tap presses it down a touch and it springs straight back
+  const stk = $('decoStk');
+  if (stk) stk.onclick = () => { stk.classList.remove('is-tap'); void stk.offsetWidth; stk.classList.add('is-tap'); };
   // regenerate the cover: the screen shimmers and comes back as a new take
   const regen = $('regen'), game = $('congame');
   let take = 0;
