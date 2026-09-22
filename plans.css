@@ -1976,3 +1976,8 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .room--square .deco__id{top:auto;bottom:10%;left:3%}
 .room--square .deco__stk--cat{right:3%;top:auto;bottom:4%;height:62%;transform:rotate(-8deg)}
 .room--square .lid__ver{color:rgba(255,255,255,.62);font-size:clamp(12px,.95vw,15px)}
+/* the window goes 4:3 — the 16:9 cover is trimmed a little at the sides — so less empty shell below */
+.room--square .con__glass--game{aspect-ratio:4/3}
+.room--square .deco__id{bottom:8%}
+.room--square .deco__word{width:9em}
+.room--square .deco__stk--cat{height:80%;bottom:2%}
