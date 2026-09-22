@@ -1985,3 +1985,6 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .room--square .deco__stk--cat{--r:-8deg;height:62%;right:4%;bottom:6%;transform:rotate(var(--r));pointer-events:auto;cursor:pointer}
 .deco__stk.is-tap{animation:stkTap .32s cubic-bezier(.3,1.5,.5,1)}
 @keyframes stkTap{35%{transform:rotate(var(--r)) translateY(6%) scale(.97)}100%{transform:rotate(var(--r))}}
+/* the sticker's white edge and shadow are baked into the image — no filters, so it stays crisp on the 3D lid */
+.room--square .deco__stk--cat{filter:none;height:78%;right:3.5%;bottom:2%;image-rendering:auto;backface-visibility:hidden}
+.room--square .deco__stk--cat{height:100%;right:2.5%;bottom:-4%}

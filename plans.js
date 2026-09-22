@@ -266,7 +266,7 @@ function compE(p) {
             <!-- square console only: the shell below the 16:9 screen, dressed up -->
             <div class="lid__deco" aria-hidden="true">
               <span class="deco__id"><i class="deco__word"></i><span class="deco__stripes"><i></i><i></i><i></i></span></span>
-              <img class="deco__stk deco__stk--cat" id="decoStk" src="assets/stk-epoxy-${1 + Math.floor(Math.random() * 6)}.png" alt="">
+              <img class="deco__stk deco__stk--cat" id="decoStk" src="assets/stk-epoxy-${1 + Math.floor(Math.random() * 6)}.png?v=3" alt="">
             </div>
           </div>
           <div class="con__back">
