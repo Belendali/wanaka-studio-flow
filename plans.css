@@ -1729,3 +1729,22 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .kc__charm:hover .kc__img{filter:drop-shadow(0 8px 10px rgba(0,0,0,.45)) drop-shadow(0 0 10px rgba(222,248,108,.5))}
 .kc.is-hit .kc__img{animation:kcHit2 .7s ease-out}
 @keyframes kcHit2{0%{filter:drop-shadow(0 0 16px rgba(230,255,122,1)) brightness(1.25)}100%{filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}}
+
+/* ═══ E, the cat tag on the keychain; stickers on the lid ═══ */
+/* the tag hangs from its own hole (50%, 10% of the art) */
+.kc__charm{width:clamp(70px,5.8vw,98px);margin-left:calc(clamp(70px,5.8vw,98px) * -.502);margin-top:calc(clamp(70px,5.8vw,98px) * -.105);
+  transform-origin:50.2% 10.3%}
+.kc__charm::before{left:50.2%;top:7.2%;width:11px;height:11px;margin-left:-5.5px;margin-top:-5.5px;z-index:1}
+.kc__charm:hover .kc__img{filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}
+.kc.is-hit .kc__img{animation:kcHit3 .45s ease-out}
+@keyframes kcHit3{0%{filter:drop-shadow(0 8px 10px rgba(0,0,0,.45)) brightness(1.18)}100%{filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}}
+.kc__burst i{background:#FFF6D8}
+
+/* die-cut stickers: a thin white margin and a soft lift off the shell */
+.lid__stk{position:absolute;pointer-events:none;
+  filter:drop-shadow(1.5px 0 0 #F2F1EC) drop-shadow(-1.5px 0 0 #F2F1EC) drop-shadow(0 1.5px 0 #F2F1EC) drop-shadow(0 -1.5px 0 #F2F1EC)
+    drop-shadow(0 3px 3px rgba(0,0,0,.4))}
+.lid__stk--cat{left:6%;bottom:7%;width:21%;transform:rotate(-9deg)}
+.lid__stk--joy{right:7%;top:7%;width:18%;transform:rotate(11deg)}
+.lid__stk--hh{right:6%;bottom:11%;width:25%;transform:rotate(-5deg)}
+.room--studio .lid__screw{display:none}

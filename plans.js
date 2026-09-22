@@ -133,7 +133,7 @@ function compE(p) {
     <div class="kc" id="kc" aria-hidden="true">
       <svg class="kc__chain" id="kcChain"></svg>
       <button class="kc__charm" id="kcCharm" tabindex="-1">
-        <img class="kc__img" src="assets/charm-joystick.png" alt="">
+        <img class="kc__img" src="assets/charm-cat.png" alt="">
       </button>
     </div>
     <div class="con" id="con">
@@ -260,7 +260,11 @@ function compE(p) {
             <!-- the Wanaka badge stands proud of the lid; the name is cut into it -->
             <span class="lid__badge"><img src="assets/wanaka-icon.png" alt=""></span>
             <span class="lid__word" aria-label="Wanaka"></span>
-            <span class="lid__screw lid__screw--a"></span><span class="lid__screw lid__screw--b"></span>
+            <!-- stickers on the lid -->
+          <img class="lid__stk lid__stk--cat" src="assets/stk-cat.png" alt="">
+          <img class="lid__stk lid__stk--joy" src="assets/stk-joy.png" alt="">
+          <img class="lid__stk lid__stk--hh" src="assets/stk-handheld.png" alt="">
+          <span class="lid__screw lid__screw--a"></span><span class="lid__screw lid__screw--b"></span>
           </div>
         </section>
       </div>
@@ -870,9 +874,9 @@ function wireKeychain(room) {
   const toss = () => {
     const E = P[N - 1];
     const side = Math.random() < .5 ? -1 : 1;
-    E.py = E.y + seg * .42; E.px = E.x - side * seg * .14;     // an upward kick
-    P[N - 2].py = P[N - 2].y + seg * .2;
-    spinV = 720 * side;
+    E.py = E.y + seg * .24; E.px = E.x - side * seg * .08;     // an upward kick
+    P[N - 2].py = P[N - 2].y + seg * .1;
+    spinV = 0;
     kc.classList.remove('is-hit'); void kc.offsetWidth; kc.classList.add('is-hit');
     const burst = document.createElement('span');
     burst.className = 'kc__burst';
