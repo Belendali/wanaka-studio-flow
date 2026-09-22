@@ -1846,3 +1846,35 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .lid__paws{background-size:30% auto;background-position:9% 9%}
 /* the kitten paw: bottom-right of the plate, clear of the name and the screw */
 .lid__paws{background-image:url(assets/paw-one.svg?v=3);background-size:20% auto;background-position:87% 91%}
+
+/* ═══ E, approving: shut, spin, taken away, back to the Studio ═══ */
+.room.is-leaving .ts,.room.is-leaving .regen{pointer-events:none}
+.room.is-leaving .con__lid{animation:lidClose .8s cubic-bezier(.5,0,.3,1) .1s both}
+@keyframes lidClose{from{transform:rotateY(0deg)}to{transform:translateZ(22px) rotateY(180deg)}}
+.room.is-leaving .con__body{transition:none;animation:bodyClose .6s cubic-bezier(.4,0,.2,1) .55s both}
+@keyframes bodyClose{from{transform:translate(0,0) rotateX(10deg)}to{transform:translate(-24.5%,0) rotateX(10deg)}}
+.room.is-leaving .con{transform-origin:50% 50%;animation:conLeave 3.8s linear both}
+@keyframes conLeave{
+  0%,31%{transform:translate(-50%,-50%) rotate(0deg) scale(1)}
+  35%{transform:translate(-50%,-53%) rotate(-6deg) scale(1.03);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  66%{transform:translate(-50%,-50%) rotate(720deg) scale(.8);animation-timing-function:ease-out}
+  70%{transform:translate(-50%,-50%) rotate(726deg) scale(.8)}
+  74%,82%{transform:translate(-50%,-50%) rotate(720deg) scale(.8);animation-timing-function:cubic-bezier(.5,0,.8,.4)}
+  100%{transform:translate(-50%,calc(-50% + 110vh)) rotate(720deg) scale(.8)}
+}
+/* the paw stays out of the spin, then reaches up, takes hold, and pulls it down */
+.room.is-leaving .con__paw{animation:pawTake 3.8s linear both}
+@keyframes pawTake{
+  0%,68%{opacity:0;transform:translate3d(-50%,70vh,140px) rotate(0deg) scale(1)}
+  69%{opacity:1;transform:translate3d(-50%,70vh,140px) rotate(0deg) scale(1);animation-timing-function:cubic-bezier(.2,.7,.3,1)}
+  77%{transform:translate3d(-50%,-2%,140px) rotate(0deg) scale(1)}
+  80%{transform:translate3d(-50%,2%,140px) rotate(-4deg) scale(1.04,.95)}
+  83%,100%{opacity:1;transform:translate3d(-50%,0,140px) rotate(0deg) scale(1)}
+}
+/* the scrim and the light go, and the Studio is back */
+.room.is-leaving .room__scrim{animation:scrimOut .7s ease 3s both}
+@keyframes scrimOut{to{opacity:0;backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0)}}
+.room.is-leaving .con__light{animation:lightOut .9s ease 2.7s both}
+@keyframes lightOut{from{opacity:.38;transform:translate(-50%,-50%) scale(1.05)}to{opacity:0;transform:translate(-50%,-50%) scale(.6)}}
+.room.is-leaving .kc{transition:opacity .35s ease 3.05s;opacity:0}
+.room.is-gone .con,.room.is-gone .kc{visibility:hidden}

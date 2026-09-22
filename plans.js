@@ -653,6 +653,8 @@ function wireG(p) {
 function wireE(p) {
   const ts = $('ts');
   const con = $('con');
+  const room = document.querySelector('.room');
+  const body = document.querySelector('.con__body');
   const go = $('tsgo');
   const page1 = ts.querySelector('[data-page="1"]');
   needWatch(page1);
@@ -692,20 +694,15 @@ function wireE(p) {
     if (!con.__next()) con.__approve();
   };
   con.__approve = () => {
-    if (con.classList.contains('is-approved') || con.classList.contains('is-loading')) return;
+    if (con.classList.contains('is-approved') || room.classList.contains('is-leaving')) return;
     press(key('start'));
-    // approving loads the build on the top screen, then the game comes up
+    // approving: the lid shuts, the console spins, the paw takes it away, and the Studio comes back
     go.disabled = true;
-    go.innerHTML = 'Loading…';
-    con.querySelector('[data-cap]').textContent = 'Loading v1';
+    go.innerHTML = 'Approved ✓';
     con.classList.remove('is-lib');
-    con.classList.add('is-loading');
-    setTimeout(() => {
-      con.classList.remove('is-loading');
-      con.classList.add('is-approved');
-      go.innerHTML = 'Approved ✓';
-      hop();
-    }, 2500);
+    body.style.removeProperty('--rx'); body.style.removeProperty('--ry');
+    room.classList.add('is-leaving');
+    setTimeout(() => room.classList.add('is-gone'), 3900);
   };
   cat.onclick = hop;
 
@@ -756,10 +753,8 @@ function wireE(p) {
   document.addEventListener('keydown', window.__eKeys);
 
   // the body turns a little toward the pointer — but holds still while you use the screen
-  const room = document.querySelector('.room');
-  const body = document.querySelector('.con__body');
   room.onmousemove = (e) => {
-    if (e.target.closest('.ts')) return;
+    if (e.target.closest('.ts') || room.classList.contains('is-leaving')) return;
     const r = room.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - .5;
     const y = (e.clientY - r.top) / r.height - .5;
