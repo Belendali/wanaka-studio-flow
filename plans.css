@@ -1965,3 +1965,14 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .room--square .elib--parts .eslots{gap:.45em}
 .room--square .elib--parts .eslot{padding:.4em .8em .4em 1em}
 .room--square .elib--parts .eslot__picks img,.room--square .elib--parts .eslot__picks > i,.room--square .elib--parts .eslot__picks b{width:2.5em;height:2.5em;min-width:2.5em}
+
+/* square console, settled: a version line top-left, the 16:9 screen a little lower, one small sticker */
+.lid__ver{display:none}
+.room--square .con__face{gap:3.2%}
+.room--square .lid__ver{flex:none;display:flex;align-items:center;gap:.6em;padding:0 .2em;margin-top:-1%;
+  font-family:var(--mono);font-size:clamp(11px,.9vw,14px);letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.4);text-shadow:0 1px 0 rgba(0,0,0,.55)}
+.room--square .lid__ver i{width:.5em;height:.5em;border-radius:50%;background:var(--brand);box-shadow:0 0 6px rgba(196,235,0,.6)}
+.room--square .deco__id{top:auto;bottom:10%;left:3%}
+.room--square .deco__stk--cat{right:3%;top:auto;bottom:4%;height:62%;transform:rotate(-8deg)}
+.room--square .lid__ver{color:rgba(255,255,255,.62);font-size:clamp(12px,.95vw,15px)}

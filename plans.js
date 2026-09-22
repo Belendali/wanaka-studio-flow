@@ -237,6 +237,7 @@ function compE(p) {
         <!-- the lid: swings open around the hinge, the game on its face -->
         <section class="con__lid">
           <div class="con__face">
+            <span class="lid__ver" aria-hidden="true"><i></i>Plan · Version 1.0</span>
             <div class="con__glass con__glass--game">
               <img id="congame" src="${p.cover}" alt="">
               <button class="regen" id="regen">Regenerate cover</button>
@@ -264,10 +265,8 @@ function compE(p) {
             </div>
             <!-- square console only: the shell below the 16:9 screen, dressed up -->
             <div class="lid__deco" aria-hidden="true">
-              <span class="deco__id"><i class="deco__word"></i><em>Plan mode · W1</em><span class="deco__stripes"><i></i><i></i><i></i></span></span>
+              <span class="deco__id"><i class="deco__word"></i><span class="deco__stripes"><i></i><i></i><i></i></span></span>
               <img class="deco__stk deco__stk--cat" src="assets/stk-cat.png" alt="">
-              <img class="deco__stk deco__stk--joy" src="assets/stk-joy.png" alt="">
-              <img class="deco__stk deco__stk--hh" src="assets/stk-handheld.png" alt="">
             </div>
           </div>
           <div class="con__back">
@@ -1605,7 +1604,7 @@ function wireH(p) {
 const COMPS = { h: compH, e: compE, g: compG };
 let which = new URLSearchParams(location.search).get('c') || 'h', plan = 'toy';
 // E comes in two shapes while we decide: a 16:9 console, or the square one with a 16:9 window
-let shape = new URLSearchParams(location.search).get('shape') === 'square' ? 'square' : 'wide';
+let shape = new URLSearchParams(location.search).get('shape') === 'wide' ? 'wide' : 'square';
 
 function paint() {
   const p = PLANS[plan];
@@ -1619,9 +1618,8 @@ function paint() {
   document.querySelectorAll('.sw__p').forEach((b) =>
     b.classList.toggle('is-on', b.dataset.p === plan));
   document.querySelectorAll('.sw__s').forEach((b) => b.classList.toggle('is-on', b.dataset.s === shape));
-  document.querySelector('.sw__g--s').hidden = which !== 'e';
   const q = new URLSearchParams(location.search);
-  q.set('c', which); if (which === 'e') q.set('shape', shape); else q.delete('shape');
+  q.set('c', which); if (which === 'e' && shape === 'wide') q.set('shape', shape); else q.delete('shape');
   history.replaceState(null, '', '?' + q.toString());
 
 }
