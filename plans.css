@@ -1878,3 +1878,28 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 @keyframes lightOut{from{opacity:.38;transform:translate(-50%,-50%) scale(1.05)}to{opacity:0;transform:translate(-50%,-50%) scale(.6)}}
 .room.is-leaving .kc{transition:opacity .35s ease 3.05s;opacity:0}
 .room.is-gone .con,.room.is-gone .kc{visibility:hidden}
+
+/* the base's underside: faces backwards, only seen when the shut console turns round */
+.con__under{position:absolute;top:0;bottom:0;right:0;width:49.2%;border-radius:26px;
+  transform:translateZ(-2px) rotateY(180deg);backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9%;
+  background:radial-gradient(120% 90% at 80% 0%,rgba(255,255,255,.08),transparent 55%),
+    linear-gradient(200deg,var(--shellHi),var(--shell) 45%,var(--shellLo));
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.25),inset 0 -2px 0 rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.06)}
+.under__vents{display:flex;gap:3.2%;width:46%;justify-content:center}
+.under__vents i{flex:1;height:0;padding-bottom:26%;border-radius:99px;background:#1A1B1E;
+  box-shadow:inset 0 2px 3px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.08)}
+.under__label{display:flex;flex-direction:column;align-items:center;gap:.4em;font-family:var(--mono);color:rgba(255,255,255,.28);
+  text-shadow:0 1px 0 rgba(0,0,0,.5);font-size:clamp(9px,.8vw,13px);letter-spacing:.12em;text-transform:uppercase}
+.under__label b{font-weight:400;font-size:1.6em;letter-spacing:.2em;color:rgba(255,255,255,.34)}
+.under__label em{font-style:normal}
+
+/* the spin turns round the upright axis now, so you see the back go by */
+@keyframes conLeave{
+  0%,31%{transform:translate(-50%,-50%) rotateY(0deg) scale(1)}
+  35%{transform:translate(-50%,-53%) rotateY(-14deg) scale(1.03);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  66%{transform:translate(-50%,-50%) rotateY(720deg) scale(.8);animation-timing-function:ease-out}
+  70%{transform:translate(-50%,-50%) rotateY(728deg) scale(.8)}
+  74%,82%{transform:translate(-50%,-50%) rotateY(720deg) scale(.8);animation-timing-function:cubic-bezier(.5,0,.8,.4)}
+  100%{transform:translate(-50%,calc(-50% + 110vh)) rotateY(720deg) scale(.8)}
+}

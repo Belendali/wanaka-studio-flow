@@ -140,6 +140,11 @@ function compE(p) {
       <img class="con__paw" src="assets/paw.png" alt="" aria-hidden="true">
       <div class="con__body">
         <!-- the half that stays on the desk: the plan, and the buttons -->
+        <!-- the underside of the base, seen when the shut console turns round -->
+        <div class="con__under" aria-hidden="true">
+          <span class="under__vents">${'<i></i>'.repeat(7)}</span>
+          <span class="under__label"><b>wanaka</b><em>W1 · Handheld plan console</em><em>Made for players · Build 0922</em></span>
+        </div>
         <section class="con__half con__base">
           <!-- the strap hole the keychain hangs from -->
           <span class="con__lug"><span class="con__eyelet" id="eyelet"></span></span>
