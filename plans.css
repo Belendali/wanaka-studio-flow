@@ -1772,3 +1772,29 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .con__dpad.is-right .dpad__cap{transform:perspective(160px) rotateY(14deg) translateY(1px)}
 .con__pad{z-index:1;border-radius:20%}
 .con__pad:hover{background:rgba(255,255,255,.14)}
+
+/* ═══ E, raised ABXY with the letters cut in; a finer battery ═══ */
+.room--studio .con__abxy > *,.room--studio .con__abxy > *:nth-child(3){
+  width:34%;font-family:var(--sans);font-size:12px;font-weight:600;
+  background:radial-gradient(circle at 50% 30%,#F0FF9C 0%,#D2F22E 40%,#C4EB00 62%,#ADD000 100%);
+  color:rgba(74,94,0,.72);text-shadow:0 1px 0 rgba(255,255,255,.55),0 -1px 0 rgba(60,78,0,.25);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -1.5px 2px rgba(92,112,0,.35),
+    0 1.6px 0 #6E8600,0 3px 4px rgba(0,0,0,.45),0 0 0 3px #17181B,0 0 0 4px rgba(255,255,255,.05)}
+.room--studio .con__abxy > *:nth-child(1){left:33%;top:1%}
+.room--studio .con__abxy > *:nth-child(2){left:1%;top:33%}
+.room--studio .con__abxy > *:nth-child(3){right:1%;top:33%}
+.room--studio .con__abxy > *:nth-child(4){left:33%;bottom:1%}
+.room--studio .con__abxy > *.is-down,.room--studio .con__abxy > *:active{transform:translateY(1.4px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -1px 2px rgba(92,112,0,.3),
+    0 .3px 0 #6E8600,0 1px 2px rgba(0,0,0,.45),0 0 0 3px #17181B,0 0 0 4px rgba(255,255,255,.05)}
+
+/* battery: a capsule with a terminal, four cells, and the charge beside it */
+.room--studio .ts__bat{display:inline-flex;align-items:center;gap:.45em;width:auto;height:auto;border:0;border-radius:0}
+.room--studio .ts__bat::after{display:none}
+.ts__bat em{font-style:normal;font-family:var(--mono);font-size:max(12px,.72em);letter-spacing:.04em;color:var(--ink2)}
+.ts__cell{position:relative;display:flex;gap:1.5px;padding:2px;width:1.75em;height:.92em;border-radius:.3em;
+  box-shadow:inset 0 0 0 1.2px rgba(255,255,255,.5)}
+.ts__cell::after{content:'';position:absolute;right:-3.5px;top:50%;width:2px;height:40%;transform:translateY(-50%);
+  border-radius:0 1px 1px 0;background:rgba(255,255,255,.5)}
+.ts__cell i{flex:1;border-radius:1.5px;background:#fff}
+.ts__cell i:last-child{background:rgba(255,255,255,.16)}

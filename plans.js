@@ -148,7 +148,7 @@ function compE(p) {
               <header class="ts__top">
                 <button class="ts__tab is-on" data-step="1"><b>1</b>Plan</button>
                 <button class="ts__tab" data-step="2"><b>2</b>Assets</button>
-                <span class="ts__bat"></span>
+                <span class="ts__bat" title="Battery 82%"><em>82%</em><span class="ts__cell"><i></i><i></i><i></i><i></i></span></span>
               </header>
               <div class="ts__pages">
                 <section class="ts__page is-on" data-page="1">
