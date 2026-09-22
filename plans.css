@@ -1903,3 +1903,7 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
   74%,82%{transform:translate(-50%,-50%) rotateY(720deg) scale(.8);animation-timing-function:cubic-bezier(.5,0,.8,.4)}
   100%{transform:translate(-50%,calc(-50% + 110vh)) rotateY(720deg) scale(.8)}
 }
+/* the paw is a span now: the image, and the arm carried on below it to the bottom of the screen */
+.con__paw img{display:block;width:100%}
+.paw__arm{position:absolute;left:0;right:0;top:calc(100% - 2px);height:160vh;
+  background:url(assets/paw-arm.png) center top / 100% auto repeat-y}

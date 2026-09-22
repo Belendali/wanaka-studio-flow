@@ -137,7 +137,7 @@ function compE(p) {
       </button>
     </div>
     <div class="con" id="con">
-      <img class="con__paw" src="assets/paw.png" alt="" aria-hidden="true">
+      <span class="con__paw" aria-hidden="true"><img src="assets/paw.png" alt=""><i class="paw__arm"></i></span>
       <div class="con__body">
         <!-- the half that stays on the desk: the plan, and the buttons -->
         <!-- the underside of the base, seen when the shut console turns round -->
