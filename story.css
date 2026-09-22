@@ -77,3 +77,6 @@
 .sc__cursor{transition:transform .55s cubic-bezier(.3,.8,.3,1),opacity .3s}
 .sc__epi{top:67.5%;bottom:13%;animation:msgIn .5s cubic-bezier(.3,.9,.3,1) both}
 .sc__bar{display:block}
+/* no header on this page: the scene is the whole window */
+.story .stage{height:100vh}
+.sc{top:0}

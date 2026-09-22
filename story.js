@@ -9,10 +9,7 @@ const CHAPTERS = [['1', 'You ask'], ['2', 'The team gets to work'], ['3', 'The p
 let timers = [];
 const at = (ms, fn) => timers.push(setTimeout(fn, ms));
 const clear = () => { timers.forEach(clearTimeout); timers = []; };
-const chapter = (n) => {
-  const [i, name] = CHAPTERS[n];
-  S('chapter').innerHTML = `<b>${i}</b><em>${name}</em>`;
-};
+const chapter = () => {};
 
 function scene() {
   document.querySelector('.sc')?.remove();
@@ -117,7 +114,8 @@ function open() {
   if (sc) sc.classList.add('is-out');
   which = 'e'; shape = 'square';
   paint();
-  at(3600, () => chapter(3));
+  // Replay inside the console starts the whole run again, not just the arrival
+  const r = S('replay'); if (r) r.onclick = run;
   at(600, () => sc?.remove());
 }
 
@@ -139,5 +137,7 @@ document.addEventListener('e-approved', () => {
     </div>`);
 });
 
-S('restart').onclick = run;
+// the cover can be picked from the link: ?plan=horror / ?plan=pixel
+const wanted = new URLSearchParams(location.search).get('plan');
+if (wanted && ['toy', 'horror', 'pixel'].includes(wanted)) plan = wanted;
 run();
