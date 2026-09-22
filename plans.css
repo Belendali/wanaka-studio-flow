@@ -1988,3 +1988,17 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 /* the sticker's white edge and shadow are baked into the image — no filters, so it stays crisp on the 3D lid */
 .room--square .deco__stk--cat{filter:none;height:78%;right:3.5%;bottom:2%;image-rendering:auto;backface-visibility:hidden}
 .room--square .deco__stk--cat{height:100%;right:2.5%;bottom:-4%}
+/* the shadow on the way out: it narrows as the lid shuts, softens and thins while the console
+   lifts and spins, gets a tight contact patch when the paw takes hold, and is left behind as it's pulled away */
+.room.is-leaving .con__shadow{animation:shadowLeave 3.8s linear both}
+@keyframes shadowLeave{
+  0%{opacity:1;transform:scale(1,1);filter:blur(18px)}
+  24%,31%{opacity:1;transform:scale(.52,1);filter:blur(16px)}
+  36%{opacity:.55;transform:translateY(14%) scale(.5,.8);filter:blur(24px)}
+  50%{opacity:.4;transform:translateY(14%) scale(.3,.75);filter:blur(26px)}
+  58%{opacity:.5;transform:translateY(14%) scale(.46,.8);filter:blur(22px)}
+  66%{opacity:.7;transform:translateY(6%) scale(.44,.9);filter:blur(16px)}
+  74%,80%{opacity:.85;transform:scale(.42,.85);filter:blur(12px)}
+  86%{opacity:.35;transform:translateY(-30%) scale(.36,.6);filter:blur(20px)}
+  92%,100%{opacity:0;transform:translateY(-60%) scale(.3,.5);filter:blur(24px)}
+}
