@@ -205,6 +205,7 @@ function compE(p) {
           </div>
           <div class="con__ctrl">
             <span class="con__dpad">
+              <i class="dpad__well"></i><i class="dpad__cap"><i class="dpad__v"></i><i class="dpad__h"></i><i class="dpad__dot"></i></i>
               <button class="con__pad con__pad--up" data-pad="up" aria-label="Scroll up"></button>
               <button class="con__pad con__pad--left" data-pad="left" aria-label="Step 1"></button>
               <button class="con__pad con__pad--right" data-pad="right" aria-label="Step 2"></button>
@@ -260,11 +261,7 @@ function compE(p) {
             <!-- the Wanaka badge stands proud of the lid; the name is cut into it -->
             <span class="lid__badge"><img src="assets/wanaka-icon.png" alt=""></span>
             <span class="lid__word" aria-label="Wanaka"></span>
-            <!-- stickers on the lid -->
-          <img class="lid__stk lid__stk--cat" src="assets/stk-cat.png" alt="">
-          <img class="lid__stk lid__stk--joy" src="assets/stk-joy.png" alt="">
-          <img class="lid__stk lid__stk--hh" src="assets/stk-handheld.png" alt="">
-          <span class="lid__screw lid__screw--a"></span><span class="lid__screw lid__screw--b"></span>
+            <span class="lid__screw lid__screw--a"></span><span class="lid__screw lid__screw--b"></span>
           </div>
         </section>
       </div>

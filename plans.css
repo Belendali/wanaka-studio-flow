@@ -1740,11 +1740,35 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 @keyframes kcHit3{0%{filter:drop-shadow(0 8px 10px rgba(0,0,0,.45)) brightness(1.18)}100%{filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}}
 .kc__burst i{background:#FFF6D8}
 
-/* die-cut stickers: a thin white margin and a soft lift off the shell */
-.lid__stk{position:absolute;pointer-events:none;
-  filter:drop-shadow(1.5px 0 0 #F2F1EC) drop-shadow(-1.5px 0 0 #F2F1EC) drop-shadow(0 1.5px 0 #F2F1EC) drop-shadow(0 -1.5px 0 #F2F1EC)
-    drop-shadow(0 3px 3px rgba(0,0,0,.4))}
-.lid__stk--cat{left:6%;bottom:7%;width:21%;transform:rotate(-9deg)}
-.lid__stk--joy{right:7%;top:7%;width:18%;transform:rotate(11deg)}
-.lid__stk--hh{right:6%;bottom:11%;width:25%;transform:rotate(-5deg)}
-.room--studio .lid__screw{display:none}
+
+/* ═══ E, a raised d-pad: a cross cap standing in a recessed well ═══ */
+.room--studio .con__dpad{background:none;clip-path:none;filter:none;width:82%}
+.room--studio .con__dpad::after{display:none}
+.dpad__well{position:absolute;inset:-5%;
+  clip-path:polygon(32% 0,68% 0,68% 32%,100% 32%,100% 68%,68% 68%,68% 100%,32% 100%,32% 68%,0 68%,0 32%,32% 32%);
+  background:linear-gradient(180deg,#141518,#26272B)}
+.dpad__cap{position:absolute;inset:0;transition:transform .08s;
+  filter:drop-shadow(0 3px 0 #6E8600) drop-shadow(0 2px 0 #5C7000) drop-shadow(0 5px 5px rgba(0,0,0,.55))}
+.dpad__v,.dpad__h{position:absolute;border-radius:14%/10%;
+  background:linear-gradient(180deg,#F0FF9C 0%,#D6F53A 18%,#C4EB00 55%,#A9CC00 100%)}
+.dpad__v{left:34%;top:0;width:32%;height:100%;border-radius:18% / 9%}
+.dpad__h{top:34%;left:0;height:32%;width:100%;border-radius:9% / 18%;
+  background:linear-gradient(180deg,#E8FC80 0%,#CDEF1C 30%,#C4EB00 60%,#A9CC00 100%)}
+/* the four arrows, pressed into each arm */
+.dpad__v::before,.dpad__v::after,.dpad__h::before,.dpad__h::after{content:'';position:absolute;width:0;height:0;border:solid transparent}
+.dpad__v::before{left:50%;top:9%;transform:translateX(-50%);border-width:0 .28em .36em;border-bottom-color:rgba(60,78,0,.55)}
+.dpad__v::after{left:50%;bottom:9%;transform:translateX(-50%);border-width:.36em .28em 0;border-top-color:rgba(60,78,0,.55)}
+.dpad__h::before{top:50%;left:9%;transform:translateY(-50%);border-width:.28em .36em .28em 0;border-right-color:rgba(60,78,0,.55)}
+.dpad__h::after{top:50%;right:9%;transform:translateY(-50%);border-width:.28em 0 .28em .36em;border-left-color:rgba(60,78,0,.55)}
+/* a shallow dish in the middle */
+.dpad__dot{position:absolute;left:50%;top:50%;width:22%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle at 50% 35%,rgba(60,78,0,.35),rgba(255,255,255,.18) 70%);box-shadow:inset 0 1px 1px rgba(60,78,0,.4)}
+.room--studio .con__dpad{font-size:clamp(9px,.75vw,13px)}
+/* pressing sinks the cap toward that arm */
+.room--studio .con__dpad.is-up,.room--studio .con__dpad.is-down,.room--studio .con__dpad.is-left,.room--studio .con__dpad.is-right{transform:none}
+.con__dpad.is-up .dpad__cap{transform:perspective(160px) rotateX(14deg) translateY(1px)}
+.con__dpad.is-down .dpad__cap{transform:perspective(160px) rotateX(-14deg) translateY(1px)}
+.con__dpad.is-left .dpad__cap{transform:perspective(160px) rotateY(-14deg) translateY(1px)}
+.con__dpad.is-right .dpad__cap{transform:perspective(160px) rotateY(14deg) translateY(1px)}
+.con__pad{z-index:1;border-radius:20%}
+.con__pad:hover{background:rgba(255,255,255,.14)}
