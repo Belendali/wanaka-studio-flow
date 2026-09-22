@@ -122,7 +122,7 @@ function compE(p) {
   const seg = (k, items) => `<span class="eseg" data-k="${k}">${items}</span>`;
   const dots = Array.from({ length: 12 }, () => '<i></i>').join('');
   return `
-  <div class="room room--studio">
+  <div class="room room--studio room--${shape}">
     <!-- no room of its own: the console arrives over the Studio, behind a scrim -->
     <img class="room__studio" src="assets/studio-bg.jpg" alt="">
     <span class="room__scrim"></span>
@@ -261,6 +261,13 @@ function compE(p) {
               </div>
               <span class="con__scan"></span>
               <span class="con__sweep"></span>
+            </div>
+            <!-- square console only: the shell below the 16:9 screen, dressed up -->
+            <div class="lid__deco" aria-hidden="true">
+              <span class="deco__id"><i class="deco__word"></i><em>Plan mode · W1</em><span class="deco__stripes"><i></i><i></i><i></i></span></span>
+              <img class="deco__stk deco__stk--cat" src="assets/stk-cat.png" alt="">
+              <img class="deco__stk deco__stk--joy" src="assets/stk-joy.png" alt="">
+              <img class="deco__stk deco__stk--hh" src="assets/stk-handheld.png" alt="">
             </div>
           </div>
           <div class="con__back">
@@ -1597,6 +1604,8 @@ function wireH(p) {
 // ── Wiring ────────────────────────────────────────────────────────
 const COMPS = { h: compH, e: compE, g: compG };
 let which = new URLSearchParams(location.search).get('c') || 'h', plan = 'toy';
+// E comes in two shapes while we decide: a 16:9 console, or the square one with a 16:9 window
+let shape = new URLSearchParams(location.search).get('shape') === 'square' ? 'square' : 'wide';
 
 function paint() {
   const p = PLANS[plan];
@@ -1609,6 +1618,11 @@ function paint() {
     b.classList.toggle('is-on', b.dataset.c === which));
   document.querySelectorAll('.sw__p').forEach((b) =>
     b.classList.toggle('is-on', b.dataset.p === plan));
+  document.querySelectorAll('.sw__s').forEach((b) => b.classList.toggle('is-on', b.dataset.s === shape));
+  document.querySelector('.sw__g--s').hidden = which !== 'e';
+  const q = new URLSearchParams(location.search);
+  q.set('c', which); if (which === 'e') q.set('shape', shape); else q.delete('shape');
+  history.replaceState(null, '', '?' + q.toString());
 
 }
 
@@ -1616,4 +1630,6 @@ document.querySelectorAll('.sw__b').forEach((b) =>
   b.onclick = () => { which = b.dataset.c; paint(); });
 document.querySelectorAll('.sw__p').forEach((b) =>
   b.onclick = () => { plan = b.dataset.p; paint(); });
+document.querySelectorAll('.sw__s').forEach((b) =>
+  b.onclick = () => { shape = b.dataset.s; paint(); });
 paint();

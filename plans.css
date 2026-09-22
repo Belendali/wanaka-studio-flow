@@ -1907,3 +1907,61 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .con__paw img{display:block;width:100%}
 .paw__arm{position:absolute;left:0;right:0;top:calc(100% - 2px);height:160vh;
   background:url(assets/paw-arm.png) center top / 100% auto repeat-y}
+
+/* ═══ E, two shapes for a 16:9 cover ═══ */
+.sw__g--s{margin-left:auto}
+.sw__g--s[hidden]{display:none}
+.sw__g--s:not([hidden]) + .sw__g--p{margin-left:14px}
+.lid__deco{display:none}
+.con__glass--game #congame{object-fit:cover}
+
+/* A · the 16:9 console: each half is wide enough that the top screen is exactly 16:9 */
+.room--wide .con{width:min(88%,calc((100vh - 170px) * 3.38))}
+.room--wide .con__body{aspect-ratio:3.38/1}
+.room--wide .con__legend{display:none}
+.room--wide .con__ctrl{padding:6% 0 5%}
+.room--wide .con__abxy{width:80%}
+.room--wide .con__dpad{width:74%}
+.room--wide .lid__badge{width:17%}
+.room--wide .lid__word{width:34%}
+.room--wide .con__back{gap:5%}
+.room--wide .lid__paws{background-size:13% auto;background-position:92% 86%}
+.room--wide .elib--parts{padding:4cqh 4cqh 3cqh;gap:2.4cqh}
+.room--wide .elib--parts .eparts__h em{display:none}
+.room--wide .elib--parts .eslots{gap:.45em}
+.room--wide .elib--parts .eslot{padding:.4em .8em .4em 1em}
+.room--wide .elib--parts .eslot__picks img,.room--wide .elib--parts .eslot__picks > i,.room--wide .elib--parts .eslot__picks b{width:2.5em;height:2.5em;min-width:2.5em}
+.room--wide .elib--ts .elib__grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+.room--wide .ts__page[data-page="1"]{gap:.75em}
+.room--wide .con__lug{top:70%;width:2.4%}
+.room--wide .con__paw{width:7.5%}
+
+/* B · the square console: a 16:9 window up top, and the shell below it dressed up */
+.room--square .con__face{display:flex;flex-direction:column;gap:5%}
+.room--square .con__glass--game{flex:none;aspect-ratio:16/9;width:100%}
+.room--square .lid__deco{position:relative;flex:1;display:block;min-height:0}
+.deco__id{position:absolute;left:3%;top:10%;display:flex;flex-direction:column;gap:.7em;
+  font-family:var(--mono);font-size:clamp(10px,.85vw,13px);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.34);
+  text-shadow:0 1px 0 rgba(0,0,0,.55)}
+.deco__id em{font-style:normal}
+.deco__word{display:block;width:11em;aspect-ratio:6.49;position:relative}
+.deco__word::before,.deco__word::after{content:'';position:absolute;inset:0;
+  -webkit-mask:url(assets/wanaka-letters.png) left center/contain no-repeat;mask:url(assets/wanaka-letters.png) left center/contain no-repeat}
+.deco__word::after{background:rgba(0,0,0,.42)}
+.deco__word::before{background:rgba(255,255,255,.2);transform:translateY(1.5px)}
+.deco__stripes{display:flex;flex-direction:column;gap:5px;margin-top:.5em}
+.deco__stripes i{display:block;height:4px;border-radius:2px;background:linear-gradient(90deg,var(--brandHi),var(--brandLo))}
+.deco__stripes i:nth-child(1){width:7.5em}
+.deco__stripes i:nth-child(2){width:5.5em;opacity:.75}
+.deco__stripes i:nth-child(3){width:3.5em;opacity:.5}
+.deco__stk{position:absolute;pointer-events:none;
+  filter:drop-shadow(1.5px 0 0 #F2F1EC) drop-shadow(-1.5px 0 0 #F2F1EC) drop-shadow(0 1.5px 0 #F2F1EC) drop-shadow(0 -1.5px 0 #F2F1EC)
+    drop-shadow(0 4px 4px rgba(0,0,0,.45))}
+.deco__stk--cat{right:25%;top:4%;height:88%;transform:rotate(-7deg)}
+.deco__stk--joy{right:3%;top:2%;height:62%;transform:rotate(9deg)}
+.deco__stk--hh{right:1%;bottom:0;height:40%;transform:rotate(-4deg)}
+.room--square .elib--parts{padding:4cqh 4.5cqh 3cqh;gap:2.4cqh}
+.room--square .elib--parts .eparts__h em{display:none}
+.room--square .elib--parts .eslots{gap:.45em}
+.room--square .elib--parts .eslot{padding:.4em .8em .4em 1em}
+.room--square .elib--parts .eslot__picks img,.room--square .elib--parts .eslot__picks > i,.room--square .elib--parts .eslot__picks b{width:2.5em;height:2.5em;min-width:2.5em}
