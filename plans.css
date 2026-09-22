@@ -1674,3 +1674,5 @@ label:hover .ed,label:focus-within .ed{opacity:1;color:#fff}
 .room--studio .eo--scope.is-on b{font-weight:600}
 .room--studio .eo--scope.is-on small{opacity:.62}
 .room--studio .eo--scope b{font-weight:500}
+/* a touch smaller */
+.room--studio .con{width:min(89%,calc((100vh - 150px) * 2.02))}
